@@ -44,7 +44,7 @@ public class BoardController {
 
     @GetMapping
     public Page<BoardDto> search(
-            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "10") Integer size
             ){
         return boardService.search(page, size);
