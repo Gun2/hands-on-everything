@@ -3,6 +3,7 @@ package com.github.gun2.server.board;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,7 +22,7 @@ public class BoardController {
 
     @PostMapping
     public BoardDto create(
-        @RequestBody BoardDto.BoardRequest dto
+        @Validated @RequestBody BoardDto.BoardRequest dto
     ){
         return boardService.create(dto);
     }
@@ -29,7 +30,7 @@ public class BoardController {
     @PutMapping("/{id}")
     public BoardDto update(
             @PathVariable("id")Long id,
-            @RequestBody BoardDto.BoardRequest dto
+            @Validated @RequestBody BoardDto.BoardRequest dto
     ){
         return boardService.update(dto, id);
     }
