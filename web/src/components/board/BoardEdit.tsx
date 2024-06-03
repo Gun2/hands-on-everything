@@ -1,7 +1,7 @@
 import React, {ChangeEvent, useCallback, useEffect, useState} from 'react';
 import Layout from "./Layout";
 import {ContentLayout} from "./ContentLayout";
-import {Button, Skeleton, TextField} from "@mui/material";
+import {Alert, Button, Skeleton, TextField} from "@mui/material";
 import {BoardUpdateFrom, BoardUpdateRequest} from "../../types/board";
 import {useNavigate, useParams} from "react-router-dom";
 import {useGetBoardByIdQuery, useUpdateBoardMutation} from "../../redux/services/boardService";
@@ -25,12 +25,13 @@ const BoardRegistry = () => {
             [name]: value,
         }));
     }, []);
-    const [updateBoard, {}] = useUpdateBoardMutation();
+    const [updateBoard, updateBoardResult] = useUpdateBoardMutation();
     return (
         <Layout
             title={"게시판 수정"}
             content={(
                 <>
+                    {updateBoardResult.isError && <Alert severity={"error"}>저장에 실패하였습니다.</Alert>}
                     <ContentLayout
                         contentArea={(
                             <>
@@ -57,9 +58,12 @@ const BoardRegistry = () => {
                                         updateBoard({
                                             id: Number(id),
                                             ...data
-                                        })
-                                        refetch();
-                                        navigate(`/board/${id}`);
+                                        }).then(({data, error}) => {
+                                            if (!error){
+                                                refetch();
+                                                navigate(`/board/${id}`);
+                                            }
+                                        });
                                     }}
                                 >
                                     저장
