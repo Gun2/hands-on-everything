@@ -1,2 +1,4 @@
 rootProject.name = 'eureka-hands-on'
 
+include 'app:eureka-server'
+include 'app:eureka-client'
