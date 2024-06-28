@@ -5,6 +5,8 @@ import org.springframework.cloud.netflix.eureka.server.event.*;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @Component
 @Slf4j
 public class EurekaListener {
@@ -16,6 +18,8 @@ public class EurekaListener {
     @EventListener
     public void handleEurekaInstanceRegisteredEvent(EurekaInstanceRegisteredEvent event) {
         log.info("EurekaInstanceRegisteredEvent : {}", event);
+        log.info("instance count in metadata : {}", event.getInstanceInfo().getMetadata().getOrDefault("count", ""));
+
     }
 
     /**
@@ -25,6 +29,8 @@ public class EurekaListener {
     @EventListener
     public void handleEurekaInstanceRenewedEvent(EurekaInstanceRenewedEvent event){
         log.info("EurekaInstanceRenewedEvent : {}", event);
+        Map<String, String> metadata = event.getInstanceInfo().getMetadata();
+        log.info("instance count in metadata : {}", metadata.getOrDefault("count", ""));
     }
 
     /**
