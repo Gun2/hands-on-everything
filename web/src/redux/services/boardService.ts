@@ -4,6 +4,10 @@ import {Page} from "../../types/page";
 
 export const boardApi = createApi({
     reducerPath: 'boardService',
+    //브라우저가 포커스를 받으면 refetch
+    refetchOnFocus: true,
+    //네트워크가 재 연결 되면 refetch
+    refetchOnReconnect: true,
     baseQuery: fetchBaseQuery({
         baseUrl: '/boards',
     }),
