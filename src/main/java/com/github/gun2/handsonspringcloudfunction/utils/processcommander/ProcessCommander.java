@@ -73,7 +73,7 @@ public class ProcessCommander {
             output.append(e.getMessage());
             isSuccess = false;
         }
-        return new CommandResult(isSuccess, output.toString());
+        return new CommandResult(isSuccess, removeLastNewline(output.toString()));
     }
 
     private static CommandResult execBatch(String command){
@@ -116,11 +116,8 @@ public class ProcessCommander {
             if (file != null && file.exists()){
                 file.delete();
             }
-            if (isSuccess){
-                removeLastLine(output);
-            }
         }
-        return new CommandResult(isSuccess, output.toString());
+        return new CommandResult(isSuccess, removeLastNewline(output.toString()));
     }
 
     private static File createFile(String content){
@@ -151,22 +148,20 @@ public class ProcessCommander {
     }
 
     /**
-     * StringBuilder 마지막 라인을 제거하는 메서드
-     *
-     * @param sb 라인을 제거할 StringBuilder 객체
+     * 문자 마지막에 개행 문자가 존재할 경우 제거
+     * @param input
      */
-    public static void removeLastLine(StringBuilder sb) {
-        if (sb == null || sb.length() == 0) {
-            return;
+    public static String removeLastNewline(String input) {
+        if (input == null || input.isEmpty()) {
+            return input;
         }
-
-        int lastNewLine = sb.lastIndexOf("\n", sb.length() - 2);
-
-        if (lastNewLine != -1) {
-            sb.setLength(lastNewLine + 1);
-        } else {
-            sb.setLength(0);
+        if (input.endsWith("\r\n")) {
+            return input.substring(0, input.length() - 2);
         }
+        if (input.endsWith("\n")) {
+            return input.substring(0, input.length() - 1);
+        }
+        return input;
     }
 
     private static boolean isLf(String input) {
