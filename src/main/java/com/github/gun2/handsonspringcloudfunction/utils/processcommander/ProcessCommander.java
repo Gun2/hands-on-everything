@@ -62,6 +62,7 @@ public class ProcessCommander {
 
             while ((line = errorReader.readLine()) != null) {
                 output.append(line).append("\n");
+                isSuccess = false;
             }
 
             int exitCode = process.waitFor();
