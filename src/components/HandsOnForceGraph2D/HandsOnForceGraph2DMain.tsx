@@ -11,6 +11,9 @@ export const HandsOnForceGraph2DMain = () => {
                 <Link to={"/2d"}>
                     <button>base</button>
                 </Link>
+                <Link to={"/2d/node-custom"}>
+                    <button>node-custom</button>
+                </Link>
             </div>
             <div>
                 <Outlet/>
