@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @RequestMapping("/boards")
 public class BoardController {
-    public final BoardService boardService;
+    private final BoardService boardService;
 
     @GetMapping
     public Flux<BoardDto> readAll(){

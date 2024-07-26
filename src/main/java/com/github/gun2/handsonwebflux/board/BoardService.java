@@ -8,7 +8,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
-import java.util.stream.StreamSupport;
 
 @Service
 @Slf4j
@@ -17,36 +16,33 @@ public class BoardService {
     public final BoardRepository boardRepository;
     public Mono<BoardDto> findById(Long id) {
 
-        return Mono.just(new BoardDto(boardRepository.findById(id).orElseThrow()));
+        return boardRepository.findById(id).map(BoardDto::new);
     }
 
     public Flux<BoardDto> findAll(){
-        return Flux.fromStream(
-                StreamSupport.stream(boardRepository.findAll().spliterator(), false).map(BoardDto::new)
-        );
+        return boardRepository.findAll().map(BoardDto::new);
     }
 
     @Transactional
     public Mono<BoardDto> create(BoardDto.BoardRequest dto) {
-        return Mono.just(new BoardDto(boardRepository.save(
+        return boardRepository.save(
                 Board.builder()
                         .title(dto.getTitle())
                         .content(dto.getContent())
                         .createdAt(Instant.now())
                         .build()
-        )));
+        ).map(BoardDto::new);
     }
 
     @Transactional
     public Mono<BoardDto> update(BoardDto.BoardRequest dto, Long id) {
-        Board board = boardRepository.findById(id).orElseThrow();
-        return Mono.just(new BoardDto(
-                boardRepository.save(board.updateBoard(dto.getTitle(), dto.getContent()))
-        ));
+        return boardRepository.findById(id).map(board -> {
+            board.updateBoard(dto.getTitle(), dto.getContent());
+            return boardRepository.save(board).map(BoardDto::new);
+        }).flatMap(boardDtoMono -> boardDtoMono);
     }
 
     public Mono<Void> delete(Long id) {
-        boardRepository.deleteById(id);
-        return Mono.empty();
+        return boardRepository.deleteById(id);
     }
 }
