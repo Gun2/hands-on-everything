@@ -47,7 +47,7 @@ public class ProcessCommander {
         try {
             Process process = processBuilder.start();
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()))) {
-                writer.write(command);
+                writer.write(removeCr(command));
                 writer.flush();
             }
             BufferedReader reader =
@@ -148,6 +148,13 @@ public class ProcessCommander {
         return input.replace("\n", "\r\n");
     }
 
+    private static String removeCr(String input) {
+        if (input == null){
+            return null;
+        }
+        return input.replaceAll("\r", "");
+    }
+
     /**
      * 문자 마지막에 개행 문자가 존재할 경우 제거
      * @param input
@@ -172,5 +179,4 @@ public class ProcessCommander {
         // 문자열에 LF가 있지만 CRLF는 아닌 경우
         return input.contains("\n") && !input.contains("\r\n");
     }
-
 }
