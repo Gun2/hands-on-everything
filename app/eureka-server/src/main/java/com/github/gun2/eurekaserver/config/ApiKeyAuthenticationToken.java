@@ -2,17 +2,23 @@ package com.github.gun2.eurekaserver.config;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 
 import java.util.Collection;
 
 public class ApiKeyAuthenticationToken extends AbstractAuthenticationToken {
+    private final String apiKey;
 
-    private final Object principal;
+    public ApiKeyAuthenticationToken(String apiKey) {
+        super(AuthorityUtils.NO_AUTHORITIES);
+        this.apiKey = apiKey;
+        setAuthenticated(false);
+    }
 
-    public ApiKeyAuthenticationToken(Object principal, Collection<? extends GrantedAuthority> authorities) {
+    public ApiKeyAuthenticationToken(String apiKey, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
-        this.principal = principal;
-        this.setAuthenticated(true);
+        this.apiKey = apiKey;
+        setAuthenticated(true);
     }
 
     @Override
@@ -22,6 +28,6 @@ public class ApiKeyAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        return this.principal;
+        return this.apiKey;
     }
 }
