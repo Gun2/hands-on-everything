@@ -1,4 +1,4 @@
-rootProject.name = 'eureka-hands-on'
+rootProject.name = 'hands-on-eureka'
 
 include 'app:eureka-server'
 include 'app:eureka-client'
