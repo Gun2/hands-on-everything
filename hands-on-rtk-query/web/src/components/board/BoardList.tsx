@@ -1,5 +1,5 @@
 import React from 'react';
-import {useSearchMutation} from "../../redux/services/boardService";
+import {useLazySearchQuery} from "../../redux/services/boardService";
 import {Button, Skeleton} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import Layout from "./Layout";
@@ -10,7 +10,8 @@ import {Board} from "../../types/board";
 
 const BoardList = () => {
     const navigate = useNavigate();
-    const [searchBoard, {data, isLoading}] = useSearchMutation();
+
+    const [searchBoard, {data, isLoading}] = useLazySearchQuery();
     const dataTableProps = useDataTable<Board>({
         page: 0,
         size: 10,

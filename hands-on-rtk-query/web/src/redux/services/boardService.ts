@@ -35,7 +35,7 @@ export const boardApi = createApi({
                 method: 'DELETE'
             })
         }),
-        search: build.mutation<Page<Board>, BoardSearchParams>({
+        search: build.query<Page<Board>, BoardSearchParams>({
             query: ({size = 10, page = 0}: BoardSearchParams) => `?size=${size}&page=${page}`,
         })
     })
@@ -43,7 +43,7 @@ export const boardApi = createApi({
 
 export const {
     useGetBoardByIdQuery,
-    useSearchMutation,
+    useLazySearchQuery,
     useCreateBoardMutation,
     useUpdateBoardMutation,
     useDeleteByIdMutation,
