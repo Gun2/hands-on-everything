@@ -123,7 +123,10 @@ export const boardApi = createApi({
         })
     })
 });
-
+/**
+ * @reduxjs/toolkit/query/react로 createApi를 import한 경우
+ * endpoint에 정의된 이름으로 hook이 자동 생성됨
+ */
 export const {
     useGetBoardByIdQuery,
     useSearchMutation,
@@ -131,6 +134,42 @@ export const {
     useUpdateBoardMutation,
     useDeleteByIdMutation,
 } = boardApi
+```
+
+## Query Hook
+조회 타입의 API에 사용되는 RTK Query Hook 유형 
+<br/>endpoints에서 query를 통해 정의한 경우 아래 유형으로 네이밍된 hook을 사용할 수 있음
+### useQuery
+컴포넌트 렌더링 되면 자동으로 서버에서 데이터를 요청하고, 요청된 데이터를 Redux store에 캐시하며, 캐시된 데이터를 컴포넌트에서 사용할 수 있음
+```tsx
+const {data, error, isLoading} = useQuery(id);
+```
+
+### useLazyQuery
+`useQuery`와 유사하나 자동으로 데이터를 요청하지 않고 trigger함수가 호출되어야함
+
+```tsx
+const [trigger, {data, isLoading}] = useLazySearchQuery();
+return (
+    <button onClick={() => trigger(id)}>
+        Fetch
+    </button>
+);
+```
+
+## Mutation Hook
+데이터의 변경사항을 전달하는 API(수정, 생성, 삭제)에 사용되는 RTK Query Hook 유형
+<br/>정보를 전달하고 변경 사항을 로컬 케시에 반영함
+### useMutation
+hook이 반환하는 첫번 째 값에 트리거 함수가 있고, 두번 째 값에 결과값이 있음 
+```tsx
+const [trigger, result] = useMutation();
+
+return (
+    <button onClick={() => trigger(updateData)}>
+        Fetch
+    </button>
+);
 ```
 
 # API Slice 적용
