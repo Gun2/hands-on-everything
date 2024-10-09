@@ -1,16 +1,19 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
-import {Board} from "./board.entity";
-import {BoardService} from "./board.service";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Board } from './board.entity';
+import { BoardService } from './board.service';
 
 @Controller('boards')
 export class BoardController {
 
-    constructor(private readonly boardService: BoardService) {}
-
     @Get()
-    getAllBoards(): Board[] {
-        return this.boardService.getAllBoards();
+    getAllBoards(
+      @Query("page") page: number = 1,
+      @Query("size") size: number = 10,
+    ): Board[] {
+        return this.boardService.search(page, size);
     }
+
+    constructor(private readonly boardService: BoardService) {}
 
     @Get('/:id')
     getBoardById(@Param('id') id: number): Board | null {

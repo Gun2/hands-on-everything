@@ -1,6 +1,5 @@
-import {Injectable} from '@nestjs/common';
-import {Board} from './board.entity';
-
+import { Injectable } from '@nestjs/common';
+import { Board } from './board.entity';
 @Injectable()
 export class BoardService {
     private boards: Board[] = [];
@@ -39,5 +38,10 @@ export class BoardService {
         board.content = description;
         board.updatedAt = new Date();
         return board;
+    }
+
+    search(page: number, size: number) {
+        const startIndex = (page - 1) * size;
+        return this.boards.slice(startIndex, startIndex + size);
     }
 }
