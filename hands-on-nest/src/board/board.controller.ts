@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { Board } from './board.entity';
 import { BoardService } from './board.service';
+import { BoardIdParams, CreateBoardRequest, UpdateBoardRequest } from './board.dto';
 
 @Controller('boards')
 export class BoardController {
@@ -16,29 +17,31 @@ export class BoardController {
     constructor(private readonly boardService: BoardService) {}
 
     @Get('/:id')
-    getBoardById(@Param('id') id: number): Board | null {
-        return this.boardService.getBoardById(id) || null;
+    getBoardById(
+      @Param() params: BoardIdParams,
+    ): Board | null {
+        return this.boardService.getBoardById(params.id) || null;
     }
 
     @Post()
     createBoard(
-        @Body('title') title: string,
-        @Body('content') description: string
+      @Body() request: CreateBoardRequest,
     ): Board {
-        return this.boardService.createBoard(title, description);
+        return this.boardService.createBoard(request.title, request.content);
     }
 
     @Delete('/:id')
-    deleteBoard(@Param('id') id: number): void {
-        return this.boardService.deleteBoard(id);
+    deleteBoard(
+      @Param() params: BoardIdParams,
+    ): void {
+        return this.boardService.deleteBoard(params.id);
     }
 
     @Patch('/:id')
     updateBoard(
-        @Param('id') id: number,
-        @Body('title') title: string,
-        @Body('content') description: string
+        @Param() params: BoardIdParams,
+        @Body() request: UpdateBoardRequest,
     ): Board | null{
-        return this.boardService.updateBoard(id, title, description);
+        return this.boardService.updateBoard(params.id, request.title, request.content);
     }
 }
