@@ -54,7 +54,7 @@ Nest의 모듈은 애플리케이션의 구성요소들을 설정하는 역할�
 `app.module.ts`파일은 최상단 모듈로서의 역할을 수행하며, 계층적인 구조를 통해 애플리케이션의 구성을 설정할 수 있다.
 
 #### app.module.ts
-`app.module.ts`는 최상위 모듈이며 여타 다른 모듈처럼 `@Module`데코레이션으로 정의할 수 있음
+`app.module.ts`는 최상위 모듈이며 여타 다른 모듈처럼 `@Module`데코레이터로 정의할 수 있음
 ```ts
 
 @Module({
@@ -70,17 +70,157 @@ export class AppModule {}
 | controllers | 컨트롤러들이 입력됨                       |
 | providers   | 서비스 들이 입력됨                       |
 
-## Test
+# 실행
+아래의 명령어를 명령창에 입렿하여 애플리케이션을 실행시킬 수 있음
+```shell
+npm run start
+```
+만약 개발간 변경돠는 파일을 자동으로 재컴파일 하고 서버를 리로드 하고싶다면 아래의 명령어로 애플리케이션을 실행시킬 수 있음
+```shell
+npm run start:dev
+```
 
-```bash
-# unit tests
-$ npm run test
+# Controllers
+컨트롤러는 들어오는 요청을 핸들링하고 응답을 사용자에게 반환하는 역할을 한다.
+> 참고 : https://docs.nestjs.com/controllers
+## 라우팅 샘플
+사용자의 요청을 컨트롤러의 함수로 라우팅 하기 위해서는 `@Controller()`데코레이터가 사용됨 `@Controller()`데코레이터를 활용하여 아래와 같이
+컨트롤러를 구현할 수 있음
+```ts
+import { Controller, Get } from '@nestjs/common';
 
-# e2e tests
-$ npm run test:e2e
+@Controller('boards')
+export class BoardController {
+  ...
+  @Get('/:id')
+  getBoardById(
+    @Param() params: BoardIdParams,
+  ): Board | null {
+    return this.boardService.getBoardById(params.id) || null;
+  }
+}
+```
+
+## 응답
+Http Response를 반환하는 방법은 크게 두 가지가 있다
+
+### 기본 (권장)
+NestJS에서 권장하는 방법은 Javascript 객체 또는 배열을 반환하는 방법이고, 이는 자동으로 JSON으로 변환된다.
+만약 응답 코드를 선언하고 싶다면 `@HttpCode()` 데코레이터를 사용할 수 있다.
+> 기본적으로 요청 성공 시 HttpStatus는 200을 반환하고 POST 메서드일 경우 201이 반환된다.
+```ts
+@Controller('boards')
+export class BoardController {
+    ...
+    @Get('/:id')
+    @HttpCode(HttpStatus.OK)
+    getBoardById(
+      @Param() params: BoardIdParams,
+    ): Board | null {
+      return this.boardService.getBoardById(params.id) || null;
+    }
+}
+```
+
+### 라이브러리 사용
+라이브러리 스펙을 사용하여 응답값을 정의할 수도 있다.
+```ts
+import { Response } from 'express';
+
+@Controller('boards')
+export class BoardController {
+  ...
+  @Get('/:id')
+  getBoardById(
+    @Param() params: BoardIdParams,
+    @Res() response: Response,
+  ): void {
+    response.status(HttpStatus.OK).send(this.boardService.getBoardById(params.id) || null);
+  }
+}
+```
+
+## 컨트롤러 등록
+모듈에 컨트롤러를 등록하여 애플리케이션 구성에 추가할 수 있다.
+```ts
+//board.module.ts
+import { Module } from '@nestjs/common';
+import { BoardController } from './board.controller';
+
+@Module({
+  controllers: [BoardController],
+  providers: []
+})
+export class BoardModule {}
+```
+
+# Provider
+프로바이더는 NestJS의 기본 컨셉이며, Javascript Class에 `@Injectable()`데코레이터를 선언하여 생성할 수 있다.
+이렇게 생성된 프로바이더는 DI될 수 있으며 Nest의 IoC 컨테이너에 의해 관리된다.
+> 참고 : https://docs.nestjs.com/providers
+## Service Provider 생성 샘플
+```ts
+//board.service.ts
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class BoardService {
+  private boards: Board[] = [];
+  getBoardById(id: number): Board | null {
+    return this.boards.find(board => board.id == id) || null;
+  }
+}
+```
+
+## DI 방법
+### 생성자 주입
+생성자를 사용하여 주입받는 방법
+```ts
+//board.controller.ts
+import { BoardService } from './board.service';
+
+@Controller('boards')
+export class BoardController {
+  //생성자를 통해 주입
+  constructor(private readonly boardService: BoardService) {}
+  ...
+}
+```
 
 # test coverage
 $ npm run test:cov
+### 프로퍼티 주입
+`@Inject()` 데코레이터를 프로퍼티에 선언하여 주입하는 방식으로, 최상위 레벨의 프로바이더에게 의존하는 프로바이더를
+super()로 매번 주입시켜주기 어려울 때 활용할 수 있음
+```ts
+//board.controller.ts
+import { BoardService } from './board.service';
+import { Inject } from '@nestjs/common';
+
+@Controller('boards')
+export class BoardController {
+  //프로퍼티에 주입
+  @Inject(BoardService)
+  private readonly boardService: BoardService
+  ...
+}
+```
+
+## 프로바이더 등록
+모듈에 프로바이더를 등록하여 애플리케이션 구성에 추가할 수 있다.
+```ts
+//board.module.ts
+import { Module } from '@nestjs/common';
+import { BoardService } from './board.service';
+
+
+@Module({
+  controllers: [...],
+  providers: [BoardService]
+})
+export class BoardModule {}
+```
+
 ```
 
 ## Support
