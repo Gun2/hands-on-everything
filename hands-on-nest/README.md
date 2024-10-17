@@ -187,8 +187,6 @@ export class BoardController {
 }
 ```
 
-# test coverage
-$ npm run test:cov
 ### 프로퍼티 주입
 `@Inject()` 데코레이터를 프로퍼티에 선언하여 주입하는 방식으로, 최상위 레벨의 프로바이더에게 의존하는 프로바이더를
 super()로 매번 주입시켜주기 어려울 때 활용할 수 있음
@@ -221,18 +219,90 @@ import { BoardService } from './board.service';
 export class BoardModule {}
 ```
 
+# Middleware
+Route Handler 전에 호출되는 함수이며, `request`와 `response`의 객체에 접근할 수 있다.
+
+## Middleware 함수가 수행할 수 있는 작업
+Nest middleware는 기본적으로 express middleware와 동일함
+- 어떤 코드라도 실행 가능
+- `request`, `response`객체 수정 가능
+- `request`-`response` 순환 종료 가능
+- 스텍에서 다음 middleware 함수 호출
+- `request`-`response` 순환이 종료되지 않았다면 `next()`함수를 호출 하여야함 (호출하지 않으면 요청에 행이 걸림)
+
+## Middleware 사용 예시
+middleware는 `function` 또는 `@Injectable()`데코레이터를 사용한 class`에 정의할 수 있음
+`class`는 `function`과 다르게 `NestMiddleware`인터페이스를 구현해야함
+```ts
+// board.middleware.ts
+// middleware 정의
+import { Injectable, NestMiddleware } from '@nestjs/common';
+
+@Injectable()
+export class BoardMiddleware implements NestMiddleware {
+  use(req: any, res: any, next: (error?: any) => void): any {
+    console.log("board request : ", res)
+    console.log("board response : ", res)
+    next()
+  }
+}
 ```
 
-## Support
+```ts
+// app.module.ts
+// middleware 적용
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { BoardMiddleware } from './board/board.middleware';
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+@Module({
+  ...
+})
+export class AppModule  implements NestModule{
+  configure(consumer: MiddlewareConsumer): any {
+    consumer.apply(BoardMiddleware).forRoutes(
+      {path: "boards/**", method: RequestMethod.ALL},
+      //BoardController, //컨트롤러 자체를 대상으로 설정 가능
+    )
+  }
+}
 
-## Stay in touch
+```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# 사용 예시
 
-## License
+## 유효성 검증 구현하기
 
-Nest is [MIT licensed](LICENSE).
+> 참고 : https://docs.nestjs.com/techniques/validation
+
+### 라이브러리 설치
+```shell
+npm i --save class-validator class-transformer
+```
+
+### Auto-Validation (전역 설정)
+`main.ts`의 앱에 `ValidationPipe`를 바인딩하여 모든 엔드포인트에 유효성 검증을 적용할 수 있음
+```ts
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe()); //binding
+  await app.listen(3000);
+}
+bootstrap();
+```
+
+### Method level validation (개별 설정)
+유효성 검증을 적용하고자 하는 함수 상단에 `@UsePipes()` 데코레이터를 사용하여 개별적으로 선언할 수 있음
+```typescript
+@Controller('boards')
+export class BoardController {
+    @UsePipes(new ValidationPipe({
+      enableDebugMessages: true
+    }))
+    @Post()
+    createBoard(
+      @Body() request: CreateBoardRequest,
+    ): Board {
+      return this.boardService.createBoard(request.title, request.content);
+    }
+}
+```
