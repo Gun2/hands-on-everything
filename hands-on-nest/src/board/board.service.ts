@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { Board } from './board.entity';
 @Injectable()
 export class BoardService {
@@ -9,8 +9,12 @@ export class BoardService {
         return this.boards;
     }
 
-    getBoardById(id: number): Board | null {
-        return this.boards.find(board => board.id == id) || null;
+    getBoardById(id: number): Board {
+        const board = this.boards.find(board => board.id == id);
+        if (!board){
+            throw new NotFoundException()
+        }
+        return board;
     }
 
     createBoard(title: string, description: string): Board {
@@ -29,10 +33,10 @@ export class BoardService {
         this.boards = this.boards.filter(board => board.id !== id);
     }
 
-    updateBoard(id: number, title: string, description: string): Board | null {
+    updateBoard(id: number, title: string, description: string): Board {
         const board = this.getBoardById(id);
         if (board == undefined) {
-            return null;
+            throw new NotFoundException()
         }
         board.title = title;
         board.content = description;

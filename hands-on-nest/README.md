@@ -268,6 +268,101 @@ export class AppModule  implements NestModule{
 
 ```
 
+# Exception filters
+nest는 처리되지 않은 예외를 처리하기 위한 책임을 가지는 exception 계층이 있다. 만약 예외가 애플리케이션 코드에서
+처리되지 않았다면, exception 계층은 해당 에러를 잡아서 사용자에게 적절한 응답을 전달한다.
+
+## 기본 예외 던지기
+Nest는 `HttpException` 클래스를 내장하고 있다. 전형적인 HTTP REST/GraphQL API 기반 애플리케이션에서  에러가 발생하였을 때 
+`HttpException`클래스의 객체를 예외로 던지게 된다면 상황에 적절한 기본적인 응답을 생성하기에 용이하다.
+<br/>`HttpException`클래스의 생성자는 두 개의 인자를 필수로 받아야한다.
+- [필수] 첫 번째 인자 : 응답 body (string | object)
+- [필수] 두 번째 인자 : http 상태코드
+- [선택] 세 번째 인자 : 에러 발생 원인
+```ts
+//board.service.ts
+export class BoardService {
+  private boards: Board[] = [];
+
+  getBoardById(id: number): Board {
+    const board = this.boards.find(board => board.id == id);
+    if (!board) {
+      throw new HttpException("Not Found", HttpStatus.NOT_FOUND);
+    }
+    return board;
+  }
+}
+```
+
+## Custom exceptions
+`HttpException`클래스를 상속받아 별도의 예외 클래스를 만들어 nest가 exception을 인식하여 처리할 수 있도록 할 수 있다.
+```ts
+export class ForbiddenException extends HttpException {
+  constructor() {
+    super('Forbidden', HttpStatus.FORBIDDEN);
+  }
+}
+```
+
+## Exception filters
+exception 계층을 넘어 전반적으로 예외를 제어하고 싶을 때 `Exception filter`를 사용할 수 있다.
+### Exception 필터 생성
+`@Catch()` 데코레이터와 `ExceptionFilter`인터페이스를 구현하여 만들 수 있으며, catch(exception: HttpException, host: ArgumentsHost) 메서드를 정의하여 예외를 처리할 수 있다.
+```ts
+//http-exception.filter.ts
+
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
+import { Request, Response } from 'express';
+
+@Catch(HttpException) //잡을 예외 클래스 선언
+export class HttpExceptionFilter implements ExceptionFilter {
+  catch(exception: HttpException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
+    const status = exception.getStatus();
+
+    response
+      .status(status)
+      .json({
+        statusCode: status,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+      });
+  }
+}
+
+```
+### Exception 필터 적용
+@UseFilters()데코레이터를 통해 적용할 Exception 필터를 선언할 수 있으며 함수 혹인 클래스에 선언할 수 있다.
+> @UseFilters()데코레이터에 아무 필터도 선언하지 않으면 모든 필터가 동작됨
+```ts
+@Controller('boards')
+export class BoardController {
+  ...
+  @UseFilters(HttpExceptionFilter)
+  @Get('/:id')
+  getBoardById(
+    @Param() params: BoardIdParams,
+  ): Board | null {
+    return this.boardService.getBoardById(params.id) || null;
+  }
+}
+```
+
+### Exception 필터 전역 적용
+```ts
+import { HttpExceptionFilter } from './http-exception.filter';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  ...
+  app.useGlobalFilters(new HttpExceptionFilter())
+  await app.listen(3000);
+}
+bootstrap();
+```
+
 # 사용 예시
 
 ## 유효성 검증 구현하기

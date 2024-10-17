@@ -19,8 +19,8 @@ export class BoardController {
     @Get('/:id')
     getBoardById(
       @Param() params: BoardIdParams,
-    ): Board | null {
-        return this.boardService.getBoardById(params.id) || null;
+    ): Board {
+        return this.boardService.getBoardById(params.id);
     }
 
     @Post()
@@ -41,7 +41,7 @@ export class BoardController {
     updateBoard(
         @Param() params: BoardIdParams,
         @Body() request: UpdateBoardRequest,
-    ): Board | null{
+    ): Board{
         return this.boardService.updateBoard(params.id, request.title, request.content);
     }
 }
