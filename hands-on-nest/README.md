@@ -363,6 +363,84 @@ async function bootstrap() {
 bootstrap();
 ```
 
+# Pipes
+`Pipe`는 컨트롤러 메서드가 살행되기 전 메서드에 전달될 인자값을 받아 처리할 수 있으며, 변환(transformation) 또는 유효성 검증(validation)에 사용할 수 있다.
+
+## Pipe 특징
+Nest의 Pipe는 다음과 같은 특징을 가짐
+### 예외는 Exception filter에 의해 처리됨
+`Pipe`는 예외 영역에서 실행되기 때문에 실행 중 에러가 발생하면 exception filter에 의해 처리되고 controller의 method를 실행시키지 않는다.
+### 내장 Pipe
+`Pipe`는 아래와 같이 다수의 내장 Pipe를 가지고 있음
+<br/> `ValidationPipe`는 유효성 검증(validation) 관련 pipe이고 `Parse*Pipe`는 변환(transformation) 관련 파이프이다.
+- ValidationPipe
+- ParseIntPipe
+- ParseFloatPipe
+- ParseBoolPipe
+- ParseArrayPipe
+- ParseUUIDPipe
+- ParseEnumPipe
+- DefaultValuePipe
+- ParseFilePipe
+
+## Pipe 바인딩
+Pipe를 사용하기 위해서는 바인딩을 시켜주어야하며, method에 결합하는 방식과, 전역으로 바인딩하는 방식이 있음
+### method 결합 방식 (파라미터 level)
+`@Param()`데코레이터에 Pipe의 클래스를 인자값으로 선언할 수 있음
+```ts
+@Controller('samples')
+export class SampleController {
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.catsService.findOne(id);
+  }
+}
+```
+아래와 같이 설정값으로 생성자를 통해 생성된 인스턴스로 선언할 수도 있음
+```ts
+@Controller('samples')
+export class SampleController {
+  @Get(':id')
+  async findOne(
+    @Param('id', new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }))
+      id: number,
+  ) {
+    return this.catsService.findOne(id);
+  }
+}
+```
+
+### method 결합방식 (핸들러 level)
+`@UsePipes()` 데코레이터를 사용하여 바인딩 할 수 있음
+```ts
+//board.controler.ts
+@Controller('boards')
+export class BoardController {
+    @UsePipes(new ValidationPipe({
+      enableDebugMessages: true
+    }))
+    @Post()
+    createBoard(
+      @Body() request: CreateBoardRequest,
+    ): Board {
+      return this.boardService.createBoard(request.title, request.content);
+    }
+}
+```
+
+### 전역 바인딩
+useGlobalPipes 함수를 통해 `Pipe`를 전역으로 바인딩할 수 있음
+```ts
+//main.ts
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe());
+  await app.listen(process.env.PORT ?? 3000);
+}
+bootstrap();
+```
+
+
 # 사용 예시
 
 ## 유효성 검증 구현하기
