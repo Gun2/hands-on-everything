@@ -440,6 +440,104 @@ async function bootstrap() {
 bootstrap();
 ```
 
+# Guards
+guard는 주어진 request가 route handler에 의해 처리될지 말지를 결정할 수 있는 역할을 가지고 있으며 주로 `인가`기능 구현에 사용됨
+> - middleware와 다른점은 midddleware는 next() 함수 호출 후 어떤 핸들러가 오는지 모르지만 `guard`는 `ExecutionContext` 인스턴스를 통해 접근할 수 있음
+> - guard는 모든 middleware 동작 후 동작됨
+
+> 참고 : https://docs.nestjs.com/guards
+> 
+## Guard 구현 방법
+`guard`를 구현하기 위해 `CanActivate` 인터페이스를 구현할 수 있다. 
+<br/>`canActivate()` 함수의 반환값 여부로 handler의 동작 유무를 결정할 수 있다.
+```ts
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Observable } from 'rxjs';
+
+@Injectable()
+export class RolesGuard implements CanActivate {
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    //true이면 allow, false이면 deny
+    return true;
+  }
+}
+```
+
+## Guard 적용 방법
+`guard`도 `pipe`, `exception filter`처럼 controller, method, global 범위에 바인딩할 수 있다.
+### 컨트롤러 범위에 바인딩
+`@UseGuards()` 데코레이터를 사용하여 컨트롤러에 바인딩할 수 있다.
+> 특정 메서드에 적용하고 싶다면 메서드 위에 `@UseGuards()` 데코레이터를 사용할 수 있다.
+```ts
+@Controller('cats')
+@UseGuards(RolesGuard)
+export class CatsController {}
+```
+### 전역 범위에 바인딩
+Nest application 인스턴스의 useGlobalGuards 메서드를 통해 전역으로 `guard`를 바인딩할 수 있다.
+```ts
+const app = await NestFactory.create(AppModule);
+app.useGlobalGuards(new RolesGuard());
+```
+### 모듈에 바인딩
+Nest application 인스턴스의 useGlobalGuards 메서드를 통해 전역으로 `guard`를 바인딩을 한 경우
+해당 바인딩은 모듈 밖에서 등록되기 때문에 DI를 활용할 수 없게된다. 이러한 문제를 해결하기 위해서 모듈에 바인딩을 할 수 있다.
+```ts
+import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+
+@Module({
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
+})
+export class AppModule {}
+```
+
+## 역할 인가 구현 예시
+인가 과정이 필요한 핸들러에 사용될 커스텀 데코레이터를 생성하고 적용하는 방법
+### 커스텀 데코레이터를 생성
+```ts
+//roles.decorator.ts
+import { Reflector } from '@nestjs/core';
+
+export const Roles = Reflector.createDecorator<string[]>();
+```
+### 인가 데코레이터 적용
+```ts
+@Post()
+@Roles(['admin'])
+async create(@Body() createCatDto: CreateCatDto) {
+  this.catsService.create(createCatDto);
+}
+```
+### 인가 처리할 guard 작성
+```ts
+//roles.guard.ts
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { Roles } from './roles.decorator';
+
+@Injectable()
+export class RolesGuard implements CanActivate {
+  constructor(private reflector: Reflector) {}
+
+  canActivate(context: ExecutionContext): boolean {
+    const roles = this.reflector.get(Roles, context.getHandler());
+    if (!roles) {
+      return true;
+    }
+    const request = context.switchToHttp().getRequest();
+    const user = request.user;
+    return matchRoles(roles, user.roles);
+  }
+}
+```
 
 # 사용 예시
 
