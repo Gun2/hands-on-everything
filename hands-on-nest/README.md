@@ -539,6 +539,76 @@ export class RolesGuard implements CanActivate {
 }
 ```
 
+# Interceptors
+Interceptor는 AOP(Aspect Oriented Programming)에 영감을 두었기에 다음과 같은 특징을 가지고 있다.
+- method 실행 전후의 추가 로직 바인드
+- function으로 부터 반환된 결과 변환
+- function으로 부터 발생된 예외 반환
+- 기본 function 동작의 확장
+- 특정 조건ㅇ의 function의 완전한 재정의
+
+## 구현 메서드 intercept()
+Interceptor는 intercept() method를 구현하여야만 하며 `ExecutionContext`인스턴스와 `CallHandler`인스턴스를 인자로 받을 수 있다.
+### ExecutionContext
+현재 실행 과정에 대한 상세 정보를 담고 있음
+
+### CallHandler
+handle()메서드를 구현하였으며 라우터 핸들러 메서드를 인터셉터에서 특정 시점에 호출할 수 있음
+
+## Interceptor 예시
+`NestInterceptor`인터페이스를 구현하여 Interceptor를 만들 수 있다.
+<br/> intercept()메서드는 Observable을 반환하여야 한다.
+```ts
+//logging.interceptor.ts
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+
+@Injectable()
+export class LoggingInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    console.log('Before...');
+
+    const now = Date.now();
+    return next
+      .handle()
+      .pipe(
+        tap(() => console.log(`After... ${Date.now() - now}ms`)),
+      );
+  }
+}
+```
+
+## Interceptor 바인딩
+### 컨트롤러에 바인딩
+`@UseInterceptors`데코레이터를 사용하여 컨트롤러에 `interceptor`를 바인딩할 수 있으며 메서드에도 적용할 수 있음
+```ts
+@UseInterceptors(LoggingInterceptor)
+export class CatsController {}
+```
+### 전역 바인딩
+애플리케이션 인스턴스의 `useGlobalInterceptors`메서드를 통해 전역으로 바인딩 할 수 있음
+```ts
+const app = await NestFactory.create(AppModule);
+app.useGlobalInterceptors(new LoggingInterceptor());
+```
+### 모듈에 바인딩
+providers에 값을 추가하여 바인딩할 수 있음
+```ts
+import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+
+@Module({
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+  ],
+})
+export class AppModule {}
+```
+
 # 사용 예시
 
 ## 유효성 검증 구현하기

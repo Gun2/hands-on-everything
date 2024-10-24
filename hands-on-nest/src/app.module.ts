@@ -3,12 +3,19 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BoardModule } from './board/board.module';
 import { BoardMiddleware } from './board/board.middleware';
-import { BoardController } from './board/board.controller';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { LoggingInterceptor } from './logging.interceptor';
 
 @Module({
   imports: [BoardModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+  ],
 })
 export class AppModule  implements NestModule{
   configure(consumer: MiddlewareConsumer): any {
