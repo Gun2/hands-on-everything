@@ -609,6 +609,84 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 export class AppModule {}
 ```
 
+# Custom Decorators
+NestJS는 데코레이터라고 언어 기반으로 구축되어 있다.
+## Param decorators
+NestJS는 HTTP route handler와 함께 쓰일 수 있는 유용한 데코레이터들을 제공한다.
+
+| 데코레이터                     | 객체(Express 또는 Fastify)           |
+|---------------------------|:---------------------------------|
+| @Request(), @Req()	       | req                              |
+| @Response(), @Res()	      | res                              |
+| @Next()	                  | next                             |
+| @Session()	               | req.session                      |
+| @Param(param?: string)	   | req.params / req.params[param]   |
+| @Body(param?: string)	    | req.body / req.body[param]       |
+| @Query(param?: string)	   | req.query / req.query[param]     |
+| @Headers(param?: string)	 | req.headers / req.headers[param] |
+| @Ip()	                    | req.ip                           |
+| @HostParam()	             | req.hosts                        |
+
+
+## Custom Decorator 만들기
+만약 request 객체에서 user 프로퍼티를 가져온다면 아래와 같이 가져올 수 있다.
+```ts
+const user = req.user;
+```
+위와 같은 방식으로 request 객체에서 값을 꺼내지 않고도 `Custom Decorator`를 사용하면 코드를 더욱 가시적이고 투명하게 만들 수 있고
+다른 컨트롤러에서 재사용할 수 있다.
+```ts
+import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+
+export const User = createParamDecorator(
+  (data: unknown, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    return request.user;
+  },
+);
+```
+이렇게 생성된 `@User` 데코레이터는 아래와 같이 사용할 수 있다.
+```ts
+@Get()
+async findOne(@User() user: UserEntity) {
+  console.log(user);
+}
+```
+
+## Passing data
+데코레이터의 행위가 특정 조건에 따라 달라지는 경우 data 매개변수를 전달하여 해결할 수 있다.
+<br/>
+<br/> 아래와 같이 User 데이터가 있다고 가정할 때
+```javascript
+{
+  "id": 101,
+  "firstName": "Alan",
+  "lastName": "Turing",
+  "email": "alan@email.com",
+  "roles": ["admin"]
+}
+```
+다음처럼 특정 key의 값을 가져오는 데코레이터를 만들어볼 수 있다.
+```ts
+import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+
+export const User = createParamDecorator(
+  (data: string, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    const user = request.user;
+
+    return data ? user?.[data] : user;
+  },
+);
+```
+이렇게 만들어진 데코레이터는 아래와 같이 사용할 수 있다.
+```ts
+@Get()
+async findOne(@User('firstName') firstName: string) {
+  console.log(`Hello ${firstName}`);
+}
+```
+
 # 사용 예시
 
 ## 유효성 검증 구현하기
