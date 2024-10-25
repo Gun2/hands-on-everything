@@ -686,6 +686,47 @@ async findOne(@User('firstName') firstName: string) {
   console.log(`Hello ${firstName}`);
 }
 ```
+## Pipe와 함께 동작하기
+NestJS에 내장된 `Body()`, `@Param()`, `@Query()`데코레이터들과 마찬가지로 커스텀 데코레이더는 Pipe와 함께 사용할 수 있다.
+위에서 생성한 `@User`데코레이터에 유효성검증 Pipe를 추가하려면 아래와 같이 작성할 수 있다.
+```ts
+@Get()
+async findOne(
+  @User(new ValidationPipe({ validateCustomDecorators: true }))
+  user: UserEntity,
+) {
+  console.log(user);
+}
+```
+
+## 데코레이터 결합
+NestJS는 다양한 구성의 데코레이터를 제공하는데 여러 데코레이터를 아래와 같이 결합할 수 있다.
+```ts
+import { applyDecorators } from '@nestjs/common';
+
+export function Auth(...roles: Role[]) {
+  return applyDecorators(
+    SetMetadata('roles', roles),
+    UseGuards(AuthGuard, RolesGuard),
+    ApiBearerAuth(),
+    ApiUnauthorizedResponse({ description: 'Unauthorized' }),
+  );
+}
+```
+이렇게 결합된 @Auth 데코레이터는 아래처럼 간단하게 작성할 수 있다.
+```ts
+//전
+@SetMetadata('roles', "admin")
+@UseGuards(AuthGuard, RolesGuard)
+@ApiBearerAuth()
+@ApiUnauthorizedResponse({ description: 'Unauthorized' })
+findAllUsers() {}
+
+//후
+@Get('users')
+@Auth('admin')
+findAllUsers() {}
+```
 
 # 사용 예시
 
