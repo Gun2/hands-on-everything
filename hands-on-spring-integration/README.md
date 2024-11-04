@@ -67,10 +67,12 @@ public MessageChannel fileChannel3() {
 
 # 샘플코드
 ## 파일 Copy
+특정 디렉터리(source_dir)의 .txt 확장자 파일을 목적지 디렉터리(dest_dir)로 copy하는 spring integration 샘플
 ### 의존성 추가
 ```
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-integration'
+    implementation 'org.springframework.integration:spring-integration-file'
     testImplementation 'org.springframework.integration:spring-integration-test'
     ...
 }
@@ -82,7 +84,7 @@ public MessageChannel fileChannel() {
     return new DirectChannel();
 }
 ```
-## InboundChannelAdapter 생성
+## Adapter 생성
 ```java
 @Bean
 @InboundChannelAdapter(value = "fileChannel", poller = @Poller(fixedDelay = "1000"))
@@ -128,7 +130,7 @@ public MessageHandler fileWritingMessageHandler() {
     };
 }
 ```
-> 자주 사용되는 패턴은 제공되는 내장된 핸들러가 있으며 아래와 같이 사용할 수 있다.
+> 관련 핸들러로 spring-integration-file모듈에 내장된 핸들러가 있으며 아래와 같이 사용할 수 있다.
 ```java
 @ServiceActivator(inputChannel= "fileChannel")
 public MessageHandler fileWritingMessageHandler() {
@@ -138,7 +140,63 @@ public MessageHandler fileWritingMessageHandler() {
     return handler;
 }
 ```
-   
+
+## DB Row pooling
+특정 테이블의 DB Row를 주기적으로 조회하고 처리하는 spring integration
+### 의존성 추가
+```groovy
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-integration'
+    implementation 'org.springframework.integration:spring-integration-jdbc'
+    ...
+}
+```
+
+### 채널 생성
+```java
+@Bean
+public MessageChannel jdbcChannel() {
+    return new DirectChannel();
+}
+```
+### Adapter 생성
+```java
+@Bean
+@InboundChannelAdapter(value = "jdbcChannel", poller = @Poller(fixedDelay = "1000"))
+public JdbcPollingChannelAdapter jdbcPollingChannelAdapter(DataSource dataSource) {
+    JdbcPollingChannelAdapter adapter = new JdbcPollingChannelAdapter(dataSource, "SELECT * FROM message WHERE read = false");
+    adapter.setMaxRows(2);
+    //아래 RowMapper를 정의하면 message에서 페이로드를 추출할 때 정의된 타입으로 추출됨
+    adapter.setRowMapper(new RowMapper<MessageEntity>() {
+        @Override
+        public MessageEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return MessageEntity.builder()
+                    .id(rs.getLong("id"))
+                    .read(rs.getBoolean("read"))
+                    .payload(rs.getString("payload"))
+                    .build();
+        }
+    });
+    return adapter;
+}
+```
+### ServiceActivator 생성
+```java
+@Bean
+@ServiceActivator(inputChannel = "jdbcChannel")
+public MessageHandler jdbcMessageHandler() {
+    //2번째 인자로 update sql 전달
+    JdbcMessageHandler jdbcMessageHandler = new JdbcMessageHandler(dataSource, "UPDATE message SET read = true WHERE id = ?");
+    //파라미터로 사용될 statement 설정
+    jdbcMessageHandler.setPreparedStatementSetter((ps, m) -> {
+        MessageEntity payload = (MessageEntity)m.getPayload();
+        ps.setLong(1, payload.getId());
+    });
+    return jdbcMessageHandler;
+
+}
+```
 # 참고
 - https://spring.io/projects/spring-integration
 - https://www.baeldung.com/spring-integration
