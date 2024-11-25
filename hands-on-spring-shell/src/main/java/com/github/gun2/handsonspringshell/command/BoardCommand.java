@@ -5,6 +5,8 @@ import com.github.gun2.handsonspringshell.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.shell.command.CommandRegistration;
+import org.springframework.shell.command.annotation.Command;
+import org.springframework.shell.command.annotation.Option;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Command
 @ShellComponent
 @RequiredArgsConstructor
 public class BoardCommand {
@@ -37,9 +40,9 @@ public class BoardCommand {
                 %s""".formatted((boardToText(board)));
     }
 
-    @ShellMethod(key = "read", prefix = "-", value = "id에 해당하는 게시글을 조회", group = GROUP)
+    @Command(command = "read", description = "id에 해당하는 게시글을 조회", group = GROUP)
     public String read(
-            @ShellOption(help = "조회할 게시글의 id를 입력합니다") String id
+            @Option(description = "조회할 게시글의 id를 입력합니다", arity = CommandRegistration.OptionArity.EXACTLY_ONE) String id
     ) {
         Optional<Board> boardOptional = boardRepository.read(Long.valueOf(id));
         if (boardOptional.isEmpty()){

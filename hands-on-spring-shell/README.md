@@ -2,7 +2,7 @@
 Spring Application 환경에서 명령어 기반 인터페이스를 쉽게 구현할 수 있도록 도와주며 사용자가 터미널에서 명령어를 입력하여 애플리케이션과 상호작용할 수 있는 기능을 제공할 수 있음
 
 # Quick Start
-
+Spring shell의 Command를 정의하는 방법은 2가지의 어노테이션 방식과  bean 등록 방식(programmatic) 으로 총 3가지 방법이 존재함.
 ## 의존성 추가
 ```groovy
 ext {
@@ -29,8 +29,44 @@ dependencyManagement {
 spring.shell.interactive.enabled=true
 ```
 
-
 ## 커맨드 등록 (어노테이션 사용 방식)
+### @CommandScan 어노테이션 추가
+Spring boot App class에 `@CommandScan`어노테이션을 추가하여 앞으로 작성할 @Command 어노테이션들을 Command로서 스캔하도록한다.
+```java
+@CommandScan //어노테이션 추가
+@SpringBootApplication
+public class HandsOnSpringShellApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(HandsOnSpringShellApplication.class, args);
+    }
+}
+
+```
+### Command 추가
+`@Command`어노테이션으로 명령을 정의하고 `@Option`어노테이션으로 인자값(옵션)을 정의할 수 있다.
+```java
+@Command //command를 정의하여 prefix로 활용 가능 e.g. @Command(command = "board")
+public class BoardCommand {
+    @Command(command = "read", description = "id에 해당하는 게시글을 조회", group = GROUP)
+    public String read(
+            @Option(description = "조회할 게시글의 id를 입력합니다") String id
+    ) {
+        Optional<Board> boardOptional = boardRepository.read(Long.valueOf(id));
+        if (boardOptional.isEmpty()){
+            return """
+                    게시글이 존재하지 않습니다.
+                    """;
+        }
+
+        return """
+                게시글을 조회하였습니다.
+                %s""".formatted((boardToText(boardOptional.get())));
+    }
+}
+```
+
+
+## 커맨드 등록 (레거시 어노테이션 사용 방식)
 `@ShellComponent`와 `@ShellOption` 어노테이션을 사용하여 간편하게 spring shell 커맨드를 등록할 수 있다.
 ```java
 //쉘 컴포넌트로 생성
@@ -92,7 +128,33 @@ public class BoardCommand {
 # 정리
 
 ## 어노테이션 사용 방식
-spring shell 커맨드를 등록하기 위해 사용되는 주요 어노테이션은 `@ShellMethod`와 `@ShellOption`가 있음
+어노테이션 방식으로 spring shell 커맨드를 등록하기 위해 사용되는 주요 어노테이션은 `@Command`와 `@Option`이 있음
+
+### @Command
+메서드를 Spring shell `Command로 정의`할 때 사용됨
+#### Element
+- **command** : 커맨드를 정의. (다중 선언 지원)
+- **alias** : 별칭을 정의 (다중 선언 지원)
+- **group** : 커맨드 그룹의 이름을 선언
+- **description** : 커맨드에 대한 설명
+- **hidden** : 커맨드 숨김 여부
+- **interactionMode** : 어떤 interactionMode에서 활성화 시킬지 선언 (기본값은 모든 mode에서 활성)
+
+### @Option
+메서드 인자를 Spring shell `Command의 옵션을 정의`할 때 사용됨
+### Element
+- **longNames** : 옵션의 이름 정의
+- **shortNames** : 옵션의 축약 이름 정의
+- **required** : 필수 입력 여부
+- **defaultValue** : 기본값
+- **description** : 옵션 설명
+- **label** : 옵션의 label
+- **arity** : 옵션에 전달할 수 있는 값 제한 (OptionArity 열거형에서 선택값 제공)
+- **arityMin** : 옵션에 전달할 수 있는 최소 값
+- **arityMax** : 옵션에 전달할 수 있는 최대 값
+
+## 레거시 어노테이션 사용 방식
+레거시 어노테이션 방식으로 spring shell 커맨드를 등록하기 위해 사용되는 주요 어노테이션은 `@ShellMethod`와 `@ShellOption`가 있음
 
 ### @ShellMethod
 메서드에 선언하여 Spring Shell의 커맨드를 정의할 때 사용됨
