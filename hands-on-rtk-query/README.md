@@ -185,3 +185,62 @@ export const store = configureStore({
     middleware: getDefaultMiddleware => getDefaultMiddleware().concat(boardApi.middleware)
 })
 ```
+
+# Streaming Updates
+RTK는 영속성 쿼리에 대해서 streaming updates를 제공하여 변경되는 정보를 캐시된 데이터에 실시간으로 적용할 수 있음
+
+## 예시
+적용하려는 query에 `onCacheEntryAdded` 비동기 함수를 추가하여 적용할 수 있음
+> 아래는 게시글 리스트 query에서 게시글의 생성/수정/삭제가 실시간으로 화면에 반영되도록 적용한 예시
+```typescript
+export const boardApi = createApi({
+    reducerPath: 'boardService',
+    //...
+    search: build.query<Page<Board>, BoardSearchParams>({
+      query: ({size = 10, page = 0}: BoardSearchParams) => `?size=${size}&page=${page}`,
+      async onCacheEntryAdded(
+        arg,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved },
+      ){
+        const instance = WebSocketClientFactory.getInstance();
+        const client = await instance.getClient();
+
+        try {
+          // 초기 데이터가 로드될 때까지 대기
+          await cacheDataLoaded;
+
+          client.subscribe("/topic/board", (message) => {
+            //STOP를 사용한 websocket 연결을 통해 게시글에 "생성/수정/삭제"가 발생하면 해당 함수가 동작됨
+            const changeData = JSON.parse(message.body) as ChangeDataEvent<Board>;
+            updateCachedData(draft => {
+              switch (changeData.type){
+                case 'CREATE':
+                  //생성인 경우 정보 추가
+                  if (draft.first){
+                    draft.content = [changeData.data, ...draft.content.splice(0, draft.size - 1)]
+                  }
+                  break;
+                case 'UPDATE':
+                  //수정인 경우 정보 수정
+                  draft.content = draft.content.map(d => d.id === changeData.data.id ? changeData.data : d);
+                  break;
+                case 'DELETE':
+                  //삭제인 경우 정보 삭제
+                  draft.content = draft.content.filter(d => d.id !== changeData.data.id);
+                  break;
+              }
+            })
+
+          });
+        } catch (e) {
+          console.error(e);
+        }
+
+        // 캐시 항목이 제거될 때까지 대기
+        await cacheEntryRemoved;
+      }
+    })
+  })
+});
+
+```
