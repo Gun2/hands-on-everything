@@ -19,20 +19,10 @@ const BoardList = () => {
             searchBoard({
                 page: page,
                 size: size,
-            }).then(({data, error}) => {
-                if(!!data){
-                    handle({
-                        rows: data.content,
-                        pagination: {
-                            totalPages: data.totalPages,
-                            totalElements: data.totalElements,
-                            pageable: data.pageable
-                        }
-                    })
-                }
             });
         }
     });
+
     return (
         <Layout
             title={"게시판"}
@@ -46,7 +36,7 @@ const BoardList = () => {
                             등록
                         </Button>
                     </div>
-                    {dataTableProps?.rows ? (
+                    {data != undefined ? (
                         <DataTable
                             scheme={{
                                 id: row => row.id,
@@ -70,8 +60,12 @@ const BoardList = () => {
 
                                 ]
                             }}
-                            rows={dataTableProps.rows}
-                            pagination={dataTableProps.pagination}
+                            rows={data.content}
+                            pagination={{
+                                totalPages: data.totalPages,
+                                totalElements: data.totalElements,
+                                pageable: data.pageable
+                            }}
                             search={dataTableProps.search}
                         />
                     ) : (

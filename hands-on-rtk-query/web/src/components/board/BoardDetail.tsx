@@ -48,8 +48,11 @@ const BoardRegistry = () => {
                                     color={"error"}
                                     variant={"contained"}
                                     onClick={() => {
-                                        deleteById(Number(id));
-                                        navigate('/board');
+                                        deleteById(Number(id)).then(({data, error}) => {
+                                          if (!error){
+                                            navigate(`/board`);
+                                          }
+                                        });
                                     }}>
                                     삭제
                                 </Button>
