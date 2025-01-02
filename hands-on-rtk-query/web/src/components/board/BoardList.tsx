@@ -1,5 +1,5 @@
 import React from 'react';
-import {useLazySearchQuery} from "../../redux/services/boardService";
+import { useDeleteByIdMutation, useLazySearchQuery } from '../../redux/services/boardService';
 import {Button, Skeleton} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import Layout from "./Layout";
@@ -10,7 +10,7 @@ import {Board} from "../../types/board";
 
 const BoardList = () => {
     const navigate = useNavigate();
-
+    const [deleteById] = useDeleteByIdMutation();
     const [searchBoard, {data, isLoading}] = useLazySearchQuery();
     const dataTableProps = useDataTable<Board>({
         page: 0,
@@ -57,6 +57,19 @@ const BoardList = () => {
                                         name: "등록시간",
                                         selector: row => row.createdAt,
                                     },
+                                    {
+                                        name: "",
+                                        selector: row => (
+                                          <Button
+                                            color={"error"}
+                                            variant={"contained"}
+                                            onClick={() => {
+                                                deleteById(Number(row.id));
+                                            }}>
+                                              삭제
+                                          </Button>
+                                        )
+                                    }
 
                                 ]
                             }}
