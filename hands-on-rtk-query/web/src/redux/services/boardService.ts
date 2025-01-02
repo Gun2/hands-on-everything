@@ -13,6 +13,7 @@ export const boardApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: '/boards',
     }),
+    tagTypes: ["Boards"],
     endpoints: build => ({
         getBoardById: build.query<Board, Board["id"]>({
             query: (id) => `/${id}`,
@@ -35,7 +36,11 @@ export const boardApi = createApi({
             query: (id) => ({
                 url: `/${id}`,
                 method: 'DELETE'
-            })
+            }),
+            invalidatesTags: (result, error, id) => [
+                { type: 'Boards', id },
+                { type: 'Boards', id: 'PARTIAL-LIST' },
+            ],
         }),
         search: build.query<Page<Board>, BoardSearchParams>({
             query: ({size = 10, page = 0}: BoardSearchParams) => `?size=${size}&page=${page}`,
@@ -75,7 +80,14 @@ export const boardApi = createApi({
 
                 // 캐시 항목이 제거될 때까지 대기
                 await cacheEntryRemoved;
-            }
+            },
+            providesTags: (result, error, page) =>
+              result
+                ? [
+                    ...result.content.map(({ id }) => ({ type: 'Boards' as const, id })),
+                    { type: 'Boards', id: 'PARTIAL-LIST' },
+                ]
+                : [{ type: 'Boards', id: 'PARTIAL-LIST' }],
         })
     })
 });
