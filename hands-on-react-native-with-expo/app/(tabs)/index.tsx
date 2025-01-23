@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Platform } from 'react-native';
 
 import Button from '@/components/Button';
 import ImageViewer from '@/components/ImageViewer';
@@ -13,6 +13,7 @@ import EmojiSticker from '@/components/EmojiSticker';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as MediaLibrary from 'expo-media-library';
 import { captureRef } from "react-native-view-shot";
+import domtoimage from 'dom-to-image';
 
 
 const PlaceholderImage = require("@/assets/images/background-image.png");
@@ -56,17 +57,36 @@ export default function Index() {
   };
 
   const onSaveImageAsync = async () => {
-    try {
-      const localUri = await captureRef(imageRef, {
-        height: 440,
-        quality: 1,
-      });
-      await MediaLibrary.saveToLibraryAsync(localUri);
-      if (localUri) {
-        alert('Saved!');
+    if (Platform.OS !== 'web') {
+      try {
+        const localUri = await captureRef(imageRef, {
+          height: 440,
+          quality: 1,
+        });
+
+        await MediaLibrary.saveToLibraryAsync(localUri);
+        if (localUri) {
+          alert('Saved!');
+        }
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.error(e);
+    } else {
+      try {
+        const imageElement = imageRef.current as unknown as HTMLElement;  // 타입 캐스팅
+        const dataUrl = await domtoimage.toJpeg(imageElement, {
+          quality: 0.95,
+          width: 320,
+          height: 440,
+        });
+
+        let link = document.createElement('a');
+        link.download = 'sticker-smash.jpeg';
+        link.href = dataUrl;
+        link.click();
+      } catch (e) {
+        console.log(e);
+      }
     }
   };
 
