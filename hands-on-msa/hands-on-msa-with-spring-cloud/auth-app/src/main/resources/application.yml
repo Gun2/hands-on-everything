@@ -1,0 +1,8 @@
+
+
+spring:
+  application:
+    name: auth-app
+
+jwt:
+  secret: d602667f3493e001490c8cd7aafe4a67a7e4ad846ae11ebc9f57380314aeec294b25af55e4227e1369018bc96d1742dc9f739e8a593129dfcd66a3ab7ecff896
