@@ -9,9 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 @Service
 public class InMemoryUserDetailsService implements UserDetailsService {
@@ -42,7 +40,6 @@ public class InMemoryUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
-
         return copy(user);
     }
 
