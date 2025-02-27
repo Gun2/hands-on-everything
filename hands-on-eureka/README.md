@@ -68,6 +68,7 @@ public class EurekaServerApplication {
 
 ```
 
+[//]: # ( TODO: eureka api 사용 예시 추가)
 
 # 참고
 - https://cloud.spring.io/spring-cloud-netflix/reference/html/

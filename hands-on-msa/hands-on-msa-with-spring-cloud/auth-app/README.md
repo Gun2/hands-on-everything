@@ -2,7 +2,7 @@
 인증, 계정을 관리하는 모듈
 
 # 구성 정보
-해당 모듈은 Spring Security를 통해 JWT로 인증 과정을 구현
+해당 모듈은 Spring Security를 통해 JWT로 인증 과정을 수행하도록 구성됨
 
 ## build.gradle
 Spring security와 JWT를 사용하기 위해 다음과 같은 의존성 추가
