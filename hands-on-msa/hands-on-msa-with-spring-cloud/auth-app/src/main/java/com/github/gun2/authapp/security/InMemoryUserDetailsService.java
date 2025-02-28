@@ -1,5 +1,6 @@
 package com.github.gun2.authapp.security;
 
+import com.github.gun2.authapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

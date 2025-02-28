@@ -1,4 +1,4 @@
-package com.github.gun2.authapp.security;
+package com.github.gun2.authapp.repository;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
