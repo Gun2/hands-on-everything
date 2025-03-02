@@ -26,17 +26,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
             JwtAuthenticationFilter jwtAuthenticationFilter,
-            JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler,
             JwtLogoutHandler jwtLogoutHandler
     ) throws Exception {
         http.authorizeHttpRequests(
-                        registry -> registry.requestMatchers("/login").permitAll()
+                        registry -> registry.requestMatchers("/auth/login").permitAll()
                                 .anyRequest().authenticated()
                 ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .formLogin(
-                        config -> config.loginProcessingUrl("/login")
-                                .successHandler(jwtAuthenticationSuccessHandler)
-                ).logout(config -> {
+                .formLogin(AbstractHttpConfigurer::disable).logout(config -> {
                     config.addLogoutHandler(jwtLogoutHandler);
                 })
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

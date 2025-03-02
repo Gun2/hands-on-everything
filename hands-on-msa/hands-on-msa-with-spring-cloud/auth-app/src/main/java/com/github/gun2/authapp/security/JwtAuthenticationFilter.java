@@ -26,10 +26,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        Optional<Cookie> tokenCookieOptional = JwtUtil.getTokenFromCookie(request);
-        if (tokenCookieOptional.isPresent() && !logoutService.isLogoutToken(tokenCookieOptional.get().getValue())) {
-            String token = tokenCookieOptional.get().getValue();
-
+        Optional<String> tokenOptional = JwtUtil.getTokenFromHeader(request);
+        if (tokenOptional.isPresent() && !logoutService.isLogoutToken(tokenOptional.get())) {
+            String token = tokenOptional.get();
             String username = jwtUtil.extractUsername(token);
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

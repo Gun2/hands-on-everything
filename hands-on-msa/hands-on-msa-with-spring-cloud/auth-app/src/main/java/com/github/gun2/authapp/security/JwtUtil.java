@@ -1,36 +1,43 @@
 package com.github.gun2.authapp.security;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 
 @Component
 public class JwtUtil {
 
-    public static final String COOKIE_NAME = "token";
+    public static final String HEADER_NAME = "Authorization";
+    public static final String TOKEN_PREFIX = "Bearer";
 
     private final Key key;
+    @Getter
+    private final Long accessTokenExpire;
 
-    public JwtUtil(@Value("${jwt.secret}") String secretKey) {
+    public JwtUtil(
+            @Value("${jwt.secret}") String secretKey,
+            @Value("${jwt.access-token.expire}") Long accessTokenExpire
+    ) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.accessTokenExpire = accessTokenExpire;
     }
     // JWT 생성
     public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1시간 유효
+                .setExpiration(new Date(System.currentTimeMillis() + this.accessTokenExpire))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -65,11 +72,18 @@ public class JwtUtil {
 
 
     /**
-     * cookie 내부의 token 반환
+     * header 내부의 token 반환
      * @param request
      * @return
      */
-    public static Optional<Cookie> getTokenFromCookie(HttpServletRequest request) {
-        return Arrays.stream(request.getCookies()).filter(cookie -> JwtUtil.COOKIE_NAME.equals(cookie.getName())).findAny();
+    public static Optional<String> getTokenFromHeader(HttpServletRequest request) {
+        String headerValue = request.getHeader(JwtUtil.HEADER_NAME);
+        if (headerValue == null){
+            return Optional.empty();
+        }
+        if (headerValue.startsWith(TOKEN_PREFIX)){
+            return Optional.of(headerValue.substring(TOKEN_PREFIX.length() + 1));
+        }
+        return Optional.empty();
     }
 }

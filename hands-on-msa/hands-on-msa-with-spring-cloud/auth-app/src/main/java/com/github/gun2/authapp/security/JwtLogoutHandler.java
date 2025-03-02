@@ -1,6 +1,5 @@
 package com.github.gun2.authapp.security;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,7 @@ public class JwtLogoutHandler implements LogoutHandler {
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        Optional<Cookie> cookieOptional = JwtUtil.getTokenFromCookie(request);
-        cookieOptional.ifPresent(cookie -> logoutService.logout(cookie.getValue()));
+        Optional<String> tokenOptional = JwtUtil.getTokenFromHeader(request);
+        tokenOptional.ifPresent(logoutService::logout);
     }
 }
