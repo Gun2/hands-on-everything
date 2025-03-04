@@ -2,16 +2,18 @@ package com.github.gun2.authapp.service;
 
 
 import com.github.gun2.authapp.dto.TokenResponse;
+import com.github.gun2.authapp.entity.User;
 import com.github.gun2.authapp.repository.UserRepository;
 import com.github.gun2.authapp.security.JwtUtil;
 import com.github.gun2.authapp.security.LogoutService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,14 +26,14 @@ public class AuthService {
 
 
     public TokenResponse login(String username, String password) {
-        UserDetails userDetails = userRepository.findByUsername(username);
-        if (userDetails == null){
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        if (userOptional.isEmpty()){
             throw new UsernameNotFoundException("""
                     username : %s is not found
                     """.formatted(username)
             );
         }
-        if (!passwordEncoder.matches(password, userDetails.getPassword())){
+        if (!passwordEncoder.matches(password, userOptional.get().getPassword())){
             throw new BadCredentialsException("""
                     password for username : %s is not matched
                     """.formatted(username));
