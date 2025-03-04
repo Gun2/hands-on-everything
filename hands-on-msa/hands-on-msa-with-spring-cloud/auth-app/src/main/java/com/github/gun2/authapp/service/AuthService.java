@@ -2,6 +2,7 @@ package com.github.gun2.authapp.service;
 
 
 import com.github.gun2.authapp.dto.TokenResponse;
+import com.github.gun2.authapp.entity.RefreshToken;
 import com.github.gun2.authapp.entity.User;
 import com.github.gun2.authapp.repository.UserRepository;
 import com.github.gun2.authapp.security.JwtUtil;
@@ -12,6 +13,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -23,6 +25,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final RefreshTokenService refreshTokenService;
 
 
     public TokenResponse login(String username, String password) {
@@ -38,14 +41,59 @@ public class AuthService {
                     password for username : %s is not matched
                     """.formatted(username));
         }
+        TokenResponse tokenResponse = creteAccessTokenAndRefreshToken(username);
+        return tokenResponse;
+    }
+
+    private TokenResponse creteAccessTokenAndRefreshToken(String username) {
+        TokenResponse tokenResponse = createTokenResponse(username);
+        saveRefreshToken(tokenResponse);
+        return tokenResponse;
+    }
+
+    private void saveRefreshToken(TokenResponse tokenResponse) {
+        refreshTokenService.save(
+                jwtUtil.extractUsername(tokenResponse.getAccessToken()),
+                tokenResponse.getAccessToken(),
+                tokenResponse.getRefreshToken(),
+                jwtUtil.getRefreshTokenExpire()
+        );
+    }
+
+    /**
+     * token 응답값 반환
+     * @param username
+     * @return
+     */
+    private TokenResponse createTokenResponse(String username) {
         String token = jwtUtil.generateToken(username);
         return TokenResponse.ofBearer(
                 token,
-                jwtUtil.getAccessTokenExpire() / 1000
+                jwtUtil.getAccessTokenExpire() / 1000,
+                jwtUtil.generateRefreshToken(),
+                jwtUtil.getRefreshTokenExpire() / 1000
         );
     }
 
     public void logout(String token) {
         logoutService.logout(token);
+    }
+
+    @Transactional
+    public TokenResponse refresh(String accessToken, String refreshToken) {
+        RefreshToken validate = refreshTokenService.validate(accessToken, refreshToken);
+        TokenResponse tokenResponse = creteAccessTokenAndRefreshToken(validate.getUsername());
+        expirePreviousToken(accessToken, refreshToken);
+        return tokenResponse;
+    }
+
+    /**
+     * 이전 토큰 정보 만료
+     * @param accessToken
+     * @param refreshToken
+     */
+    private void expirePreviousToken(String accessToken, String refreshToken) {
+        refreshTokenService.removeRefreshToken(refreshToken);
+        logoutService.isLogoutToken(accessToken);
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 public class JwtUtil {
@@ -23,14 +24,18 @@ public class JwtUtil {
     private final Key key;
     @Getter
     private final Long accessTokenExpire;
+    @Getter
+    private final Long refreshTokenExpire;
 
     public JwtUtil(
             @Value("${jwt.secret}") String secretKey,
-            @Value("${jwt.access-token.expire}") Long accessTokenExpire
+            @Value("${jwt.access-token.expire}") Long accessTokenExpire,
+            @Value("${jwt.refresh-token.expire}") Long refreshTokenExpire
     ) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.accessTokenExpire = accessTokenExpire;
+        this.refreshTokenExpire = refreshTokenExpire;
     }
     // JWT 생성
     public String generateToken(String username) {
@@ -86,4 +91,13 @@ public class JwtUtil {
         }
         return Optional.empty();
     }
+
+    /**
+     * refresh token 생성
+     * @return
+     */
+    public String generateRefreshToken() {
+        return UUID.randomUUID().toString();  // 무작위 값 생성
+    }
+
 }

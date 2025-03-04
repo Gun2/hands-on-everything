@@ -29,7 +29,7 @@ public class SecurityConfig {
             JwtLogoutHandler jwtLogoutHandler
     ) throws Exception {
         http.authorizeHttpRequests(
-                        registry -> registry.requestMatchers("/auth/login").permitAll()
+                        registry -> registry.requestMatchers("/auth/login", "/auth/refresh").permitAll()
                                 .anyRequest().authenticated()
                 ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable).logout(config -> {

@@ -10,13 +10,17 @@ import lombok.Getter;
 @Builder
 public class TokenResponse {
     private final String accessToken;
-    private final Long expiresIn;
+    private final Long accessTokenExpiresIn;
+    private final Long refreshTokenExpiresIn;
     private final String tokenType;
+    private final String refreshToken;
 
-    public static TokenResponse ofBearer(String accessToken, Long expiresIn){
+    public static TokenResponse ofBearer(String accessToken, Long accessTokenExpiresIn, String refreshToken, Long refreshTokenExpiresIn){
         return TokenResponse.builder()
                 .accessToken(accessToken)
-                .expiresIn(expiresIn)
+                .accessTokenExpiresIn(accessTokenExpiresIn)
+                .refreshToken(refreshToken)
+                .refreshTokenExpiresIn(refreshTokenExpiresIn)
                 .tokenType("Bearer")
                 .build();
     }
