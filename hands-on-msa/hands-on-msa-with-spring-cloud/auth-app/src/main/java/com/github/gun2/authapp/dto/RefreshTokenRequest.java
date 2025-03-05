@@ -12,10 +12,6 @@ import lombok.ToString;
 @AllArgsConstructor
 public class RefreshTokenRequest {
     /**
-     * access token
-     */
-    private final String accessToken;
-    /**
      * refresh token
      */
     private final String refreshToken;
