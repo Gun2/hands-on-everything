@@ -1,8 +1,8 @@
 package com.github.gun2.authapp.security;
 
+import com.github.gun2.authapp.service.AccessTokenBlackListService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +21,13 @@ import java.util.Optional;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final LogoutService logoutService;
+    private final AccessTokenBlackListService accessTokenBlackListService;
     private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Optional<String> tokenOptional = JwtUtil.getTokenFromHeader(request);
-        if (tokenOptional.isPresent() && !logoutService.isLogoutToken(tokenOptional.get())) {
+        if (tokenOptional.isPresent() && !accessTokenBlackListService.isBlackListToken(tokenOptional.get())) {
             String token = tokenOptional.get();
             String username = jwtUtil.extractUsername(token);
 

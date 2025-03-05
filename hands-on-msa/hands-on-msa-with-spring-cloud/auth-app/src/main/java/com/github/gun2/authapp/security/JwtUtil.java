@@ -53,7 +53,7 @@ public class JwtUtil {
     }
 
     // JWT에서 Claims 추출
-    private Claims extractClaims(String token) {
+    public Claims extractClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(key)
                 .build()

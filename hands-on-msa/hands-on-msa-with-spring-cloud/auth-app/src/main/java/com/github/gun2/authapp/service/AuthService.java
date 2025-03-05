@@ -6,7 +6,6 @@ import com.github.gun2.authapp.entity.RefreshToken;
 import com.github.gun2.authapp.entity.User;
 import com.github.gun2.authapp.repository.UserRepository;
 import com.github.gun2.authapp.security.JwtUtil;
-import com.github.gun2.authapp.security.LogoutService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,7 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthService {
-    private final LogoutService logoutService;
+    private final AccessTokenBlackListService accessTokenBlackListService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
@@ -76,7 +75,7 @@ public class AuthService {
     }
 
     public void logout(String token) {
-        logoutService.logout(token);
+        accessTokenBlackListService.logout(token);
         refreshTokenService.removeByAccessToken(token);
     }
 
@@ -95,6 +94,6 @@ public class AuthService {
      */
     private void expirePreviousToken(String accessToken, String refreshToken) {
         refreshTokenService.removeRefreshToken(refreshToken);
-        logoutService.isLogoutToken(accessToken);
+        accessTokenBlackListService.isBlackListToken(accessToken);
     }
 }
