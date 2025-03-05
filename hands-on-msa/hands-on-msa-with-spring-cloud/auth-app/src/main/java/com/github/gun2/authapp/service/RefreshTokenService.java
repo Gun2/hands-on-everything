@@ -5,6 +5,7 @@ import com.github.gun2.authapp.repository.RefreshTokenRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -67,5 +68,14 @@ public class RefreshTokenService {
 
     public void removeRefreshToken(String refreshToken) {
         refreshTokenRepository.deleteById(refreshToken);
+    }
+
+    /**
+     * access token에 해당하는 refresh token 제거
+     * @param token
+     */
+    @Transactional
+    public void removeByAccessToken(String token) {
+        refreshTokenRepository.deleteByAccessTokenHash(hash(token));
     }
 }

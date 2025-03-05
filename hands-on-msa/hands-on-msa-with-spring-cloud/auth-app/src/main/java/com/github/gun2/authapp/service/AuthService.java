@@ -77,6 +77,7 @@ public class AuthService {
 
     public void logout(String token) {
         logoutService.logout(token);
+        refreshTokenService.removeByAccessToken(token);
     }
 
     @Transactional
