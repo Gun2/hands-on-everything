@@ -28,7 +28,7 @@ public class SecurityConfig {
             JwtAuthenticationFilter jwtAuthenticationFilter
     ) throws Exception {
         http.authorizeHttpRequests(
-                        registry -> registry.requestMatchers("/auth/login", "/auth/refresh").permitAll()
+                        registry -> registry.requestMatchers("/auth/login").permitAll()
                                 .anyRequest().authenticated()
                 ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
