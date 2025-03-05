@@ -3,6 +3,7 @@ package com.github.gun2.authapp.controller;
 import com.github.gun2.authapp.dto.LoginRequest;
 import com.github.gun2.authapp.dto.RefreshTokenRequest;
 import com.github.gun2.authapp.dto.TokenResponse;
+import com.github.gun2.authapp.resolver.JwtToken;
 import com.github.gun2.authapp.security.JwtUtil;
 import com.github.gun2.authapp.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,9 +35,10 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletRequest request) {
-        Optional<String> tokenOptional = JwtUtil.getTokenFromHeader(request);
-        tokenOptional.ifPresent(authService::logout);
+    public ResponseEntity<Void> logout(
+            @JwtToken String jwtToken
+    ) {
+        authService.logout(jwtToken);
         return ResponseEntity.ok().build();
     }
 

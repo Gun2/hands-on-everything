@@ -27,7 +27,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Optional<String> tokenOptional = JwtUtil.getTokenFromHeader(request);
-        if (tokenOptional.isPresent() && !accessTokenBlackListService.isBlackListToken(tokenOptional.get())) {
+
+        if (tokenOptional.isPresent() && isNotTokenExpired(tokenOptional) && isNotBlackListToken(tokenOptional)) {
             String token = tokenOptional.get();
             String username = jwtUtil.extractUsername(token);
 
@@ -42,5 +43,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    /**
+     * blacklist에 등록된 토큰이 아님
+     * @param tokenOptional
+     * @return
+     */
+    private boolean isNotBlackListToken(Optional<String> tokenOptional) {
+        return !accessTokenBlackListService.isBlackListToken(tokenOptional.get());
+    }
+
+    /**
+     * 만료된 토큰이 아님
+     * @param tokenOptional
+     * @return
+     */
+    private boolean isNotTokenExpired(Optional<String> tokenOptional) {
+        return !jwtUtil.isTokenExpired(tokenOptional.get());
     }
 }
