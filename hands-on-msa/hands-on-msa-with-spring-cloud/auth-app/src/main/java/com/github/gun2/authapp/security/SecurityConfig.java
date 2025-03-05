@@ -25,16 +25,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-            JwtAuthenticationFilter jwtAuthenticationFilter,
-            JwtLogoutHandler jwtLogoutHandler
+            JwtAuthenticationFilter jwtAuthenticationFilter
     ) throws Exception {
         http.authorizeHttpRequests(
                         registry -> registry.requestMatchers("/auth/login", "/auth/refresh").permitAll()
                                 .anyRequest().authenticated()
                 ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .formLogin(AbstractHttpConfigurer::disable).logout(config -> {
-                    config.addLogoutHandler(jwtLogoutHandler);
-                })
+                .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.csrf(AbstractHttpConfigurer::disable);
         return http.build();
