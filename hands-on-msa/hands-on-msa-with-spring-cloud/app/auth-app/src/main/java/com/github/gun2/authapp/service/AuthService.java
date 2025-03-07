@@ -1,11 +1,13 @@
 package com.github.gun2.authapp.service;
 
 
+import com.github.gun2.authapp.dto.PassportResponse;
 import com.github.gun2.authapp.dto.TokenResponse;
 import com.github.gun2.authapp.entity.RefreshToken;
 import com.github.gun2.authapp.entity.User;
 import com.github.gun2.authapp.repository.UserRepository;
 import com.github.gun2.authapp.security.AccessTokenUtil;
+import com.github.gun2.securitymodule.PassportUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,6 +27,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AccessTokenUtil accessTokenUtil;
     private final RefreshTokenService refreshTokenService;
+    private final PassportUtil passportUtil;
 
 
     public TokenResponse login(String username, String password) {
@@ -96,5 +99,13 @@ public class AuthService {
     private void expirePreviousToken(String accessToken, String refreshToken) {
         refreshTokenService.removeRefreshToken(refreshToken);
         accessTokenBlackListService.isBlackListToken(accessToken);
+    }
+
+    public PassportResponse generatePassport(String accessToken) {
+        String username = accessTokenUtil.extractUsername(accessToken);
+        User user = userRepository.findByUsername(username).orElseThrow(RuntimeException::new);
+
+        String passport = passportUtil.generateToken(user.getUsername(), user.getRole());
+        return PassportResponse.of(passport, passportUtil.getExpire() / 1000, "passport");
     }
 }

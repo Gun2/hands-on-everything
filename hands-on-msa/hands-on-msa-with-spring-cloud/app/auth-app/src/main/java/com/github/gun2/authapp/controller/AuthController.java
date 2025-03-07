@@ -1,6 +1,7 @@
 package com.github.gun2.authapp.controller;
 
 import com.github.gun2.authapp.dto.LoginRequest;
+import com.github.gun2.authapp.dto.PassportResponse;
 import com.github.gun2.authapp.dto.RefreshTokenRequest;
 import com.github.gun2.authapp.dto.TokenResponse;
 import com.github.gun2.authapp.resolver.AccessToken;
@@ -47,5 +48,14 @@ public class AuthController {
 
         return ResponseEntity.ok(tokenResponse);
 
+    }
+
+    @PostMapping("/passport")
+    public ResponseEntity<PassportResponse> passport(
+            @AccessToken String accessToken
+    )
+    {
+        PassportResponse passportResponse = authService.generatePassport(accessToken);
+        return ResponseEntity.ok(passportResponse);
     }
 }
