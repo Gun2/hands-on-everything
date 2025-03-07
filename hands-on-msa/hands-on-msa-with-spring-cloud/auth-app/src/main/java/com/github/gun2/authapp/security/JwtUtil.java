@@ -1,8 +1,8 @@
 package com.github.gun2.authapp.security;
 
+import com.github.gun2.authapp.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,12 +38,13 @@ public class JwtUtil {
         this.refreshTokenExpire = refreshTokenExpire;
     }
     // JWT 생성
-    public String generateToken(String username) {
+    public String generateToken(User user) {
         return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + this.accessTokenExpire))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .subject(user.getUsername())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + this.accessTokenExpire))
+                .signWith(key)
+                .claim("role", user.getRole())
                 .compact();
     }
 

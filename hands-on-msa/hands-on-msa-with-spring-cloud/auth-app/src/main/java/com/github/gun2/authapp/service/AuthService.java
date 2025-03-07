@@ -45,7 +45,8 @@ public class AuthService {
     }
 
     private TokenResponse creteAccessTokenAndRefreshToken(String username) {
-        TokenResponse tokenResponse = createTokenResponse(username);
+        User user = userRepository.findByUsername(username).orElseThrow(RuntimeException::new);
+        TokenResponse tokenResponse = createTokenResponse(user);
         saveRefreshToken(tokenResponse);
         return tokenResponse;
     }
@@ -61,11 +62,11 @@ public class AuthService {
 
     /**
      * token 응답값 반환
-     * @param username
+     * @param user
      * @return
      */
-    private TokenResponse createTokenResponse(String username) {
-        String token = jwtUtil.generateToken(username);
+    private TokenResponse createTokenResponse(User user) {
+        String token = jwtUtil.generateToken(user);
         return TokenResponse.ofBearer(
                 token,
                 jwtUtil.getAccessTokenExpire() / 1000,
