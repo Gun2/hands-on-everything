@@ -11,3 +11,7 @@ app:
       expire: 360000
     refresh-token:
       expire: 720000
+
+    passport:
+      secret: ABCDEFGHIJKLMN1234567890ABCDEFGHIJKLMN1234567890
+      expire: 60000
