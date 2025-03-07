@@ -2,7 +2,7 @@ package com.github.gun2.authapp.service;
 
 import com.github.gun2.authapp.entity.AccessTokenBlackList;
 import com.github.gun2.authapp.repository.AccessTokenBlackListRepository;
-import com.github.gun2.authapp.security.JwtUtil;
+import com.github.gun2.authapp.security.AccessTokenUtil;
 import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +18,11 @@ import java.time.Instant;
 public class AccessTokenBlackListService {
     private final AccessTokenBlackListRepository accessTokenBlackListRepository;
     private final MessageDigest sha265MessageDigest;
-    private final JwtUtil jwtUtil;
+    private final AccessTokenUtil accessTokenUtil;
 
-    public AccessTokenBlackListService(AccessTokenBlackListRepository accessTokenBlackListRepository, JwtUtil jwtUtil) {
+    public AccessTokenBlackListService(AccessTokenBlackListRepository accessTokenBlackListRepository, AccessTokenUtil accessTokenUtil) {
         this.accessTokenBlackListRepository = accessTokenBlackListRepository;
-        this.jwtUtil = jwtUtil;
+        this.accessTokenUtil = accessTokenUtil;
         try {
             this.sha265MessageDigest =  MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
@@ -40,7 +40,7 @@ public class AccessTokenBlackListService {
     }
 
     public void logout(String token) {
-        Claims claims = jwtUtil.extractClaims(token);
+        Claims claims = accessTokenUtil.extractClaims(token);
         accessTokenBlackListRepository.save(AccessTokenBlackList.builder()
                         .accessTokenHash(hash(token))
                         .createdAt(Instant.now())

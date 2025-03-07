@@ -8,11 +8,11 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
-public class JwtTokenArgumentResolver implements HandlerMethodArgumentResolver {
+public class AccessTokenArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterAnnotation(JwtToken.class) != null
+        return parameter.getParameterAnnotation(AccessToken.class) != null
                 && parameter.getParameterType().equals(String.class);
     }
 
@@ -21,9 +21,9 @@ public class JwtTokenArgumentResolver implements HandlerMethodArgumentResolver {
                                   ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest,
                                   WebDataBinderFactory binderFactory) {
-        JwtToken jwtTokenAnnotation = parameter.getParameterAnnotation(JwtToken.class);
-        String headerName = jwtTokenAnnotation.headerName();
-        String tokenType = jwtTokenAnnotation.tokenType();
+        AccessToken accessTokenAnnotation = parameter.getParameterAnnotation(AccessToken.class);
+        String headerName = accessTokenAnnotation.headerName();
+        String tokenType = accessTokenAnnotation.tokenType();
         String authorizationHeader = webRequest.getHeader(headerName);
         if (authorizationHeader != null && authorizationHeader.startsWith(tokenType)) {
             return authorizationHeader.substring(tokenType.length() + 1);

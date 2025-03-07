@@ -18,22 +18,22 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class AccessTokenAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
+    private final AccessTokenUtil accessTokenUtil;
     private final AccessTokenBlackListService accessTokenBlackListService;
     private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        Optional<String> tokenOptional = JwtUtil.getTokenFromHeader(request);
+        Optional<String> tokenOptional = AccessTokenUtil.getTokenFromHeader(request);
 
         if (tokenOptional.isPresent() && isNotTokenExpired(tokenOptional) && isNotBlackListToken(tokenOptional)) {
             String token = tokenOptional.get();
-            String username = jwtUtil.extractUsername(token);
+            String username = accessTokenUtil.extractUsername(token);
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                if (jwtUtil.validateToken(token, username)) {
+                if (accessTokenUtil.validateToken(token, username)) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -60,6 +60,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @return
      */
     private boolean isNotTokenExpired(Optional<String> tokenOptional) {
-        return !jwtUtil.isTokenExpired(tokenOptional.get());
+        return !accessTokenUtil.isTokenExpired(tokenOptional.get());
     }
 }

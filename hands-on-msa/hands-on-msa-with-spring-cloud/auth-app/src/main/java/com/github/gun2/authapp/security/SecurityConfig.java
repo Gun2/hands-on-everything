@@ -25,12 +25,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-            JwtAuthenticationFilter jwtAuthenticationFilter
+            AccessTokenAuthenticationFilter accessTokenAuthenticationFilter
     ) throws Exception {
         http.authorizeHttpRequests(
                         registry -> registry.requestMatchers("/auth/login").permitAll()
                                 .anyRequest().authenticated()
-                ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                ).addFilterBefore(accessTokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.csrf(AbstractHttpConfigurer::disable);

@@ -15,8 +15,11 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * access token 관련 Util
+ */
 @Component
-public class JwtUtil {
+public class AccessTokenUtil {
 
     public static final String HEADER_NAME = "Authorization";
     public static final String TOKEN_PREFIX = "Bearer";
@@ -27,7 +30,7 @@ public class JwtUtil {
     @Getter
     private final Long refreshTokenExpire;
 
-    public JwtUtil(
+    public AccessTokenUtil(
             @Value("${jwt.secret}") String secretKey,
             @Value("${jwt.access-token.expire}") Long accessTokenExpire,
             @Value("${jwt.refresh-token.expire}") Long refreshTokenExpire
@@ -83,7 +86,7 @@ public class JwtUtil {
      * @return
      */
     public static Optional<String> getTokenFromHeader(HttpServletRequest request) {
-        String headerValue = request.getHeader(JwtUtil.HEADER_NAME);
+        String headerValue = request.getHeader(AccessTokenUtil.HEADER_NAME);
         if (headerValue == null){
             return Optional.empty();
         }

@@ -1,6 +1,6 @@
 package com.github.gun2.authapp.config;
 
-import com.github.gun2.authapp.resolver.JwtTokenArgumentResolver;
+import com.github.gun2.authapp.resolver.AccessTokenArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -11,10 +11,10 @@ import java.util.List;
 @Configuration
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
-    private final JwtTokenArgumentResolver jwtTokenArgumentResolver;
+    private final AccessTokenArgumentResolver accessTokenArgumentResolver;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(jwtTokenArgumentResolver);
+        resolvers.add(accessTokenArgumentResolver);
     }
 }

@@ -5,7 +5,7 @@ import com.github.gun2.authapp.dto.TokenResponse;
 import com.github.gun2.authapp.entity.RefreshToken;
 import com.github.gun2.authapp.entity.User;
 import com.github.gun2.authapp.repository.UserRepository;
-import com.github.gun2.authapp.security.JwtUtil;
+import com.github.gun2.authapp.security.AccessTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,7 +23,7 @@ public class AuthService {
     private final AccessTokenBlackListService accessTokenBlackListService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
+    private final AccessTokenUtil accessTokenUtil;
     private final RefreshTokenService refreshTokenService;
 
 
@@ -53,10 +53,10 @@ public class AuthService {
 
     private void saveRefreshToken(TokenResponse tokenResponse) {
         refreshTokenService.save(
-                jwtUtil.extractUsername(tokenResponse.getAccessToken()),
+                accessTokenUtil.extractUsername(tokenResponse.getAccessToken()),
                 tokenResponse.getAccessToken(),
                 tokenResponse.getRefreshToken(),
-                jwtUtil.getRefreshTokenExpire()
+                accessTokenUtil.getRefreshTokenExpire()
         );
     }
 
@@ -66,12 +66,12 @@ public class AuthService {
      * @return
      */
     private TokenResponse createTokenResponse(User user) {
-        String token = jwtUtil.generateToken(user);
+        String token = accessTokenUtil.generateToken(user);
         return TokenResponse.ofBearer(
                 token,
-                jwtUtil.getAccessTokenExpire() / 1000,
-                jwtUtil.generateRefreshToken(),
-                jwtUtil.getRefreshTokenExpire() / 1000
+                accessTokenUtil.getAccessTokenExpire() / 1000,
+                accessTokenUtil.generateRefreshToken(),
+                accessTokenUtil.getRefreshTokenExpire() / 1000
         );
     }
 
