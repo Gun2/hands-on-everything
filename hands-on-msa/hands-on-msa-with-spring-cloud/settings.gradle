@@ -5,3 +5,5 @@ include(":app:eureka-server-app")
 include(":app:order-service-app")
 include(":app:payment-service-app")
 include(":app:auth-app")
+
+include(":lib:security-module")
