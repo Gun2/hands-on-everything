@@ -32,18 +32,18 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(
-            @AccessToken String jwtToken
+            @AccessToken String accessToken
     ) {
-        authService.logout(jwtToken);
+        authService.logout(accessToken);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<TokenResponse> refresh(
             @RequestBody RefreshTokenRequest request,
-            @AccessToken String jwtToken
+            @AccessToken String accessToken
     ){
-        TokenResponse tokenResponse = authService.refresh(jwtToken, request.getRefreshToken());
+        TokenResponse tokenResponse = authService.refresh(accessToken, request.getRefreshToken());
 
         return ResponseEntity.ok(tokenResponse);
 
