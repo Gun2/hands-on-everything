@@ -31,9 +31,9 @@ public class AccessTokenUtil {
     private final Long refreshTokenExpire;
 
     public AccessTokenUtil(
-            @Value("${jwt.secret}") String secretKey,
-            @Value("${jwt.access-token.expire}") Long accessTokenExpire,
-            @Value("${jwt.refresh-token.expire}") Long refreshTokenExpire
+            @Value("${app.security.secret}") String secretKey,
+            @Value("${app.security.access-token.expire}") Long accessTokenExpire,
+            @Value("${app.security.refresh-token.expire}") Long refreshTokenExpire
     ) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
