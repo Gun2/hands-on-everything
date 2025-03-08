@@ -10,7 +10,9 @@ Spring security와 JWT를 사용하기 위해 다음과 같은 의존성 추가
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-        ...
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+    ...
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.6'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.6'
