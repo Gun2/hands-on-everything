@@ -1,6 +1,8 @@
 package com.github.gun2.authapp.security;
 
 import com.github.gun2.authapp.entity.User;
+import com.github.gun2.securitymodule.AccessTokeExtractor;
+import com.github.gun2.securitymodule.AccessTokenInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -20,9 +22,6 @@ import java.util.UUID;
  */
 @Component
 public class AccessTokenUtil {
-
-    public static final String HEADER_NAME = "Authorization";
-    public static final String TOKEN_PREFIX = "Bearer";
 
     private final Key key;
     @Getter
@@ -86,14 +85,11 @@ public class AccessTokenUtil {
      * @return
      */
     public static Optional<String> getTokenFromHeader(HttpServletRequest request) {
-        String headerValue = request.getHeader(AccessTokenUtil.HEADER_NAME);
+        String headerValue = request.getHeader(AccessTokenInfo.HEADER_NAME);
         if (headerValue == null){
             return Optional.empty();
         }
-        if (headerValue.startsWith(TOKEN_PREFIX)){
-            return Optional.of(headerValue.substring(TOKEN_PREFIX.length() + 1));
-        }
-        return Optional.empty();
+        return AccessTokeExtractor.getAccessTokenFromHeaderValue(headerValue);
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.github.gun2.authapp.resolver;
 
-import com.github.gun2.authapp.security.AccessTokenUtil;
+import com.github.gun2.securitymodule.AccessTokenInfo;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,6 +13,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AccessToken {
-    String headerName() default AccessTokenUtil.HEADER_NAME;
-    String tokenType() default AccessTokenUtil.TOKEN_PREFIX;
+    String headerName() default AccessTokenInfo.HEADER_NAME;
+    String tokenType() default AccessTokenInfo.TOKEN_PREFIX;
 }
