@@ -17,6 +17,11 @@ import java.io.IOException;
 public class RestClientConfig {
     @Bean
     @LoadBalanced
+    RestClient.Builder restClientBuilder(){
+        return RestClient.builder();
+    }
+
+    @Bean
     RestClient restClient(RestClient.Builder builder){
         return builder.requestInterceptor(new PassportInterceptor()).build();
     }
@@ -26,13 +31,6 @@ public class RestClientConfig {
         public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
                 throws IOException {
             String passport = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
-/*
-            // SecurityContext 또는 RequestContext에서 passport 추출
-            String passport = (String) RequestContextHolder
-                    .currentRequestAttributes()
-                    .getAttribute("passport", RequestAttributes.SCOPE_REQUEST);
-*/
-
             if (passport != null) {
                 request.getHeaders().add(PassportUtil.HEADER_NAME, passport);
             }

@@ -6,4 +6,11 @@ include(":app:order-service-app")
 include(":app:payment-service-app")
 include(":app:auth-app")
 
-include(":lib:security-module")
+
+include(":lib:security-context")
+include(":lib:security-util")
+include(":lib:auth-service-client")
+include(":lib:internal-service-client")
+
+include(':data:auth-service-dto')
+

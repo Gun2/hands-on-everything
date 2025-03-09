@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
@@ -16,8 +16,7 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderServiceAppApplication {
-    private final RestTemplate restTemplate;
-
+    private final RestClient restClient;
     public static void main(String[] args) {
         SpringApplication.run(OrderServiceAppApplication.class, args);
     }
@@ -25,10 +24,9 @@ public class OrderServiceAppApplication {
 
     @GetMapping("/{orderId}")
     public String getOrder(@PathVariable String orderId) {
-        String paymentResponse = restTemplate.getForObject("http://PAYMENT-SERVICE/payments/" + orderId, String.class);
+
+        String paymentResponse = restClient.get().uri("http://PAYMENT-SERVICE/payments/" + orderId).retrieve().body(String.class);//restTemplate.getForObject("http://PAYMENT-SERVICE/payments/" + orderId, String.class);
         return "Order ID: " + orderId + ", Payment: " + paymentResponse;
     }
-
-
 
 }
