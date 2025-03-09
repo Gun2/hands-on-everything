@@ -1,4 +1,5 @@
 # Api Gateway App
+Client로부터 요청을 받아 적절한 서비스로 라우팅을 시켜주는 역할
 
 # 구성 정보
 `Spring Cloud Gateway`와 `Spring Cloud Eureka`를 통해 마이크로서비스의 위치를 자동으로 감지하여 라우팅 하도록 구성됨
@@ -68,3 +69,9 @@ public class ApiGatewayApplication {
 }
 
 ```
+
+# Configuration
+
+| Property        | YAML                        | Type     | Description          |
+|-----------------|-----------------------------|----------|----------------------|
+| Permitted Paths | app.gateway.permitted-paths | String[] | 인증 없이 라우팅 가능한 Path값들 |

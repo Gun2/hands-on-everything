@@ -15,6 +15,10 @@ ext {
 dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+	implementation project(':lib:security-util')
+	implementation project(':lib:auth-service-client')
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
