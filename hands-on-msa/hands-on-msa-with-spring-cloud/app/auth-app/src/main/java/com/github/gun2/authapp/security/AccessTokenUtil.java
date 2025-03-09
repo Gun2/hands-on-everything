@@ -1,7 +1,7 @@
 package com.github.gun2.authapp.security;
 
 import com.github.gun2.authapp.entity.User;
-import com.github.gun2.securitymodule.AccessTokeExtractor;
+import com.github.gun2.securitymodule.AccessTokenHandleUtil;
 import com.github.gun2.securitymodule.AccessTokenInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -89,7 +89,7 @@ public class AccessTokenUtil {
         if (headerValue == null){
             return Optional.empty();
         }
-        return AccessTokeExtractor.getAccessTokenFromHeaderValue(headerValue);
+        return AccessTokenHandleUtil.getAccessTokenFromHeaderValue(headerValue);
     }
 
     /**

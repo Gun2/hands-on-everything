@@ -2,7 +2,6 @@ package com.github.gun2.authapp;
 
 import com.github.gun2.authapp.entity.User;
 import com.github.gun2.authapp.repository.UserRepository;
-import com.github.gun2.securitymodule.EnablePassportUtil;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
-@EnablePassportUtil
 public class AuthAppApplication {
 
 	public static void main(String[] args) {

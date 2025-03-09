@@ -21,7 +21,22 @@ spring:
           predicates:
             - Path=/payments/**
 
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
+
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
+app:
+  gateway:
+    permitted-paths:
+      - /auth/login
+      - /auth/logout
+      - /auth/refresh
+  security:
+    passport:
+      util: false

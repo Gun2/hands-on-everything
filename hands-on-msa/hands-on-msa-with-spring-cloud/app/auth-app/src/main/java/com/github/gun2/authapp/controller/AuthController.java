@@ -1,9 +1,9 @@
 package com.github.gun2.authapp.controller;
 
-import com.github.gun2.authapp.dto.LoginRequest;
-import com.github.gun2.authapp.dto.PassportResponse;
-import com.github.gun2.authapp.dto.RefreshTokenRequest;
-import com.github.gun2.authapp.dto.TokenResponse;
+import com.github.gun2.authservice.dto.LoginRequest;
+import com.github.gun2.authservice.dto.PassportResponse;
+import com.github.gun2.authservice.dto.RefreshTokenRequest;
+import com.github.gun2.authservice.dto.TokenResponse;
 import com.github.gun2.authapp.resolver.AccessToken;
 import com.github.gun2.authapp.service.AuthService;
 import lombok.RequiredArgsConstructor;

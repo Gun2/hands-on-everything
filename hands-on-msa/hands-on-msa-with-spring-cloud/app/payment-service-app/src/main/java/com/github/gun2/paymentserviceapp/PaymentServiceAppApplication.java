@@ -3,6 +3,7 @@ package com.github.gun2.paymentserviceapp;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ public class PaymentServiceAppApplication {
 
 
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/{orderId}")
     public String processPayment(@PathVariable String orderId) {
         return "Payment processed for Order ID: " + orderId;

@@ -12,3 +12,8 @@ eureka:
 logging:
   level:
     root: debug
+
+app:
+  security:
+    passport:
+      secret: ABCDEFGHIJKLMN1234567890ABCDEFGHIJKLMN1234567890

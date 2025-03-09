@@ -1,8 +1,8 @@
 package com.github.gun2.authapp.service;
 
 
-import com.github.gun2.authapp.dto.PassportResponse;
-import com.github.gun2.authapp.dto.TokenResponse;
+import com.github.gun2.authservice.dto.PassportResponse;
+import com.github.gun2.authservice.dto.TokenResponse;
 import com.github.gun2.authapp.entity.RefreshToken;
 import com.github.gun2.authapp.entity.User;
 import com.github.gun2.authapp.repository.UserRepository;
