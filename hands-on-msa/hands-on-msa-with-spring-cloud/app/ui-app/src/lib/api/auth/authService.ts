@@ -10,7 +10,11 @@ export const authService = {
       ...data
     });
   },
-  logout: async () => {
-    return axiosInstance.post("/auth/logout");
+  logout: async (accessToken: TokenResponse["accessToken"]) => {
+    return axiosInstance.post("/auth/logout", null, {
+      headers : {
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
   }
 }

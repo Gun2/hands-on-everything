@@ -1,8 +1,7 @@
-import type {NextAuthConfig} from 'next-auth';
-import {AdapterUser} from "@auth/core/adapters";
-import {CustomUser} from "@/types/next-auth";
-import {signOutServer} from "@/lib/api/server/ServerLogoutAxios";
-import {cookies} from "next/headers";
+import type { NextAuthConfig } from 'next-auth';
+import { AdapterUser } from '@auth/core/adapters';
+import { CustomUser } from '@/types/next-auth';
+import { authService } from '@/lib/api/auth/authService';
 
 export const authConfig = {
     providers: [],
@@ -42,9 +41,8 @@ export const authConfig = {
         signOut: async (message : any) => {
             const user = message?.token?.user as CustomUser;
             if (user?.accessToken){
-                console.log("signOut" , user);
                 try {
-                    await signOutServer(user);
+                    await authService.logout(user.accessToken);
                 }catch (e){
                     console.error(e);
                 }
