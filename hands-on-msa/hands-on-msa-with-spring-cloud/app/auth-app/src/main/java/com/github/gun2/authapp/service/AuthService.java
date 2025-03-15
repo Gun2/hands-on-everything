@@ -8,6 +8,7 @@ import com.github.gun2.authapp.entity.User;
 import com.github.gun2.authapp.repository.UserRepository;
 import com.github.gun2.authapp.security.AccessTokenUtil;
 import com.github.gun2.securitymodule.PassportUtil;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -70,9 +71,11 @@ public class AuthService {
      */
     private TokenResponse createTokenResponse(User user) {
         String token = accessTokenUtil.generateToken(user);
+        Claims claims = accessTokenUtil.extractClaims(token);
         return TokenResponse.ofBearer(
                 token,
                 accessTokenUtil.getAccessTokenExpire() / 1000,
+                claims.getExpiration().getTime(),
                 accessTokenUtil.generateRefreshToken(),
                 accessTokenUtil.getRefreshTokenExpire() / 1000
         );

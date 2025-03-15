@@ -16,28 +16,19 @@ export const authConfig = {
             return !!auth?.user;
         },*/
         async jwt({session, user, token}){
-
-            console.log(`1 user`, user);
-            console.log(`1 session`, session);
-            console.log(`1 token`, token);
-
+            //user data를 token에 추가
             user && (token.user = user);
             return Promise.resolve(token);
         },
         async session({session, token, user}){
-
-            if(token?.accessToken){
-                const accessToken = token?.accessToken as AdapterUser & CustomUser;
-                session.accessToken = accessToken;
+            if(token?.user?.accessToken) {
+                //access token을 세션에 추가
+                session.accessToken = token?.user?.accessToken;
             }
             return Promise.resolve(session);
         },
     },
     events: {
-        /*signIn: async (message) => {
-            const user = message?.user as CustomUser;
-            cookies().set("JSESSIONID", user?.sessionId);
-        },*/
         signOut: async (message : any) => {
             const user = message?.token?.user as CustomUser;
             if (user?.accessToken){

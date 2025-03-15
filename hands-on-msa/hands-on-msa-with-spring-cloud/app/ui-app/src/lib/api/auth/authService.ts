@@ -1,8 +1,9 @@
-import { getAxiosInstance } from '@/lib/api/axiosInstance';
 import { LoginRequest, TokenResponse } from '@/types/auth.types';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
-const axiosInstance = getAxiosInstance();
+const axiosInstance = axios.create({
+  baseURL: process.env.API_BASE_URL,
+});
 
 export const authService = {
   login: async (data: LoginRequest): Promise<AxiosResponse<TokenResponse>> => {
