@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { auth } from '../../../auth';
 import { isServer } from '@/lib/commonUtil';
+import { getAuthHeaderAndValueOnServer } from '@/lib/authUtil';
 
 // 클라이언트용 Axios 인스턴스
 const clientAxios = axios.create({
@@ -21,9 +21,9 @@ const serverAxios = axios.create({
 });
 
 serverAxios.interceptors.request.use(async value => {
-  let session = await auth();
-  if (session?.user?.accessToken){
-    value.headers.Authorization = `Bearer ${session?.user?.accessToken}`
+  const authHeaderAndValueOnServer = await getAuthHeaderAndValueOnServer();
+  if (authHeaderAndValueOnServer){
+    value.headers[authHeaderAndValueOnServer.name] = authHeaderAndValueOnServer.value;
   }
   return value;
 });

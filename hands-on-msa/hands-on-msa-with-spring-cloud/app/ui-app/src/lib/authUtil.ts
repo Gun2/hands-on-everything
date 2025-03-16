@@ -13,13 +13,16 @@ type AuthHeaderAndValue = {
 /**
  * 인증 헤더 정보 불러오기 (server only)
  */
-export const getAuthHeaderAndValueOnServer = async (): Promise<AuthHeaderAndValue> => {
+export const getAuthHeaderAndValueOnServer = async (): Promise<AuthHeaderAndValue | null> => {
   if (isServer()) {
     const session = await auth();
-    return {
-      name: "Authorization",
-      value: `Bearer ${session?.accessToken}`
+    if (session) {
+      return {
+        name: "Authorization",
+        value: `Bearer ${session?.accessToken}`
+      }
     }
+    return null;
   } else {
     throw new Error("is not on server")
   }
