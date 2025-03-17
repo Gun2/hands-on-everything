@@ -1,18 +1,17 @@
 package com.github.gun2.authapp.service;
 
 
-import com.github.gun2.authservice.dto.PassportResponse;
-import com.github.gun2.authservice.dto.TokenResponse;
 import com.github.gun2.authapp.entity.RefreshToken;
 import com.github.gun2.authapp.entity.User;
+import com.github.gun2.authapp.exception.AuthenticationFailureException;
 import com.github.gun2.authapp.repository.UserRepository;
 import com.github.gun2.authapp.security.AccessTokenUtil;
+import com.github.gun2.authservice.dto.PassportResponse;
+import com.github.gun2.authservice.dto.TokenResponse;
 import com.github.gun2.securitymodule.PassportUtil;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,15 +33,10 @@ public class AuthService {
     public TokenResponse login(String username, String password) {
         Optional<User> userOptional = userRepository.findByUsername(username);
         if (userOptional.isEmpty()){
-            throw new UsernameNotFoundException("""
-                    username : %s is not found
-                    """.formatted(username)
-            );
+            throw new AuthenticationFailureException();
         }
         if (!passwordEncoder.matches(password, userOptional.get().getPassword())){
-            throw new BadCredentialsException("""
-                    password for username : %s is not matched
-                    """.formatted(username));
+            throw new AuthenticationFailureException();
         }
         TokenResponse tokenResponse = creteAccessTokenAndRefreshToken(username);
         return tokenResponse;

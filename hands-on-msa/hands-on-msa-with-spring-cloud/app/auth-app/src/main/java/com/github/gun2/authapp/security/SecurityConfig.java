@@ -17,6 +17,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final AppAuthenticationEntryPoint appAuthenticationEntryPoint;
+
     @Bean
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -31,7 +33,7 @@ public class SecurityConfig {
                         registry -> registry.requestMatchers("/auth/login").permitAll()
                                 .anyRequest().authenticated()
                 ).addFilterBefore(accessTokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .formLogin(AbstractHttpConfigurer::disable)
+                .exceptionHandling(config -> config.authenticationEntryPoint(appAuthenticationEntryPoint))
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.csrf(AbstractHttpConfigurer::disable);
         return http.build();

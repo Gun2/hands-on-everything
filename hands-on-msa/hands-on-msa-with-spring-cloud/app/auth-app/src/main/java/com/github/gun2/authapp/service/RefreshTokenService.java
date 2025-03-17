@@ -1,6 +1,8 @@
 package com.github.gun2.authapp.service;
 
 import com.github.gun2.authapp.entity.RefreshToken;
+import com.github.gun2.authapp.exception.AuthenticationFailureException;
+import com.github.gun2.authapp.exception.TokenValidationFailureException;
 import com.github.gun2.authapp.repository.RefreshTokenRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -58,9 +60,7 @@ public class RefreshTokenService {
         Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findByRefreshTokenAndAccessTokenHashAndExpiredAtGreaterThan(refreshToken, hash(accessToken), Instant.now());
         if (refreshTokenOptional.isEmpty()){
             log.error("failed refresh validation");
-            throw new BadCredentialsException("""
-                    refresh token : %s is invalid value
-                    """.formatted(refreshToken));
+            throw new TokenValidationFailureException();
         }
         return refreshTokenOptional.get();
 

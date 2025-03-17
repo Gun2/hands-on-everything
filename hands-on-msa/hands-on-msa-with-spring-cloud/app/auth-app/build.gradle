@@ -19,6 +19,7 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
 	implementation project(':lib:security-util')
+	implementation project(':lib:rest-model')
 	implementation project(':data:auth-service-dto')
 
 	compileOnly 'org.projectlombok:lombok'
