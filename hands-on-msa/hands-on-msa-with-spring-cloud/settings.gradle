@@ -11,6 +11,7 @@ include(":lib:security-context")
 include(":lib:security-util")
 include(":lib:auth-service-client")
 include(":lib:internal-service-client")
+include(":lib:rest-model")
 
 include(':data:auth-service-dto')
 
