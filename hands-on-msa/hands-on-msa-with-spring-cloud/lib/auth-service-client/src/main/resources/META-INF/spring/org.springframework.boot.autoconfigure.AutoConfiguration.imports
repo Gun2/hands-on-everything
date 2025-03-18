@@ -1,1 +1,2 @@
 com.github.gun2.authserviceclient.AuthServiceClientConfiguration
+com.github.gun2.authserviceclient.exception.AuthServiceClientExceptionHandler

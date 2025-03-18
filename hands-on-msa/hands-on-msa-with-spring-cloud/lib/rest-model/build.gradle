@@ -1,7 +1,8 @@
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     api 'org.springframework.boot:spring-boot-starter-validation'
-    api 'org.springframework.boot:spring-boot-starter-web'
+    // https://mvnrepository.com/artifact/org.springframework/spring-web
+    implementation 'org.springframework:spring-web:6.2.4'
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
     implementation 'org.apache.commons:commons-lang3:3.17.0'
 
