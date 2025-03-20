@@ -1,18 +1,18 @@
 package com.github.gun2.authapp.service;
 
 import com.github.gun2.authapp.entity.RefreshToken;
-import com.github.gun2.authapp.exception.AuthenticationFailureException;
 import com.github.gun2.authapp.exception.TokenValidationFailureException;
 import com.github.gun2.authapp.repository.RefreshTokenRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 @Service
@@ -66,8 +66,24 @@ public class RefreshTokenService {
 
     }
 
-    public void removeRefreshToken(String refreshToken) {
-        refreshTokenRepository.deleteById(refreshToken);
+    /**
+     * 10초 뒤 만료 시키기
+     * @param refreshToken
+     */
+    public void reserveExpireRefreshTokenAfter10Seconds(String refreshToken) {
+        //10초 후 만료 예약
+        final int reserveAfterExpiredTime = 10;
+        Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findById(refreshToken);
+        refreshTokenOptional.ifPresent(data -> {
+
+            //10초 간격보다 만료일자가 넘어갈 경우에만 업데이트
+            Duration duration = Duration.between(Instant.now(), data.getExpiredAt());
+            long diffSecond = duration.getSeconds();
+            if (diffSecond > reserveAfterExpiredTime){
+                data.updateExpiredAt(Instant.now().plus(reserveAfterExpiredTime, ChronoUnit.SECONDS));
+            }
+            refreshTokenRepository.save(data);
+        });
     }
 
     /**

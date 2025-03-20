@@ -18,4 +18,8 @@ public class RefreshToken {
     @Column(nullable = false)
     private Instant expiredAt;
     private String username;
+
+    public void updateExpiredAt(Instant expiredAt){
+        this.expiredAt = expiredAt;
+    }
 }

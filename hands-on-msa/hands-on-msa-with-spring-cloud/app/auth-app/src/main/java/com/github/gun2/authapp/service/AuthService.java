@@ -94,7 +94,7 @@ public class AuthService {
      * @param refreshToken
      */
     private void expirePreviousToken(String accessToken, String refreshToken) {
-        refreshTokenService.removeRefreshToken(refreshToken);
+        refreshTokenService.reserveExpireRefreshTokenAfter10Seconds(refreshToken);
         accessTokenBlackListService.isBlackListToken(accessToken);
     }
 

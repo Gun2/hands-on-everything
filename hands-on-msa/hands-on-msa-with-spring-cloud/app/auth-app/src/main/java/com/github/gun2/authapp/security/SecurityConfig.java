@@ -30,7 +30,7 @@ public class SecurityConfig {
             AccessTokenAuthenticationFilter accessTokenAuthenticationFilter
     ) throws Exception {
         http.authorizeHttpRequests(
-                        registry -> registry.requestMatchers("/auth/login").permitAll()
+                        registry -> registry.requestMatchers("/auth/login", "/auth/refresh").permitAll()
                                 .anyRequest().authenticated()
                 ).addFilterBefore(accessTokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(config -> config.authenticationEntryPoint(appAuthenticationEntryPoint))
