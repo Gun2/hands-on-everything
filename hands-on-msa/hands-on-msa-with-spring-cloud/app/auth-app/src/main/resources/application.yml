@@ -4,7 +4,8 @@ server:
 spring:
   application:
     name: auth-service
-
+  session:
+    store-type: jdbc
 eureka:
   client:
     service-url:
