@@ -18,27 +18,33 @@ public class AuthAppApplication {
 	@Bean
 	public CommandLineRunner addSampleUsers(UserRepository userRepository, PasswordEncoder passwordEncoder){
 		return args -> {
-			userRepository.save(
-					User.builder()
-							.username("user1")
-							.password(passwordEncoder.encode("password1"))
-							.role("USER")
-							.build()
-			);
-			userRepository.save(
-					User.builder()
-							.username("user2")
-							.password(passwordEncoder.encode("password2"))
-							.role("USER")
-							.build()
-			);
-			userRepository.save(
-					User.builder()
-							.username("user3")
-							.password(passwordEncoder.encode("password3"))
-							.role("USER")
-							.build()
-			);
+			userRepository.findByUsername("user1").orElseGet(() -> {
+				return userRepository.save(
+						User.builder()
+								.username("user1")
+								.password(passwordEncoder.encode("password1"))
+								.role("USER")
+								.build()
+				);
+			});
+			userRepository.findByUsername("user2").orElseGet(() -> {
+				return userRepository.save(
+						User.builder()
+								.username("user2")
+								.password(passwordEncoder.encode("password2"))
+								.role("USER")
+								.build()
+				);
+			});
+			userRepository.findByUsername("user3").orElseGet(() -> {
+				return userRepository.save(
+						User.builder()
+								.username("user3")
+								.password(passwordEncoder.encode("password3"))
+								.role("USER")
+								.build()
+				);
+			});
 		};
 	}
 }

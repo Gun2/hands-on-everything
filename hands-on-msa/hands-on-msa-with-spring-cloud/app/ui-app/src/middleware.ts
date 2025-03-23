@@ -4,13 +4,10 @@ import { getAuthHeaderAndValueOnServer } from '@/lib/authUtil';
 
 export default async function middleware(req: NextRequest) {
   const session = await auth();
-  if (session?.accessToken){
-    req.headers.append("Authorization", `Bearer ${session?.accessToken}`);
-    console.log('req.headers', req.headers.get("Authorization"));
-    const authHeaderAndValue = await getAuthHeaderAndValueOnServer();
-    console.log('authHeaderAndValue', authHeaderAndValue);
+  if (session?.user?.session){
+    req.cookies.set("SESSION", session.user.session);
     return NextResponse.next({
-      request: { headers: req.headers },
+      request: req
     });
   }
   return NextResponse.next()

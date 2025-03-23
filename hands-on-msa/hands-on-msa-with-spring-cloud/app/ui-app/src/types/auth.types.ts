@@ -12,3 +12,7 @@ export type TokenResponse = {
   tokenType: string;
   refreshToken: string;
 }
+
+export type LoginSuccessResponse = {
+  session: string
+}

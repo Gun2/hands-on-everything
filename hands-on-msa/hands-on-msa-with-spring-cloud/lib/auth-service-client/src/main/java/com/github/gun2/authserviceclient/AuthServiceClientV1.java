@@ -15,10 +15,10 @@ public class AuthServiceClientV1 implements AuthServiceClient {
     }
 
     @Override
-    public Mono<ResponseEntity<PassportResponse>> createPassport(String accessToken) {
+    public Mono<ResponseEntity<PassportResponse>> createPassport(String sessionId) {
         Mono<ResponseEntity<PassportResponse>> entity = restClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/auth/passport").build())
-                .header(AccessTokenInfo.HEADER_NAME, AccessTokenHandleUtil.createHeaderValueOfAccessToken(accessToken))
+                .cookie("SESSION", sessionId)
                 .retrieve()
                 .toEntity(PassportResponse.class);
         return entity;

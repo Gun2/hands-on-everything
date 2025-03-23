@@ -98,8 +98,7 @@ public class AuthService {
         accessTokenBlackListService.isBlackListToken(accessToken);
     }
 
-    public PassportResponse generatePassport(String accessToken) {
-        String username = accessTokenUtil.extractUsername(accessToken);
+    public PassportResponse generatePassport(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(RuntimeException::new);
 
         String passport = passportUtil.generateToken(user.getUsername(), user.getRole());

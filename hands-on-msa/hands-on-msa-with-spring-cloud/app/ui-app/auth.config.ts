@@ -1,6 +1,5 @@
 import type { NextAuthConfig } from 'next-auth';
-import { AdapterUser } from '@auth/core/adapters';
-import { CustomUser } from '@/types/next-auth';
+import { CustomToken, CustomUser } from '@/types/next-auth';
 import { authService } from '@/lib/api/auth/authService';
 
 export const authConfig = {
@@ -9,36 +8,41 @@ export const authConfig = {
         signIn: '/login',
     },
     callbacks: {
-        /*authorized({ auth, request: { nextUrl } }) {
-            if(nextUrl.pathname?.startsWith("/user") && auth?.user?.authCode !== "MANAGER"){
-                return false;
+        authorized({ auth, request: { nextUrl } }) {
+            console.log("authorized auth", auth);
+            return true;
+        },
+        async jwt({session, user, token, account}) : CustomToken {
+            if (user && account){
+                token.user = user;
             }
-            return !!auth?.user;
-        },*/
-        async jwt({session, user, token}){
-            //user data를 token에 추가
-            user && (token.user = user);
-            return Promise.resolve(token);
+            return token;
         },
         async session({session, token, user}){
-            if(token?.user?.accessToken) {
-                //access token을 세션에 추가
-                session.accessToken = token?.user?.accessToken;
+            console.log('token', token);
+            if (token?.user){
+                session.user = token.user;
             }
             return Promise.resolve(session);
         },
     },
     events: {
+        /*signIn: async (message : any) => {
+            const user = message?.user as CustomUser;
+            cookies().set("SESSIONID", user?.sessionId);
+        },*/
         signOut: async (message : any) => {
             const user = message?.token?.user as CustomUser;
-            if (user?.accessToken){
+            if (user?.session){
                 try {
-                    await authService.logout(user.accessToken);
+                    console.log('logout session', user.session);
+                    await authService.logout(user.session);
                 }catch (e){
                     console.error(e);
                 }
             }
         }
 
-    }
+    },
+    session: { strategy: "jwt" },
 } satisfies NextAuthConfig;

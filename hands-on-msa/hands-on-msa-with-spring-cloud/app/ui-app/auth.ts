@@ -2,35 +2,34 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
-import { CustomUser } from '@/types/next-auth';
 import { authService } from '@/lib/api/auth/authService';
 import { LoginRequest } from '@/types/auth.types';
+import { CustomUser } from '@/types/next-auth';
 
 export const { auth, signIn, signOut} = NextAuth({
     ...authConfig,
     providers: [
         Credentials({
             async authorize(credentials, request) {
-                console.log("credentials")
-                console.log(credentials)
                 const {username, password}: LoginRequest = credentials;
                 if(username && password){
-                    let loginResponse = await authService.login({username, password})
-                    if (loginResponse.status === 200 && loginResponse?.data){
-                        let data = loginResponse.data;
-                        const user : CustomUser = {
-                            accessToken: data.accessToken,
-                            refreshToken: data.refreshToken,
-                            username : username,
-                            name : username,
-                            role: "",
+                    try {
+                        let loginResponse = await authService.login({username, password})
+                        if (loginResponse.status === 200 && loginResponse?.data){
+                            const user : CustomUser = {
+                                session: loginResponse?.data?.data?.session,
+                                username : "username",
+                                name : "username",
+                                role: "",
+                            }
+                            return user;
                         }
-                        return user
+                    }catch (e){
+                        console.error("login request error : ", e)
                     }
-
                 }
                 return null;
             },
-        }),
+        })
     ],
 });
