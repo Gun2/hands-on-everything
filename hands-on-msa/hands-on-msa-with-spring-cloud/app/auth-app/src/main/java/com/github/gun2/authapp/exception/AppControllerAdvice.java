@@ -17,10 +17,4 @@ public class AppControllerAdvice extends GlobalExceptionHandler {
         log.error("handleAuthenticationFailureException", e);
         return ErrorResponse.ofEmpty().toResponseEntity(ErrorCode.AUTHORIZATION_FAILED);
     }
-
-    @ExceptionHandler(TokenValidationFailureException.class)
-    protected ResponseEntity<ErrorResponse> handleTokenValidationFailureException(TokenValidationFailureException e) {
-        log.error("handleTokenValidationFailureException", e);
-        return ErrorResponse.ofEmpty().toResponseEntity(ErrorCode.AUTHORIZATION_FAILED);
-    }
 }
