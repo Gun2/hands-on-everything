@@ -14,7 +14,7 @@ import static com.github.gun2.authapp.converter.UserDataConverter.entityToUserDe
 
 @Service
 @RequiredArgsConstructor
-public class InMemoryUserDetailsService implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
