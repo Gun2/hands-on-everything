@@ -60,3 +60,22 @@ dependencies {
 # 기보적으로 /와 /health만 활성화 되기에 다른 엔드포인트를 활성화 시키기 위해 설정
 management.endpoints.web.exposure.include=*
 ```
+
+# Spring Boot Admin
+Spring Boot Admin은 Actuator 데이터를 시각적으로 확인하고 관리할 수 있는 웹 UI
+
+# 설정
+## 의존성 추가
+```groovy
+// https://mvnrepository.com/artifact/de.codecentric/spring-boot-admin-server
+implementation("de.codececodecentricntric:spring-boot-admin-server
+```
+
+## 환경설정 (application.properties)
+```properties
+# Spring Boot Admin이 자기 자신을 모니터링하도록 설정
+spring.boot.admin.client.url=http://localhost:8080
+
+# 클라이언트 인스턴스 정보 (자기 자신을 가리킴)
+spring.boot.admin.client.instance.service-url=http://localhost:8080
+```
