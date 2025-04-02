@@ -27,7 +27,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 // https://mvnrepository.com/artifact/de.codecentric/spring-boot-admin-server
-    implementation("de.codecentric:spring-boot-admin-server:3.4.4")
+    implementation("de.codecentric:spring-boot-admin-starter-server:3.4.4")
 // https://mvnrepository.com/artifact/de.codecentric/spring-boot-admin-starter-client
     implementation("de.codecentric:spring-boot-admin-starter-client:3.4.4")
     compileOnly 'org.projectlombok:lombok'
