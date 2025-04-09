@@ -1,4 +1,4 @@
-package com.github.gun2.securitycontext;
+package com.github.gun2.security.filter;
 
 import com.github.gun2.securitymodule.ClaimNames;
 import com.github.gun2.securitymodule.PassportUtil;

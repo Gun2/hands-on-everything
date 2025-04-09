@@ -1,4 +1,4 @@
-package com.github.gun2.securitycontext;
+package com.github.gun2.security.filter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

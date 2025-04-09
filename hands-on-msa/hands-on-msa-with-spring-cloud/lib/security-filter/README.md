@@ -7,7 +7,7 @@ security context는 해당 프로젝트에서 서비스 통신간 인가를 위�
 ```groovy
 dependencies {
     ...
-    implementation project(':lib:security-context')
+    implementation project(':lib:security-filter')
     ...
 }
 ```

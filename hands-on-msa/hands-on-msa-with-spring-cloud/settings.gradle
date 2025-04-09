@@ -7,7 +7,7 @@ include(":app:payment-service-app")
 include(":app:auth-app")
 
 
-include(":lib:security-context")
+include(":lib:security-filter")
 include(":lib:security-util")
 include(":lib:auth-service-client")
 include(":lib:internal-service-client")
