@@ -40,3 +40,7 @@ app:
   security:
     passport:
       util: false
+
+  services:
+    auth:
+      url: lb://AUTH-SERVICE

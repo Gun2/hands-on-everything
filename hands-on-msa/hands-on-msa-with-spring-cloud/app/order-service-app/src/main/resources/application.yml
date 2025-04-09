@@ -17,3 +17,6 @@ app:
   security:
     passport:
       secret: ABCDEFGHIJKLMN1234567890ABCDEFGHIJKLMN1234567890
+  services:
+    payment:
+      url: http://PAYMENT-SERVICE

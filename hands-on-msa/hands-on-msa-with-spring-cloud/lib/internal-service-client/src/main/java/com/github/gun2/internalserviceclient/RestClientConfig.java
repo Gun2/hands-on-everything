@@ -1,6 +1,7 @@
 package com.github.gun2.internalserviceclient;
 
 import com.github.gun2.securitymodule.PassportUtil;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,9 +16,17 @@ import java.io.IOException;
 
 @Configuration
 public class RestClientConfig {
+
     @Bean
+    @ConditionalOnProperty(name = "eureka.client.enabled", havingValue = "true", matchIfMissing = true)
     @LoadBalanced
-    RestClient.Builder restClientBuilder(){
+    public RestClient.Builder loadBalancedRestClientBuilder() {
+        return RestClient.builder();
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "eureka.client.enabled", havingValue = "false")
+    public RestClient.Builder regularRestClientBuilder() {
         return RestClient.builder();
     }
 

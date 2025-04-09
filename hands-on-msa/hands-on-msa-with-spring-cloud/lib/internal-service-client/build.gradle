@@ -12,6 +12,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
 
     compileOnly project(':lib:security-context')
+    api project(':lib:rest-model')
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

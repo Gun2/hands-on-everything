@@ -1,6 +1,7 @@
 package com.github.gun2.orderserviceapp;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -16,6 +17,10 @@ import org.springframework.web.client.RestClient;
 @RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderServiceAppApplication {
+
+    @Value("${app.services.payment.url}")
+    private String paymentUrl;
+
     private final RestClient restClient;
     public static void main(String[] args) {
         SpringApplication.run(OrderServiceAppApplication.class, args);
@@ -25,7 +30,7 @@ public class OrderServiceAppApplication {
     @GetMapping("/{orderId}")
     public String getOrder(@PathVariable String orderId) {
 
-        String paymentResponse = restClient.get().uri("http://PAYMENT-SERVICE/payments/" + orderId).retrieve().body(String.class);//restTemplate.getForObject("http://PAYMENT-SERVICE/payments/" + orderId, String.class);
+        String paymentResponse = restClient.get().uri(paymentUrl + "/payments/" + orderId).retrieve().body(String.class);//restTemplate.getForObject("http://PAYMENT-SERVICE/payments/" + orderId, String.class);
         return "Order ID: " + orderId + ", Payment: " + paymentResponse;
     }
 
