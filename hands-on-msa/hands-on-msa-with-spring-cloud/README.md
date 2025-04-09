@@ -48,9 +48,30 @@ Spring Cloud 구성을 통해 MSA 구조 핸즈온 프로젝트
 
 ### [Payment Service](payment-service-app/README.md)
 
+# 인증 과정
+인증값은 크게 3가지를 사용함
+- Next token : Authjs5에서 사용하는 인증 토큰 (프론트 UI에서 사용)
+- Session : Spring Security의 Session으로 사용자와 Gateway 사이에서 사용
+- Passport : JWT 형태로 각 서비스 간 요청의 인증에 사용
+
+## Browser -> Nextjs 인증 흐름
+인증 후 발급된 Authjs의 Token을 클라이언트가 요청 시 함께 전달함 <br/>
+전달된 Token을 Next서버가 가로채어 Token에서 Session 정보를 추출한 뒤 Request Cookie에 추가하여 요청을 라우팅함
+![img.png](readme/frontend-authentication-flow.png)
+
+## Gateway -> Service 인증 흐름
+Gateway는 사용자의 session을 받아 인증 서비스로부터 Passport를 생성하고, Passport를 통해 서비스간 인증을 수행
+![img.png](readme/backend-authentication-flow.png)
+
 # 테스트
+## 로그인
+계정에 로그인하여 session을 cookie에 받아옴
+```shell
+curl -c cookies.txt -X POST http://localhost:8080/auth/login   -d "username=user1&password=password1"
+```
+
 ## API 호출
 ```shell
-$ curl http://localhost:8080/orders/123
-"Order ID: 123, Payment: Payment processed for Order ID: 123"
+curl -b cookies.txt http://localhost:8080/orders/123
+# >> "Order ID: 123, Payment: Payment processed for Order ID: 123"
 ```
