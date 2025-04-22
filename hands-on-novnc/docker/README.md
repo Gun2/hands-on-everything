@@ -17,3 +17,10 @@ docker run -d -p 5901:5901 -p 6080:6080 --name kali-desktop kali-gui
 vnc://localhost:5901
 # password : kali
 ```
+
+## noVnc 접근
+```
+host : localhost
+port : 6080
+password : kali
+```
