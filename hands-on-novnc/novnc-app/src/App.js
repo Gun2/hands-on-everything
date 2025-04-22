@@ -49,6 +49,21 @@ function App() {
         >
           Connect / Disconnect
         </button>
+        <button onClick={() => {
+          if (vncScreenRef.current) {
+            vncScreenRef?.current?.sendCtrlAltDel();
+          }
+        }}>ctrl + alt + del
+        </button>
+
+        <button onClick={() => {
+          if (vncScreenRef.current) {
+            console.log(vncScreenRef?.current)
+            vncScreenRef?.current?.machineShutdown()
+          }
+        }}>past
+        </button>
+
       </div>
 
       <div style={{ margin: '1rem' }}>
@@ -58,9 +73,13 @@ function App() {
             (
               <VncScreen
                 url={vncUrl}
+                clipViewport
                 scaleViewport
                 background="#000000"
                 password={"kali"}
+                onClipboard={(...args) => {
+                  console.log('onClipboard ',args);
+                }}
                 style={{
                   width: '75vw',
                   height: '75vh',
