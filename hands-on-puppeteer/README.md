@@ -61,3 +61,8 @@ const page2 = await context.newPage();
 await context.close();
 ```
 
+## 페이지 상호작용
+Puppeteer는 마우스, 키보드 입력, 터치 이벤트 등과 함께 페이지에서 element들과 상호작용을 지원함
+
+### Locators
+Locators는 element를 선택하고 상호작용하기에 추천되는 방법이다.
