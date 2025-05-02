@@ -66,3 +66,19 @@ Puppeteer는 마우스, 키보드 입력, 터치 이벤트 등과 함께 페이�
 
 ### Locators
 Locators는 element를 선택하고 상호작용하기에 추천되는 방법이다.
+
+#### Input 채우기
+```javascript
+await page.locator('input[name=search_query]').fill('how to upload videos on youtube');
+```
+
+#### Click
+```javascript
+await page.locator('.ytSearchboxComponentSearchButton').click();
+
+```
+
+#### 나타날 때 까지 기다리기
+```javascript
+await page.locator('ytd-item-section-renderer').wait();
+```
