@@ -82,3 +82,48 @@ await page.locator('.ytSearchboxComponentSearchButton').click();
 ```javascript
 await page.locator('ytd-item-section-renderer').wait();
 ```
+
+## Javascript 실행
+puppeteer는 페이지의 context에서 동작하는 javascript function을 실행시킬 수 있음.
+
+### 예시
+`page.evaluate(...)`를 통해 javascript를 실행시킬 수 있음. evaluate메서드의 인자값에는 function이 들어가며, puppeteer가 해당 function을 string으로 변환한 뒤
+페이지에서 실행하는 방식.
+```javascript
+const three = await page.evaluate(() => {
+  return 1 + 2;
+});
+console.log(three); // 3
+
+//아래도 동일하게 동작됨
+const three = await page.evaluate(`
+    1 + 2
+`);
+console.log(three); // 3
+```
+
+### Promise 반환
+Promise 반환 타입을 가지게 된다면 실행이 완료될 때 까지 자동으로 대기
+```javascript
+const three = await page.evaluate(() => {
+  // wait for 100ms.
+  function calc(resolve){
+    resolve(1+2);
+  }
+  return new Promise(resolve => setTimeout(() => calc(resolve), 100));
+});
+console.log(three); // 3
+```
+
+### 인자값 전달하기
+실행할 function에 인자값을 넣어야 하는 경우 evaluate(...)의 2번째 인자값 부터 넣어줄 수 있다.
+```javascript
+const three = await page.evaluate(
+  (a, b) => {
+    return a + b; // 1 + 2
+  },
+  1,
+  2,
+);
+console.log(three); // 3
+```
