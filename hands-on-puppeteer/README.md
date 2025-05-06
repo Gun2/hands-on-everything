@@ -127,3 +127,16 @@ const three = await page.evaluate(
 );
 console.log(three); // 3
 ```
+
+## 네트워크 로그
+Puppeteer은 page에서 발생하는 모든 request와 response를 수신함
+```javascript
+const page = await browser.newPage();
+page.on('request', request => {
+  console.log(request.url());
+});
+
+page.on('response', response => {
+  console.log(response.url());
+});
+```
