@@ -140,3 +140,51 @@ page.on('response', response => {
   console.log(response.url());
 });
 ```
+
+# headless-chrome-crawler
+Headless Chrome을 통해 동적인 웹 사이트에 대한 크롤링을 지원하는 라이브러리로서 Puppeteer를 사용함
+> 참고 : https://github.com/yujiosaka/headless-chrome-crawler?tab=readme-ov-file
+
+# 설치
+```shell
+npm i headless-chrome-crawler
+```
+
+# 주요 기능
+- 분산 크롤링 지원
+- 동시성, 요청 지연, 재시도 설정 가능
+- 깊이 우선/너비 우선 탐색 지원
+- Redis 등 캐시 저장소 연동 가능
+- CSV 및 JSON Lines 형식의 결과 내보내기
+- 최대 요청 수 도달 시 일시 정지 및 재개
+- jQuery 자동 삽입
+- 스크린샷 저장 기능
+- 디바이스 및 사용자 에이전트 에뮬레이션
+- 우선순위 기반 큐 지원
+- robots.txt 준수
+- sitemap.xml 추적
+- Promise 기반 API 제공
+
+# 샘플
+```javascript
+
+const crawler = await HCCrawler.launch({
+  headless: false,
+  // 페이지에서 실행할 javascript 함수를 정의할 수 있으며 결과값이 result에 포함되어 반환됨
+  evaluatePage: (() => ({
+    title: $('title').text(),
+  })),
+  onSuccess: (result => {
+    console.log(`url : ${result?.response?.url}`);
+    console.log(`title : ${result?.result?.title}`);
+    console.log(`depth : ${result?.depth}`);
+  }),
+});
+// 큐에 URL 삽입
+await crawler.queue('https://example.com/');
+await crawler.queue(['https://example.net/', 'https://example.org/']);
+
+//큐를 모두 실행할 때 까지 대기
+await crawler.onIdle(); // Resolved when no queue is left
+await crawler.close(); // Close the crawler
+```
