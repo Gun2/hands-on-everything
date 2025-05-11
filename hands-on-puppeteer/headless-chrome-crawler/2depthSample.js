@@ -1,43 +1,48 @@
 import HCCrawler from 'headless-chrome-crawler';
 import fs from 'fs';
 const PATH = './tmp/';
+const TARGET_URL = 'https://example.com/';
 
 if (!fs.existsSync(PATH)){
   fs.mkdirSync(PATH);
 }
 
-const visited = new Set();
-const tree = {};
+const tree = {
+  url: 'ROOT',
+  children: []
+};
 
-function buildTree(parent, url) {
-  const parts = url.replace(/^https?:\/\//, '').split('/');
-  let current = parent;
-
-  for (const part of parts) {
-    if (!current[part]) {
-      current[part] = {};
-    }
-    current = current[part];
-  }
-}
+const urlNodeMap = new Map();
 
 const crawler = await HCCrawler.launch({
   headless: false,
   maxDepth: 2,
-  evaluatePage: () => ({}), // 최소 정보만 추출
+  delay: 1000,
+  maxConcurrency: 1,
   onSuccess: result => {
-    console.log(`Crawled: ${result?.response?.url}`);
-    visited.add(result?.response?.url);
-    buildTree(tree, result?.response?.url);
+    console.log('result', result);
+    const parentUrl = result.previousUrl || 'ROOT';
+    const currentUrl = result?.response?.url;
+    console.log(`parentUrl : ${parentUrl} \ncurrentUrl : ${currentUrl}`)
+
+    // 중복 방지
+    if (urlNodeMap.has(currentUrl)) return;
+
+    const node = { url: currentUrl, children: [] };
+    urlNodeMap.set(currentUrl, node);
+
+    const parentNode = parentUrl === 'ROOT'
+      ? tree
+      : urlNodeMap.get(parentUrl);
+
+    if (parentNode) {
+      parentNode.children.push(node);
+    }
   },
-  preRequest: options => {
-    // 중복 방문 방지
-    if (visited.has(options.url)) return false;
-    return true;
-  },
+  skipDuplicates: tree
 });
 
-await crawler.queue('https://example.com/');
+await crawler.queue(TARGET_URL);
 
 await crawler.onIdle();
 await crawler.close();
