@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: websocket
+    name: websocket-service
 
 eureka:
   client:

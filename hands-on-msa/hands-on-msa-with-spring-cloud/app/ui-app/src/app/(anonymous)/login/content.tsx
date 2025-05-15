@@ -2,6 +2,7 @@
 
 import React, { ChangeEvent, useState } from 'react';
 import { authenticate } from '@/app/(anonymous)/login/actions';
+import CurrentTime from '@/app/(auth)/(components)/CurrentTime';
 
 type LoginInfo = {
     username: string,
@@ -37,6 +38,7 @@ const Content = () => {
                     <input name={"password"} value={loginInfo.password} onChange={onChange}/>
                 </div>
                 <button>submit</button>
+              <CurrentTime/>
             </form>
         </div>
 

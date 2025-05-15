@@ -1,13 +1,13 @@
 import React from 'react';
 import { auth, signOut } from '../../../../auth';
 
-const LogoutHeader = async () => {
+const LogoutButton = async () => {
   let session = await auth();
   if (session == null) {
     return;
   }
   return (
-    <div style={{ flex: 1, textAlign: "end", fontSize: "1.5rem" }}>
+    <div>
       {session?.user?.name}
       {
         <form action={
@@ -23,4 +23,4 @@ const LogoutHeader = async () => {
   );
 };
 
-export default LogoutHeader;
+export default LogoutButton;

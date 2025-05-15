@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import LogoutHeader from '@/app/(auth)/(components)/LogoutHeader';
+import LogoutButton from '@/app/(auth)/(components)/LogoutButton';
 import ClientSideOrder from '@/app/(order)/ClientSideOrder';
+import Header from '@/app/(auth)/(components)/Header';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <LogoutHeader/>
+        <Header/>
         {children}
       </body>
     </html>

@@ -26,6 +26,11 @@ spring:
           predicates:
             - Path=/auth/**
 
+        - id: websocket-service
+          uri: lb://WEBSCOKET-SERVICE
+          predicates:
+            - Path=/ws/**
+
 eureka:
   client:
     service-url:
