@@ -1,0 +1,10 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: websocket-service
+
+eureka:
+  client:
+    enabled: false
