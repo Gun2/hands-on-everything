@@ -5,7 +5,7 @@ include(":app:eureka-server-app")
 include(":app:order-service-app")
 include(":app:payment-service-app")
 include(":app:auth-app")
-include(":app:websocket-app")
+include(":app:websocket-service-app")
 
 
 include(":lib:security-filter")
