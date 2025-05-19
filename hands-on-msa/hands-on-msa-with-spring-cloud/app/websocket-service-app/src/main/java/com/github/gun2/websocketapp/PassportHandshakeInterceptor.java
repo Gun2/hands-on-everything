@@ -6,10 +6,13 @@ import com.github.gun2.securitymodule.PassportUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,9 +28,11 @@ public class PassportHandshakeInterceptor implements HandshakeInterceptor {
         String passport = request.getHeaders().getFirst("sec-websocket-protocol");
         if (passport != null && !passportUtil.isTokenExpired(passport)) {
             String role = passportUtil.extract(passport, ClaimNames.ROLE);
-            if ("ADMIN".equals(role)){
-                return true;
-            }
+            String username = passportUtil.extractUsername(passport);
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(username, passport, List.of(new SimpleGrantedAuthority("ROLE_"+role)));
+            attributes.put("authentication",authentication);
+            return true;
         }
         response.setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
         return false;
