@@ -1,6 +1,7 @@
 package com.github.gun2.websocketapp;
 
 
+import com.github.gun2.securitymodule.ClaimNames;
 import com.github.gun2.securitymodule.PassportUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.server.ServerHttpRequest;
@@ -23,8 +24,10 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
         String passport = request.getHeaders().getFirst("sec-websocket-protocol");
         if (passport != null && !passportUtil.isTokenExpired(passport)) {
-            attributes.put("passport", passport);
-            return true;
+            String role = passportUtil.extract(passport, ClaimNames.ROLE);
+            if ("ADMIN".equals(role)){
+                return true;
+            }
         }
         response.setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
         return false;
