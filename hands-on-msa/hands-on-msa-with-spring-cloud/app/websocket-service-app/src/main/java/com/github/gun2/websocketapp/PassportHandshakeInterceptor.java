@@ -17,7 +17,7 @@ import java.util.Map;
  */
 @Component
 @RequiredArgsConstructor
-public class JwtHandshakeInterceptor implements HandshakeInterceptor {
+public class PassportHandshakeInterceptor implements HandshakeInterceptor {
     private final PassportUtil passportUtil;
 
     @Override
