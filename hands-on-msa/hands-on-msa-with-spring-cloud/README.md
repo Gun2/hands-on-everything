@@ -19,13 +19,14 @@ Spring Cloud 구성을 통해 MSA 구조 핸즈온 프로젝트
 # 아키텍처
 ![img.png](readme/msa-architecture.png)
 
-| 서비스 이름                                    | port | 역할            |
-|-------------------------------------------|------|---------------|
-| **Spring Cloud Gateway** (`api-gateway`)  | 8080 | 클라이언트 요청을 라우팅 |
-| **Spring Cloud Eureka** (`eureka-server`) | 8761 | 서비스 등록 및 검색   |
-| **Auth Service** (`auth-service`)         | 8888 | 인증 관련 서비스     |
-| **Order Service** (`order-service`)       | 8081 | 주문 관련 서비스     |
-| **Payment Service** (`payment-service`)   | 8082 | 결제 관련 서비스     |
+| 서비스 이름                                       | port | 역할            |
+|----------------------------------------------|------|---------------|
+| **Spring Cloud Gateway** (`api-gateway`)     | 8080 | 클라이언트 요청을 라우팅 |
+| **Spring Cloud Eureka** (`eureka-server`)    | 8761 | 서비스 등록 및 검색   |
+| **Auth Service** (`auth-service`)            | 8888 | 인증 관련 서비스     |
+| **Order Service** (`order-service`)          | 8081 | 주문 관련 서비스     |
+| **Payment Service** (`payment-service`)      | 8082 | 결제 관련 서비스     |
+| **Websocket Service** (`webesocket-service`) | 8083 | 웹소켓 관련 서비스    |
 
 ## 흐름
 1. 모든 마이크로서비스는 Eureka에 등록
@@ -47,6 +48,8 @@ Spring Cloud 구성을 통해 MSA 구조 핸즈온 프로젝트
 ### [Order Service](order-service-app/README.md)
 
 ### [Payment Service](payment-service-app/README.md)
+
+### [Websocket Service](websocket-service-app/README.md)
 
 # 인증 과정
 인증값은 크게 3가지를 사용함

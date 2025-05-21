@@ -1,0 +1,138 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.2 Chrome/128.0.6613.186 Electron/32.2.5 Safari/537.36" version="25.0.2">
+  <diagram name="페이지-1" id="hxO9wVH98lXPdVjEbqw7">
+    <mxGraphModel dx="1687" dy="1208" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-13" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1130" y="921" as="sourcePoint" />
+            <mxPoint x="1130" y="361" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-1" value="Client" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="300" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-2" value="Spring Cloud Gateway" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="300" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-3" value="Websocket&lt;div&gt;Service&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="300" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-4" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="510" y="921" as="sourcePoint" />
+            <mxPoint x="509.5" y="361" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-5" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="510" y="411" as="sourcePoint" />
+            <mxPoint x="820" y="411" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-6" value="Connect to /ws endpoint" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="421" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-7" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="820" y="411" as="sourcePoint" />
+            <mxPoint x="1130" y="411" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-8" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="820" y="921" as="sourcePoint" />
+            <mxPoint x="819.5" y="361" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-9" value="Route with&amp;nbsp;&lt;div&gt;sec-websocket-protocol: &amp;lt;Passport&amp;gt;&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;header&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="830" y="421" width="240" height="29" as="geometry" />
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-10" value="PassportHandshakeInterceptor" style="swimlane;whiteSpace=wrap;html=1;fillColor=default;swimlaneFillColor=default;" vertex="1" parent="1">
+          <mxGeometry x="980" y="486" width="300" height="165" as="geometry" />
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;fillColor=#a20025;strokeColor=#6F0000;" edge="1" parent="fW2d65Z01KcSf4Pd5zxG-10" source="fW2d65Z01KcSf4Pd5zxG-12">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-470" y="55" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-320" y="55" />
+              <mxPoint x="-320" y="55" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-16" value="Invalidated" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="fW2d65Z01KcSf4Pd5zxG-14">
+          <mxGeometry x="-0.8442" y="-2" relative="1" as="geometry">
+            <mxPoint x="-11" y="2" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fillColor=#f8cecc;strokeColor=default;" edge="1" parent="fW2d65Z01KcSf4Pd5zxG-10" source="fW2d65Z01KcSf4Pd5zxG-12">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-470" y="145" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="150" y="145" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-20" value="Validated" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="fW2d65Z01KcSf4Pd5zxG-18">
+          <mxGeometry x="-0.4457" y="-2" relative="1" as="geometry">
+            <mxPoint x="128" y="-38" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-12" value="Validate passport" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="fW2d65Z01KcSf4Pd5zxG-10">
+          <mxGeometry x="90" y="25" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-43" value="Add authentication in attribute" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="fW2d65Z01KcSf4Pd5zxG-10">
+          <mxGeometry x="60" y="125" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-17" value="Established" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="630" y="641" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-19" value="Return 401 unauthorized" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#a20025;fontColor=#ffffff;strokeColor=#6F0000;" vertex="1" parent="1">
+          <mxGeometry x="630" y="550" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-21" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="510" y="711" as="sourcePoint" />
+            <mxPoint x="1130" y="711" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-36" value="PassportChannelInterceptor" style="swimlane;whiteSpace=wrap;html=1;swimlaneFillColor=default;" vertex="1" parent="1">
+          <mxGeometry x="980" y="728" width="300" height="83.5" as="geometry" />
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-49" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;fillColor=#a20025;strokeColor=#6F0000;" edge="1" parent="fW2d65Z01KcSf4Pd5zxG-36" source="fW2d65Z01KcSf4Pd5zxG-42">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-470" y="53" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-51" value="Fail" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="fW2d65Z01KcSf4Pd5zxG-49">
+          <mxGeometry x="-0.8716" relative="1" as="geometry">
+            <mxPoint x="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-42" value="Check authentication&lt;div&gt;&amp;amp; authorization&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="fW2d65Z01KcSf4Pd5zxG-36">
+          <mxGeometry x="60" y="23.5" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-44" value="Subscribe" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="721" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-50" value="Return Access Denied" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#a20025;fontColor=#ffffff;strokeColor=#6F0000;" vertex="1" parent="1">
+          <mxGeometry x="630" y="791" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-52" value="Send Message" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="940" y="861" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="fW2d65Z01KcSf4Pd5zxG-53" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fillColor=#a20025;strokeColor=default;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="510" y="851" as="targetPoint" />
+            <mxPoint x="1130" y="851" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="660" y="851" />
+              <mxPoint x="660" y="851" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
