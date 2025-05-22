@@ -39,15 +39,15 @@ Spring Cloud 구성을 통해 MSA 구조 핸즈온 프로젝트
 
 # 구성 방법
 각 서비스별 구성 방법
-### [Spring Cloud Gateway](api-gateway-app/README.md)
+### [Spring Cloud Gateway](app/api-gateway-app/README.md)
 
-### [Spring Cloud Eureka](eureka-server-app/README.md)
+### [Spring Cloud Eureka](app/eureka-server-app/README.md)
 
-### [Auth Service](auth-server-app/README.md)
+### [Auth Service](app/auth-app/README.md)
 
-### [Order Service](order-service-app/README.md)
+### [Order Service](app/order-service-app/README.md)
 
-### [Payment Service](payment-service-app/README.md)
+### [Payment Service](app/payment-service-app/README.md)
 
 ### [Websocket Service](websocket-service-app/README.md)
 
