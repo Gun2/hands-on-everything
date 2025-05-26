@@ -1,6 +1,5 @@
 package com.github.gun2.handsonkafkawithspring;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -28,7 +27,7 @@ public class ChatController {
     public void create(
             @RequestBody ChatRequest chatRequest
     ){
-        chatService.createChat(chatRequest);
+        chatService.sendChat(chatRequest);
     }
 
 }
