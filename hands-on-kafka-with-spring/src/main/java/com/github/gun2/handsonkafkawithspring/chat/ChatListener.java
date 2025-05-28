@@ -11,14 +11,16 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ChatListener {
     private final ChatService chatService;
+    public static final String CONSUMER_ID_01 = "CONSUMER_ID_01";
+    public static final String CONSUMER_ID_02 = "CONSUMER_ID_02";
 
-    @KafkaListener(topics = Topics.CHAT_TOPIC, groupId = "demo-group")
+    @KafkaListener(topics = Topics.CHAT_TOPIC, groupId = "demo-group", id = CONSUMER_ID_01)
     public void listen(String message) {
         log.info("[consumer1]listen : {}", message);
         chatService.createChat(message, "consumer1");
     }
 
-    @KafkaListener(topics = Topics.CHAT_TOPIC, groupId = "demo-group")
+    @KafkaListener(topics = Topics.CHAT_TOPIC, groupId = "demo-group", id = CONSUMER_ID_02)
     public void listen2(String message) {
         log.info("[consumer2]listen : {}", message);
         chatService.createChat(message, "consumer2");

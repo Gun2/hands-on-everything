@@ -49,6 +49,47 @@ Host: localhost:8080
 curl --location --request GET 'http://localhost:8080/chats'
 ```
 
+### 컨슈머 목록 조회
+```http request
+GET /kafka/consumers HTTP/1.1
+Host: localhost:8080
+```
+```shell
+curl --location --request GET 'http://localhost:8080/kafka/consumers'
+```
+
+### 컨슈머 조회
+```http request
+GET /kafka/consumers/{CONSUMER_ID} HTTP/1.1
+Host: localhost:8080
+```
+```shell
+CONSUMER_ID=CONSUMER_ID_01
+curl --location --request GET "http://localhost:8080/kafka/consumers/${CONSUMER_ID}"
+```
+
+### 컨슈머 실행
+```http request
+POST /kafka/consumers/{CONSUMER_ID}/start HTTP/1.1
+Host: localhost:8080
+```
+```shell
+CONSUMER_ID=CONSUMER_ID_01
+curl --location --request POST "http://localhost:8080/kafka/consumers/${CONSUMER_ID}/start"
+```
+
+### 컨슈머 중지
+```http request
+POST /kafka/consumers/{CONSUMER_ID}/stop HTTP/1.1
+Host: localhost:8080
+```
+```shell
+CONSUMER_ID=CONSUMER_ID_01
+curl --location --request POST "http://localhost:8080/kafka/consumers/${CONSUMER_ID}/stop"
+```
+
+
+
 # Kafka 제어
 kafka 구성을 위해 docker-compose를 사용하여 kafka를 실행하고 중지 하는 방법
 ## Kafka 실행
