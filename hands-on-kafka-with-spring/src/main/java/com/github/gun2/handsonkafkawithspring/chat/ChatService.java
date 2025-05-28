@@ -1,5 +1,7 @@
-package com.github.gun2.handsonkafkawithspring;
+package com.github.gun2.handsonkafkawithspring.chat;
 
+import com.github.gun2.handsonkafkawithspring.KafkaProducerService;
+import com.github.gun2.handsonkafkawithspring.Topics;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;

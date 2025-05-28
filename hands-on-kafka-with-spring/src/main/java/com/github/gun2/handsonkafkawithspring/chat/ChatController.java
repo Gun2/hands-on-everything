@@ -1,4 +1,4 @@
-package com.github.gun2.handsonkafkawithspring;
+package com.github.gun2.handsonkafkawithspring.chat;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

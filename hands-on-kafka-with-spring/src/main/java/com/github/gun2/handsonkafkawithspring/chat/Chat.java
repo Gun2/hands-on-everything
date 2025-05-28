@@ -1,4 +1,4 @@
-package com.github.gun2.handsonkafkawithspring;
+package com.github.gun2.handsonkafkawithspring.chat;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
