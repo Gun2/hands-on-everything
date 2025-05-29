@@ -1,4 +1,4 @@
-package com.github.gun2.handsonkafkawithspring.kafka;
+package com.github.gun2.handsonkafkawithspring.kafka.consumer;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class KafkaController {
+public class KafkaConsumerController {
     private final KafkaConsumerService kafkaConsumerService;
 
     @GetMapping("/kafka/consumers")

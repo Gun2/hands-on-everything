@@ -1,4 +1,4 @@
-package com.github.gun2.handsonkafkawithspring.kafka;
+package com.github.gun2.handsonkafkawithspring.kafka.consumer;
 
 import lombok.Getter;
 import lombok.Setter;
