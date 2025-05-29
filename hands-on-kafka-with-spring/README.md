@@ -87,7 +87,14 @@ Host: localhost:8080
 CONSUMER_ID=CONSUMER_ID_01
 curl --location --request POST "http://localhost:8080/kafka/consumers/${CONSUMER_ID}/stop"
 ```
-
+### 토픽 조회
+```http request
+GET /kafka/admin/topics HTTP/1.1
+Host: localhost:8080
+```
+```shell
+curl --location --request GET 'http://localhost:8080/kafka/admin/topics'
+```
 
 
 # Kafka 제어
