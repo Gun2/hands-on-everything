@@ -95,15 +95,38 @@ Host: localhost:8080
 ```shell
 curl --location --request GET 'http://localhost:8080/kafka/admin/topics'
 ```
+### 토픽 생성
+```http request
+POST /kafka/admin/topics HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+Content-Length: 87
 
+{
+    "topicName" : "topicName",
+    "numPartitions" : 4,
+    "replicationFactor" : 1
+}
+```
+
+```shell
+curl --location --request POST 'http://localhost:8080/kafka/admin/topics' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "topicName" : "topicName",
+    "numPartitions" : 4,
+    "replicationFactor" : 1
+}'```
+```
 
 # Kafka 제어
 kafka 구성을 위해 docker-compose를 사용하여 kafka를 실행하고 중지 하는 방법
+
 ## Kafka 실행
 docker compose를 통해 kafka 실행
 ```shell
 docker-compose -f ./docker/docker-compose.yml up -d
-```
+
 
 ## Kafka 중지
 docker compose를 통해 kafka 중지
