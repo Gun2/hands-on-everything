@@ -1,8 +1,10 @@
 package com.github.gun2.handsonkafkawithspring;
 
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
@@ -14,7 +16,7 @@ public class KafkaProducerService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void send(String topic, String message) {
-        kafkaTemplate.send(topic, String.valueOf(increment.getAndIncrement() % 2),  message);
+    public CompletableFuture<SendResult<String, String>> send(String topic, String message) {
+        return kafkaTemplate.send(topic, String.valueOf(increment.getAndIncrement() % 2),  message);
     }
 }
