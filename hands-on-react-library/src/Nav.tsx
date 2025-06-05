@@ -1,10 +1,12 @@
 import React from 'react';
 import { Card, Stack } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
+import { ROUTING_PATH } from './App';
 
 const Nav = () => {
   return (
     <Stack direction={"row"} alignItems={"center"}>
+      <NavItem text={"react-textarea-autocomplete"} link={ROUTING_PATH.REACT_TEXTAREA_AUTOCOMPLETE}/>
     </Stack>
   );
 };
