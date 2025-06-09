@@ -1,16 +1,19 @@
 import React, { useRef } from 'react';
 import { Stack } from '@mui/material';
-import { Editor } from '@monaco-editor/react';
+import Editor, { OnMount } from '@monaco-editor/react';
+import * as monaco from 'monaco-editor';
 
-/*
 const MonacoEditorGetValueFromRef = () => {
-  const editorRef = useRef<IStandaloneCodeEditor>(null);
-  function handleEditorDidMount(editor, monaco) {
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+
+  const handleEditorDidMount: OnMount = (editor, monacoInstance) => {
     editorRef.current = editor;
-  }
+  };
 
   function showValue() {
-    alert(editorRef.current.getValue());
+    if (editorRef.current) {
+      alert(editorRef.current.getValue());
+    }
   }
 
   return (
@@ -26,4 +29,4 @@ const MonacoEditorGetValueFromRef = () => {
   );
 };
 
-export default MonacoEditorGetValueFromRef;*/
+export default MonacoEditorGetValueFromRef;
