@@ -7,6 +7,7 @@ const Nav = () => {
   return (
     <Stack direction={"row"} alignItems={"center"}>
       <NavItem text={"react-textarea-autocomplete"} link={ROUTING_PATH.REACT_TEXTAREA_AUTOCOMPLETE}/>
+      <NavItem text={"monaco-editor"} link={ROUTING_PATH.MONACO_EDITOR}/>
     </Stack>
   );
 };
