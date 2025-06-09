@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack } from '@mui/material';
 import MonacoEditorSample from './MonacoEditorSample';
-import AccordionForm from '../components/AccordionForm/AccordionForm';
+import AccordionForm from '../../components/AccordionForm/AccordionForm';
 
 const MonacoEditorPage = () => {
   return (

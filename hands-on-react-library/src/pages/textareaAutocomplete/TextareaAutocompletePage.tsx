@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack } from '@mui/material';
 import TextareaAutocompleteSample from './TextareaAutocompleteSample';
-import AccordionForm from '../components/AccordionForm/AccordionForm';
+import AccordionForm from '../../components/AccordionForm/AccordionForm';
 
 const TextareaAutocompletePage = () => {
   return (

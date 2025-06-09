@@ -1,8 +1,8 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import TextareaAutocompletePage from './textareaAutocomplete/TextareaAutocompletePage';
+import TextareaAutocompletePage from './pages/textareaAutocomplete/TextareaAutocompletePage';
 import PageLayout from './layout/PageLayout';
-import MonacoEditorPage from './monacoEditor/MonacoEditorPage';
+import MonacoEditorPage from './pages/monacoEditor/MonacoEditorPage';
 
 export const ROUTING_PATH = {
   REACT_TEXTAREA_AUTOCOMPLETE : "/react-textarea-autocomplete",
