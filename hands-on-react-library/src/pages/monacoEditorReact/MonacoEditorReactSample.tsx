@@ -1,10 +1,10 @@
 import React from 'react';
 import { Editor } from '@monaco-editor/react';
 
-const MonacoEditorSample = () => {
+const MonacoEditorReactSample = () => {
   return (
     <Editor height="50vh" defaultLanguage="javascript" defaultValue="// some comment" />
   );
 };
 
-export default MonacoEditorSample;
+export default MonacoEditorReactSample;
