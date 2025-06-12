@@ -3,12 +3,16 @@ import { Stack } from '@mui/material';
 import AccordionForm from '../../components/AccordionForm/AccordionForm';
 import ReactFlowFirstFlow from './ReactFlowFirstFlow';
 import ReactFlowAddingInteractivity from './ReactFlowAddingInteractivity';
+import ReactFlowControlled from './ReactFlowControlled';
+import ReactFlowUncontrolled from './ReactFlowUncontrolled';
 
 const ReactFlowPage = () => {
   return (
     <Stack>
       <FirstAccordion/>
       <AddInteractivityAccordion/>
+      <ControlledAccordion/>
+      <UncontrolledAccordion/>
     </Stack>
   );
 };
@@ -24,6 +28,20 @@ const AddInteractivityAccordion = () => (
   <AccordionForm
     summary={"Add Interactivity"}
     details={<ReactFlowAddingInteractivity/>}
+  />
+)
+
+const ControlledAccordion = () => (
+  <AccordionForm
+    summary={"Controlled"}
+    details={<ReactFlowControlled/>}
+  />
+)
+
+const UncontrolledAccordion = () => (
+  <AccordionForm
+    summary={"Uncontrolled"}
+    details={<ReactFlowUncontrolled/>}
   />
 )
 

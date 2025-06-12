@@ -19,3 +19,56 @@ npm install @xyflow/react
     > - `<NodeResizer />` : 노드에 리사이즈의 기능을 쉽게 만들어주는 플러그인
 - 신뢰성 : React Flow는 전체적으로 타입스크립트로 작성되었고 E2E테스트를 진행하여 신뢰성을 유지함
 
+# 용어
+![img.png](images/react-flow-terms.png)
+
+# 컨셉
+- flow는 노드와 엣지로 구성.
+- 노드와 엣지 배열을 ReactFlow 컴포넌트에 전달.
+- 모든 노드와 엣지의 ID는 고유해야함.
+- 노드는 위치와 라벨이 필요 (커스텀 노드는 다를 수 있음).
+- 엣지는 소스 노드 ID와 타겟 노드 ID가 필요
+
+
+# Controlled, Uncontrolled
+React flow는 controlled 방식과 uncontrolled 방식 둘 다 지원
+## Controlled
+노드와 엣지의 상태를 React state로 관리하여 props를 통해 ReactFlow에 전달.
+
+### 구현 샘플
+- 상태 관리: 노드와 엣지를 상태로 관리 (useState 사용)
+- ReactFlow에 전달: 상태값을 ReactFlow 컴포넌트의 nodes와 edges props로 전달
+```tsx
+const Controlled = () => {
+  const [nodes, setNodes, onNodesChange] = useNodesState([...]);  // 노드 상태
+  const [edges, setEdges, onEdgesChange] = useEdgesState([...]);  // 엣지 상태
+
+  return (
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+    />
+  );
+};
+```
+
+## Uncontrolled Flow (상태 미관리)
+ReactFlow가 상태를 자동으로 관리하며, 노드와 엣지를 default 값으로 전달
+
+### 구현 샘플
+- 상태 관리하지 않음: nodes와 edges를 React Flow가 자동으로 관리.
+- 노드 및 엣지 데이터 전달: 노드와 엣지를 단순히 초기값으로 전달
+```tsx
+const Uncontrolled = () => {
+  const [nodes, setNodes] = useState([...]);
+  const [edges, setEdges] = useState([...]);
+  return (
+    <ReactFlow
+      defaultNodes={nodes}
+      defaultEdges={edges}
+    />
+  );
+};
+```
