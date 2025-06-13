@@ -5,6 +5,7 @@ import ReactFlowFirstFlow from './ReactFlowFirstFlow';
 import ReactFlowAddingInteractivity from './ReactFlowAddingInteractivity';
 import ReactFlowControlled from './ReactFlowControlled';
 import ReactFlowUncontrolled from './ReactFlowUncontrolled';
+import ReactFlowConnectionNode from './ReactFlowConnectionNode';
 
 const ReactFlowPage = () => {
   return (
@@ -13,6 +14,7 @@ const ReactFlowPage = () => {
       <AddInteractivityAccordion/>
       <ControlledAccordion/>
       <UncontrolledAccordion/>
+      <ConnectionNodeAccordion/>
     </Stack>
   );
 };
@@ -42,6 +44,13 @@ const UncontrolledAccordion = () => (
   <AccordionForm
     summary={"Uncontrolled"}
     details={<ReactFlowUncontrolled/>}
+  />
+)
+
+const ConnectionNodeAccordion = () => (
+  <AccordionForm
+    summary={"Connection Node"}
+    details={<ReactFlowConnectionNode/>}
   />
 )
 
