@@ -6,6 +6,7 @@ import ReactFlowAddingInteractivity from './ReactFlowAddingInteractivity';
 import ReactFlowControlled from './ReactFlowControlled';
 import ReactFlowUncontrolled from './ReactFlowUncontrolled';
 import ReactFlowConnectionNode from './ReactFlowConnectionNode';
+import ReactFlowCustomNodes from './ReactFlowCustomNodes';
 
 const ReactFlowPage = () => {
   return (
@@ -15,6 +16,7 @@ const ReactFlowPage = () => {
       <ControlledAccordion/>
       <UncontrolledAccordion/>
       <ConnectionNodeAccordion/>
+      <CustomNodeAccordion/>
     </Stack>
   );
 };
@@ -54,4 +56,10 @@ const ConnectionNodeAccordion = () => (
   />
 )
 
+const CustomNodeAccordion = () => (
+  <AccordionForm
+    summary={"Custom Node"}
+    details={<ReactFlowCustomNodes/>}
+  />
+)
 export default ReactFlowPage;
