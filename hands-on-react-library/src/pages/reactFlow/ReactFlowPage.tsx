@@ -7,6 +7,7 @@ import ReactFlowControlled from './ReactFlowControlled';
 import ReactFlowUncontrolled from './ReactFlowUncontrolled';
 import ReactFlowConnectionNode from './ReactFlowConnectionNode';
 import ReactFlowCustomNodes from './ReactFlowCustomNodes';
+import ReactFlowCustomEdges from './ReactFlowCustomEdges';
 
 const ReactFlowPage = () => {
   return (
@@ -17,6 +18,7 @@ const ReactFlowPage = () => {
       <UncontrolledAccordion/>
       <ConnectionNodeAccordion/>
       <CustomNodeAccordion/>
+      <CustomEdgeAccordion/>
     </Stack>
   );
 };
@@ -62,4 +64,13 @@ const CustomNodeAccordion = () => (
     details={<ReactFlowCustomNodes/>}
   />
 )
+
+const CustomEdgeAccordion = () => (
+  <AccordionForm
+    summary={"Custom Edge"}
+    details={<ReactFlowCustomEdges/>}
+  />
+)
+
+
 export default ReactFlowPage;
