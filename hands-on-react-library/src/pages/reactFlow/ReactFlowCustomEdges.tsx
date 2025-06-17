@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import { addEdge, Edge, EdgeTypes, Node, OnConnect, ReactFlow, useEdgesState, useNodesState } from '@xyflow/react';
 import ReactFlowBox from './ReactFlowBox';
 import ReactFlowRedEdge from './customEdges/ReactFlowRedEdge';
+import ReactFlowEdgeLabelButton from './customEdges/ReactFlowEdgeLabelButton';
 
 const ReactFlowCustomNodes = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);  // 노드 상태
@@ -13,6 +14,7 @@ const ReactFlowCustomNodes = () => {
   const edgeTypes = useMemo<EdgeTypes>(() => {
     return {
       redEdge: ReactFlowRedEdge,
+      edgeLabelButton: ReactFlowEdgeLabelButton,
     }
   }, []);
   return (
@@ -54,7 +56,7 @@ const initialNodes: Node[] = [
 
 const initialEdges: Edge[] = [
   { id: 'e1-2', source: '1', target: '2', type: "redEdge" },
-  { id: 'e2-3', source: '2', target: '3', animated: true, type: "redEdge" },
+  { id: 'e2-3', source: '2', target: '3', animated: true, type: "edgeLabelButton" },
 ];
 
 export default ReactFlowCustomNodes;
