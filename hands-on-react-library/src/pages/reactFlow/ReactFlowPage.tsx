@@ -8,6 +8,7 @@ import ReactFlowUncontrolled from './ReactFlowUncontrolled';
 import ReactFlowConnectionNode from './ReactFlowConnectionNode';
 import ReactFlowCustomNodes from './ReactFlowCustomNodes';
 import ReactFlowCustomEdges from './ReactFlowCustomEdges';
+import ReactFlowUtilityClasses from './ReactFlowUtilityClasses';
 
 const ReactFlowPage = () => {
   return (
@@ -19,6 +20,7 @@ const ReactFlowPage = () => {
       <ConnectionNodeAccordion/>
       <CustomNodeAccordion/>
       <CustomEdgeAccordion/>
+      <UtilityClassesAccordion/>
     </Stack>
   );
 };
@@ -72,5 +74,11 @@ const CustomEdgeAccordion = () => (
   />
 )
 
+const UtilityClassesAccordion = () => (
+  <AccordionForm
+    summary={"Utility Classes Edge"}
+    details={<ReactFlowUtilityClasses/>}
+  />
+)
 
 export default ReactFlowPage;
