@@ -9,6 +9,7 @@ import ReactFlowConnectionNode from './ReactFlowConnectionNode';
 import ReactFlowCustomNodes from './ReactFlowCustomNodes';
 import ReactFlowCustomEdges from './ReactFlowCustomEdges';
 import ReactFlowUtilityClasses from './ReactFlowUtilityClasses';
+import ReactFlowLayoutingWithDagre from './ReactFlowLayoutingWithDagre';
 
 const ReactFlowPage = () => {
   return (
@@ -21,6 +22,7 @@ const ReactFlowPage = () => {
       <CustomNodeAccordion/>
       <CustomEdgeAccordion/>
       <UtilityClassesAccordion/>
+      <LayoutingWithDagreAccordion/>
     </Stack>
   );
 };
@@ -78,6 +80,13 @@ const UtilityClassesAccordion = () => (
   <AccordionForm
     summary={"Utility Classes Edge"}
     details={<ReactFlowUtilityClasses/>}
+  />
+)
+
+const LayoutingWithDagreAccordion = () => (
+  <AccordionForm
+    summary={"Layouting With Dagre"}
+    details={<ReactFlowLayoutingWithDagre/>}
   />
 )
 

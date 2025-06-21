@@ -72,3 +72,71 @@ const Uncontrolled = () => {
   );
 };
 ```
+
+# Layouting
+서드파티 라이브러리들을 통해 node들을 레이아웃 해주는 기능을 지원
+## Dagre
+Dagre는 그래프 구조를 자동으로 레이아웃해주는 라이브러리, 
+노드와 엣지 간의 관계를 기반으로 위치를 자동으로 계산
+> 드와 엣지의 구조만 정의하면, 시각적으로 보기 좋은 배치를 Dagre가 자동으로 정해주는 방식
+### 설치
+```shell
+npm i @dagrejs/dagre
+npm i @types/dagre
+```
+
+### 사용법
+> react flow에서 사용하는 방법은 `<ReactFlowLayoutingWithDagre/>` 컴포넌트 참고
+```ts
+//graph 객체 생성
+const g = new Dagre.graphlib.Graph();
+//graph 설정
+g.setGraph({ rankdir: 'TB' });
+/*
+ * 기본 label 구조 지정
+ * e.g. (g.setDefaultEdgeLabel(() => ({})) 라인 의미)
+ * g.setEdge("a", "b"); // label 안 넣었지만
+ * g.setEdge("a", "b", {}); // 빈 객체가 자동으로 들어감
+ */
+g.setDefaultEdgeLabel(() => ({}));
+//node 정의
+g.setNode("kspacey", { label: "Kevin Spacey", width: 144, height: 100 });
+//edge 정의
+g.setEdge("kspacey", "swilliams");
+//레이아웃 실행
+dagre.layout(g);
+//결과
+g.node(id) // { x, y, width, height, ... }
+g.edge(source, target) // { points: [{x, y}, {x, y}, ...] }
+```
+
+### setGraph 옵션
+| 속성명         | 기본값                 | 설명                                                                                        |
+| ----------- | ------------------- | ----------------------------------------------------------------------------------------- |
+| `rankdir`   | `'TB'`              | 계층 방향: `'TB'` (Top→Bottom), `'BT'` (Bottom→Top), `'LR'` (Left→Right), `'RL'` (Right→Left) |
+| `align`     | `undefined`         | 같은 계층 내 노드 정렬 방향: `'UL'`, `'UR'`, `'DL'`, `'DR'`                                          |
+| `nodesep`   | `50`                | 같은 계층 내 노드 간 수평 간격 (px)                                                                   |
+| `edgesep`   | `10`                | 엣지 간 간격 (선들 사이의 거리, px)                                                                   |
+| `ranksep`   | `50`                | 계층 간 수직 간격 (px). `rankdir`에 따라 좌우 간격이 되기도 함                                               |
+| `marginx`   | `0`                 | 전체 그래프의 좌우 여백 (px)                                                                        |
+| `marginy`   | `0`                 | 전체 그래프의 상하 여백 (px)                                                                        |
+| `acyclicer` | `undefined`         | `'greedy'` 설정 시, 순환(edge cycle)을 제거하는 **탐욕적 알고리즘** 사용                                     |
+| `ranker`    | `'network-simplex'` | 계층 결정 알고리즘:<br>– `'network-simplex'` (기본)<br>– `'tight-tree'`<br>– `'longest-path'`       |
+
+
+### node 옵션
+| 속성명      | 기본값 | 설명             |
+| -------- | --- | -------------- |
+| `width`  | `0` | 노드의 가로 크기 (px) |
+| `height` | `0` | 노드의 세로 크기 (px) |
+
+
+### edge 옵션
+| 속성명           | 기본값   | 설명                                                 |
+| ------------- | ----- | -------------------------------------------------- |
+| `minlen`      | `1`   | 엣지의 최소 계층 수 (source와 target 사이의 거리 계층 수)           |
+| `weight`      | `1`   | 엣지의 중요도. 값이 클수록 **직선화되고 짧아짐**                      |
+| `width`       | `0`   | 엣지 라벨의 가로 크기 (px)                                  |
+| `height`      | `0`   | 엣지 라벨의 세로 크기 (px)                                  |
+| `labelpos`    | `'r'` | 라벨 위치: `'l'` = left, `'c'` = center, `'r'` = right |
+| `labeloffset` | `10`  | 라벨과 엣지 간 거리 (labelpos가 `'l'` 또는 `'r'`일 때만 적용됨)     |
