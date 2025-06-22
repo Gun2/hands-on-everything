@@ -82,7 +82,6 @@ Dagre는 그래프 구조를 자동으로 레이아웃해주는 라이브러리,
 ### 설치
 ```shell
 npm i @dagrejs/dagre
-npm i @types/dagre
 ```
 
 ### 사용법
