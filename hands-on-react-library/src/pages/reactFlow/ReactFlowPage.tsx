@@ -10,6 +10,7 @@ import ReactFlowCustomNodes from './ReactFlowCustomNodes';
 import ReactFlowCustomEdges from './ReactFlowCustomEdges';
 import ReactFlowUtilityClasses from './ReactFlowUtilityClasses';
 import ReactFlowLayoutingWithDagre from './ReactFlowLayoutingWithDagre';
+import ReactFlowLayoutingD3Hierarchy from './ReactFlowLayoutingD3Hierarchy';
 
 const ReactFlowPage = () => {
   return (
@@ -23,6 +24,7 @@ const ReactFlowPage = () => {
       <CustomEdgeAccordion/>
       <UtilityClassesAccordion/>
       <LayoutingWithDagreAccordion/>
+      <LayoutingWithD3HierarchyAccordion/>
     </Stack>
   );
 };
@@ -89,5 +91,13 @@ const LayoutingWithDagreAccordion = () => (
     details={<ReactFlowLayoutingWithDagre/>}
   />
 )
+
+const LayoutingWithD3HierarchyAccordion = () => (
+  <AccordionForm
+    summary={"Layouting With D3Hierarchy"}
+    details={<ReactFlowLayoutingD3Hierarchy/>}
+  />
+)
+
 
 export default ReactFlowPage;

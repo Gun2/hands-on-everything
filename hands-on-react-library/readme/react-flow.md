@@ -139,3 +139,32 @@ g.edge(source, target) // { points: [{x, y}, {x, y}, ...] }
 | `height`      | `0`   | 엣지 라벨의 세로 크기 (px)                                  |
 | `labelpos`    | `'r'` | 라벨 위치: `'l'` = left, `'c'` = center, `'r'` = right |
 | `labeloffset` | `10`  | 라벨과 엣지 간 거리 (labelpos가 `'l'` 또는 `'r'`일 때만 적용됨)     |
+
+## d3-hierarchy
+d3 hierarchy는 node가 1개 있을 때 root node로 하여 레이아웃해주는 라이브러리이다.
+> root node가 1개가 아니거나, node의 width, height 사이즈가 서로 다른 경우 올바르게 동작되지 않을 수 있음
+### 설치
+```shell
+npm i d3-hierarchy
+npm i --save-dev @types/d3-hierarchy
+```
+
+### 사용법
+> react flow 적용 샘플은 `<ReactFlowLayoutingD3Hierarchy/>` 컴포넌트 참고
+```ts
+// d3-hierarchy 트리 레이아웃 생성기
+const g = tree<NodeData>();
+
+// id/parentId 기반의 평탄한 배열을 계층 구조로 바꿈
+const hierarchy = stratify<NodeData>()
+        .id((node) => node.id) // 고유 ID 지정
+        .parentId((node) =>
+                edges.find((edge) => edge.target === node.id)?.source
+        ); // 부모 노드 ID를 엣지 정보로부터 유추
+
+// 계층 트리 생성 (노드 배열을 트리 구조로 변환)
+const root = hierarchy(nodes as any);
+
+// 트리 레이아웃 계산: 각 노드에 x, y 위치 자동 계산
+const layout = g.nodeSize([width * 2, height * 2])(root as HierarchyNode<NodeData>);
+```
