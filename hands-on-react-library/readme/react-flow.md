@@ -168,3 +168,50 @@ const root = hierarchy(nodes as any);
 // 트리 레이아웃 계산: 각 노드에 x, y 위치 자동 계산
 const layout = g.nodeSize([width * 2, height * 2])(root as HierarchyNode<NodeData>);
 ```
+
+## d3-force
+물리 기반 라이브러리로서 각기 다른 힘을 노드에 적용하여 위치를 변경할 수 있다.
+
+### 설치
+```shell
+npm i d3-force
+npm i @types/d3-force
+npm i d3-quadtree
+npm i @types/d3-quadtree
+```
+
+### 사용법
+> react flow 적용 샘플은 `<ReactFlowLayoutingWithD3Force/>` 컴포넌트 참고
+```ts
+/*
+ * 시뮬레이션 엔진을 초기화하고 여러 개의 force를 등록할 수 있는 중앙 허브 역할.
+ * 제네릭으로 Node + SimulationNodeDatum 확장한 타입을 넣어 node의 x, y, vx, vy, fx, fy 등을 추적.
+ */
+const simulation = forceSimulation<SimulationNodeDatum & Node>()
+        .force('charge', forceManyBody().strength(-1000)) //forceManyBody() : 노드 간 반발력 (음수 = 밀어냄, 양수 = 끌어당김)
+        .force('x', forceX().x(0).strength(0.05)) //forceX/Y() : X, Y축 기준으로 끌어당김 (그래프 중심 정렬용)
+        .force('y', forceY().y(0).strength(0.05))
+        .force('collide', collide())  //collide() : 사용자 정의 충돌 방지 force (quadtree 사용)
+        .alphaTarget(0.05) //alphaTarget(0.05) : 시뮬레이션이 일정 수준의 에너지(움직임)를 유지
+        .stop();  //stop() : 자동 시작 방지. tick()으로 수동 호출
+
+/*
+ * d3-quadtree를 이용해 효율적으로 충돌 감지
+ * 각 노드의 반지름을 계산하고, 겹치는 경우 위치를 밀어내도록 조정
+ * node.measured?.width 기반으로 노드의 크기를 고려한 충돌 반응 계산
+ */
+function collide() { ... }
+
+//시뮬레이션 상태를 한 번 advance (한 프레임)
+const tick = () => { ... }
+
+//엣지를 force에 연결
+simulation.nodes(nodes).force(
+        'link',
+        forceLink(edges)
+                .id((d: any) => d.id)
+                .strength(0.05) //강도
+                .distance(100)  //간격
+);
+
+```
