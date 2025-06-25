@@ -11,7 +11,7 @@ import ReactFlowCustomEdges from './ReactFlowCustomEdges';
 import ReactFlowUtilityClasses from './ReactFlowUtilityClasses';
 import ReactFlowLayoutingWithDagre from './ReactFlowLayoutingWithDagre';
 import ReactFlowLayoutingD3Hierarchy from './ReactFlowLayoutingD3Hierarchy';
-import ReactFlowLayoutingWithD3Force from './ReactFlowLayoutingWithD3Force';
+import ReactFlowLayoutingWithD3Force from './layouting/d3-force/ReactFlowLayoutingWithD3Force';
 
 const ReactFlowPage = () => {
   return (
