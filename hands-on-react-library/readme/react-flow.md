@@ -215,3 +215,45 @@ simulation.nodes(nodes).force(
 );
 
 ```
+
+# Sub Flow
+노드들을 구분하여 그룹핑할 수 있음
+## 구현 샘플
+노드들의 부모, 자식 관계를 만들어 구현할 수 있음 자식 노드들은 부모 노드의 우측 상단을 x:0, y:0의 위치로 계산되어 표현됨
+### 노드
+부모 자식 관계에서 자식 노드에 부모의 id를 담은 parentId 속성 설정 필요
+> extent: 'parent' 속성을 추가하면 자식 노드가 부모 노드 밖으로 나오지 못 하게 함
+> 부모 노드의 type: 'group'은 핸들 없는 노드를 생성하기 위해 사용되며 다른 type을 사용해도 무방
+
+```ts
+const initialNodes: Node[] = [
+  {
+    id: 'A',
+    type: 'group',
+    data: { label: null },
+    position: { x: 0, y: 0 },
+    style: {
+      width: 170,
+      height: 140,
+    },
+  },
+  {
+    id: 'B',
+    type: 'input',
+    data: { label: 'child node 1' },
+    position: { x: 10, y: 10 },
+    //부모 노드 지정
+    parentId: 'A',
+    //부모 노드 밖으로 나오지 못하게 함
+    extent: 'parent',
+  },
+  {
+    id: 'C',
+    data: { label: 'child node 2' },
+    position: { x: 10, y: 90 },
+    parentId: 'A',
+    extent: 'parent',
+  },
+];
+
+```
