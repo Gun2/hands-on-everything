@@ -13,6 +13,7 @@ import ReactFlowLayoutingWithDagre from './ReactFlowLayoutingWithDagre';
 import ReactFlowLayoutingD3Hierarchy from './ReactFlowLayoutingD3Hierarchy';
 import ReactFlowLayoutingWithD3Force from './layouting/d3-force/ReactFlowLayoutingWithD3Force';
 import ReactFlowSubFlow from './subFlows/ReactFlowSubFlow';
+import ReactFlowSlideshow from './tutorials/slideshow/ReactFlowSlideshow';
 
 const ReactFlowPage = () => {
   return (
@@ -29,6 +30,7 @@ const ReactFlowPage = () => {
       <LayoutingWithD3HierarchyAccordion/>
       <LayoutingWithD3ForceAccordion/>
       <SubFlowAccordion/>
+      <SlideshowAccordion/>
     </Stack>
   );
 };
@@ -114,6 +116,13 @@ const SubFlowAccordion = () => (
   <AccordionForm
     summary={"Sub Flow"}
     details={<ReactFlowSubFlow/>}
+  />
+)
+
+const SlideshowAccordion = () => (
+  <AccordionForm
+    summary={"Slide show"}
+    details={<ReactFlowSlideshow/>}
   />
 )
 
