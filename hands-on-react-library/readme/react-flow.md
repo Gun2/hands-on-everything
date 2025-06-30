@@ -257,3 +257,85 @@ const initialNodes: Node[] = [
 ];
 
 ```
+
+# Components
+Reat Flow에서 제공하는 컴포넌트
+
+
+## `<Background/>`
+다른 유형의 배경을 랜더링 하는 컴포넌트
+### 사용법
+```tsx
+<ReactFlowBox>
+  <ReactFlow
+    ...
+  >
+    <Background
+      id="1" //여러 Background가 존재할 경우 고유값으로 사용
+      variant={BackgroundVariant.Dots} 
+      gap={12} 
+      size={1} 
+    />
+  </ReactFlow>
+</ReactFlowBox>
+```
+![react-flow-background.png](images/react-flow-background.png)
+## `<ControlButton />`
+제어 패널에 버튼들을 추가는 컴포넌트
+### 사용법
+```tsx
+<ReactFlow
+  ...
+>
+  ...
+  <Controls>
+    <ControlButton onClick={() => alert('Something magical just happened. ✨')}>
+      <AutoFixHighIcon /> {/*버튼 내용*/}
+    </ControlButton>
+  </Controls>
+</ReactFlow>
+```
+![react-flow-control-button.png](images/react-flow-control-button.png)
+
+## `<MiniMap />`
+flow 위에 미니 맵을 출력
+### 사용법
+```tsx
+<ReactFlow
+  ...
+>
+  ...
+  <MiniMap nodeStrokeWidth={3} />
+</ReactFlow>
+```
+
+## `<Panel/>`
+viewport위에 콘텐츠를 위치할때 사용되는 컴포넌트
+### 사용법
+```tsx
+<ReactFlow
+  ...
+>
+  /*좌측 상단에 내용 출력*/
+  <Panel position="top-left">top-left</Panel>
+</ReactFlow>
+```
+![react-flow-panel.png](images/react-flow-panel.png)
+
+## `<ViewportPortal />`
+노드 또는 엣지와 동일하게 viewport 위에 컴폰넌트를 올릴 때 사용되는 컴포넌트 (zoom-in, zoom-out 등 같이 영향을 받음)
+```tsx
+<ReactFlow
+  ...
+>
+  ...
+  <ViewportPortal>
+    <div
+            style={{ transform: 'translate(100px, 100px)', position: 'absolute' }}
+    >
+      This div is positioned at [100, 100] on the flow.
+    </div>
+  </ViewportPortal>
+</ReactFlow>
+```
+![react-flow-viewport-portal.png](images/react-flow-viewport-portal.png)
