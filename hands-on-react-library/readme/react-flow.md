@@ -339,3 +339,70 @@ viewport위에 콘텐츠를 위치할때 사용되는 컴포넌트
 </ReactFlow>
 ```
 ![react-flow-viewport-portal.png](images/react-flow-viewport-portal.png)
+
+## `<Handle />`
+커스텀 노드에 연결지점을 정의하는 컴포넌트
+### 사용법
+```tsx
+const CustomNode = (node : NodeProps<CustomNodeType>) => {
+  return (
+          <>
+            ...
+            <Handle type="target" position={Position.Left} />
+            <Handle type="source" position={Position.Right} />
+          </>
+  );
+};
+```
+
+## `<NodeResizeControl />`
+노드 컴포넌트의 자식에 추가하면 크기 조절이 가능한 포인트를 생성해주는 컴포넌트
+
+### 사용법
+```tsx
+const CustomNode = (node : NodeProps<CustomNodeType>) => {
+  return (
+          <div>
+            ...
+            <NodeResizeControl />
+          </div>
+  );
+};
+```
+![react-flow-node-resize-control.png](images/react-flow-node-resize-control.png)
+
+## `<NodeResizer />`
+노드 컴포넌트의 자식에 추가하면 노드 주변의 모든 방향으로 크기 조절이 가능하도록 해주는 컴포넌트
+
+### 사용법
+```tsx
+const CustomNode = (node : NodeProps<CustomNodeType>) => {
+  return (
+          <div>
+            ...
+            <NodeResizer minWidth={100} minHeight={30} />
+          </div>
+  );
+};
+```
+![react-flow-node-resize.png](images/react-flow-node-resize.png)
+
+
+## `<NodeToolbar />`
+노드 주위에 툴팁이나 툴바를 랜더링하는 컴포넌트이며 viewport에 의해 크기조절 되지 않음
+
+### 사용법
+```tsx
+const CustomNode = (node : NodeProps<CustomNodeType>) => {
+  return (
+          <div>
+            <NodeToolbar isVisible position={Position.Top}>
+              <button>delete</button>
+              <button>copy</button>
+              <button>expand</button>
+            </NodeToolbar>
+          </div>
+  );
+};
+```
+![react-flow-node-toolbar.png](images/react-flow-node-toolbar.png)
