@@ -406,3 +406,70 @@ const CustomNode = (node : NodeProps<CustomNodeType>) => {
 };
 ```
 ![react-flow-node-toolbar.png](images/react-flow-node-toolbar.png)
+
+## `<EdgeLabelRenderer />`
+Edge는 기본적으로 SVG로 랜더링되지만 해당 컴포넌트를 사용하여 div 베이스로 랜더링 할 수 있음
+
+### 사용법
+```tsx
+
+const CustomEdge = (
+        {
+          id,
+          data,
+          ...props
+        }: EdgeProps<CustomEdgeType>
+) => {
+  const [edgePath, labelX, labelY] = getBezierPath(props);
+
+  return (
+          <>
+            <BaseEdge id={id} path={edgePath} />
+            <EdgeLabelRenderer>
+              <div
+                      style={{
+                        position: 'absolute',
+                        transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
+                        background: '#ffcc00',
+                      }}
+              >
+                {data?.text}
+              </div>
+            </EdgeLabelRenderer>
+          </>
+  );
+};
+```
+![react-flow-edge-label-renderer.png](images/react-flow-edge-label-renderer.png)
+
+## `<EdgeText />`
+커스텀 엣지 위에 텍스트를 출력하기 위한 헬퍼 컴포넌트
+### 사용법
+```tsx
+const CustomEdge2 = (
+        {
+          id,
+          data,
+          ...props
+        }: EdgeProps<CustomEdgeType>
+) => {
+  const [edgePath, labelX, labelY] = getBezierPath(props);
+
+  return (
+          <>
+            <BaseEdge id={id} path={edgePath} />
+            <EdgeText
+                    x={labelX}
+                    y={labelY}
+                    label={data?.text}
+                    labelStyle={{ fill: 'white' }}
+                    labelShowBg
+                    labelBgStyle={{ fill: 'red' }}
+                    labelBgPadding={[2, 4]}
+                    labelBgBorderRadius={2}
+            />
+          </>
+  );
+};
+```
+![react-flow-edge-edge-text.png](images/react-flow-edge-edge-text.png)

@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import {
   Background,
-  BackgroundVariant,
+  BackgroundVariant, BaseEdge,
   ControlButton,
   Controls,
-  Edge,
+  Edge, EdgeLabelRenderer, EdgeProps, EdgeText, getBezierPath,
   Handle,
   MiniMap,
   Node,
@@ -32,6 +32,11 @@ const ReactFlowComponents = () => {
     custom : CustomNode
   }), [])
 
+  const edgeTypes = useMemo(() => ({
+    custom : CustomEdge,
+    custom2: CustomEdge2
+  }), []);
+
   return (
     <ReactFlowBox>
       <ReactFlow
@@ -40,6 +45,7 @@ const ReactFlowComponents = () => {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
       >
         <Background id="1" variant={BackgroundVariant.Dots} gap={12} size={1} />
         <Controls>
@@ -85,13 +91,13 @@ const initialNodes: Node[] = [
     id: '4',
     type: 'custom',
     data: { label: 'Custom Node' },
-    position: { x: 250, y: 300 },
+    position: { x: 250, y: 350 },
   },
 ];
 
 const initialEdges: Edge[] = [
-  { id: 'e1-2', source: '1', target: '2' },
-  { id: 'e2-3', source: '2', target: '3', animated: true },
+  { id: 'e1-2', source: '1', target: '2', type: 'custom2', data:{text: 'Custom Edge 2'}},
+  { id: 'e2-3', source: '2', target: '3', animated: true, type: 'custom', data:{text: 'Custom Edge'}},
   { id: 'e3-4', source: '2', target: '4'},
 ];
 
@@ -114,5 +120,63 @@ const CustomNode = (node : NodeProps<CustomNodeType>) => {
     </div>
   );
 };
+
+type CustomEdgeType = Edge<{
+  text: string,
+}>
+
+const CustomEdge = (
+  {
+    id,
+    data,
+    ...props
+  }: EdgeProps<CustomEdgeType>
+) => {
+  const [edgePath, labelX, labelY] = getBezierPath(props);
+
+  return (
+    <>
+      <BaseEdge id={id} path={edgePath} />
+      <EdgeLabelRenderer>
+        <div
+          style={{
+            position: 'absolute',
+            transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
+            background: '#ffcc00',
+          }}
+        >
+          {data?.text}
+        </div>
+      </EdgeLabelRenderer>
+    </>
+  );
+};
+
+const CustomEdge2 = (
+  {
+    id,
+    data,
+    ...props
+  }: EdgeProps<CustomEdgeType>
+) => {
+  const [edgePath, labelX, labelY] = getBezierPath(props);
+
+  return (
+    <>
+      <BaseEdge id={id} path={edgePath} />
+      <EdgeText
+        x={labelX}
+        y={labelY}
+        label={data?.text}
+        labelStyle={{ fill: 'white' }}
+        labelShowBg
+        labelBgStyle={{ fill: 'red' }}
+        labelBgPadding={[2, 4]}
+        labelBgBorderRadius={2}
+      />
+    </>
+  );
+};
+
 
 export default ReactFlowComponents;
