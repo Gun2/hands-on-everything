@@ -473,3 +473,253 @@ const CustomEdge2 = (
 };
 ```
 ![react-flow-edge-edge-text.png](images/react-flow-edge-edge-text.png)
+
+# Hooks
+Reat Flow에서 제공하는 Hook
+
+## `useConnection()`
+현재 연결 상태를 반환하는 hook
+### 사용법
+```tsx
+const ReactFlowHooks = () => {
+  const connection = useConnection();
+  return (
+          <div>
+            {connection ? `Someone is trying to make a connection from ${connection.fromNode?.id} to this one.` : 'There are currently no incoming connections!'}
+          </div>
+  );
+};
+```
+![react-flow-use-connection.png](images/react-flow-use-connection.png)
+
+## `useEdges()`
+현재 엣지 배열들을 반환하는 hook
+
+### 사용법
+```tsx
+const ReactFlowHooks = () => {
+  const edgesFromHook = useEdges();
+
+  return (
+          <div>
+            There are currently {edgesFromHook.length} edges!
+          </div>
+  );
+};
+```
+
+## `useEdgesState()`, `useNodesState()`
+노드와 엣지 상태를 컨트롤 방식으로 구현하기 쉽게 도와주는 hook
+
+### 사용법
+```tsx
+const ReactFlowHooks = () => {
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);  // 노드 상태
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);  // 엣지 상태
+  
+  return (
+          <ReactFlow
+                  nodes={nodes}
+                  edges={edges}
+                  onNodesChange={onNodesChange}
+                  onEdgesChange={onEdgesChange}
+          />
+  );
+};
+```
+
+## `useInternalNode()`
+특정 노드의 내부 정보들을 반환
+
+### 사용법
+```tsx
+const ReactFlowHooks = () => {
+  const internalNode = useInternalNode('1');
+
+  return (
+          <div>
+            {`node id : ${internalNode?.id} position x :${internalNode?.internals?.positionAbsolute.x} y : ${internalNode?.internals?.positionAbsolute.y}`}
+          </div>
+  );
+};
+```
+![react-flow-use-internal-node.png](images/react-flow-use-internal-node.png)
+
+
+## useKeyPress()
+특정 키 코드 입력값을 감지하고 입력 여부를 반환
+
+### 사용법
+```tsx
+
+const ReactFlowHooks = () => {
+  ...
+  const spacePressed = useKeyPress(
+          //감지할 키
+          'Space'
+  );
+  //키 조합의 경우 + 문자를 사용하여 작성할 수 있음
+  const cmdAndSPressed = useKeyPress(['Meta+s', 'Strg+s']);
+
+  return (
+          <Stack direction="column" spacing={2}>
+            <div>
+              {spacePressed && <p>Space pressed!</p>}
+              {cmdAndSPressed && <p>Cmd + S pressed!</p>}
+            </div>
+          </Stack>
+  );
+};
+```
+
+## useNodeConnections()
+특정 노드와 핸들 정보로 연결 정보들을 반환
+
+### 사용법
+```tsx
+const CustomNode = (node : NodeProps<CustomNodeType>) => {
+
+  const connections = useNodeConnections({
+    handleType: 'target',
+  });
+
+  return (
+          <div style={{backgroundColor: 'white', width: '100%', height: '100%', border: '1px solid black'}}>
+            <Handle type={"source"} position={Position.Top}/>
+            <Handle type={"target"} position={Position.Left}/>
+            <div>There are currently {connections.length} incoming connections!</div>
+            <div>{node.data.label}</div>
+          </div>
+  );
+};
+
+```
+
+## useNodeId()
+노드의 ID를 가져올 때 사용됨 (노드 하위의 깊은 컴포넌트에서 drill down 없이 노드의 id를 가져올 때 활용)
+
+### 사용법
+```tsx
+
+const CustomNode = (node : NodeProps<CustomNodeType>) => {
+
+  const nodeId = useNodeId();
+
+  return (
+          <div style={{backgroundColor: 'white', width: '100%', height: '100%', border: '1px solid black'}}>
+            ...
+            <span>{nodeId}</span>
+          </div>
+  );
+};
+
+```
+
+## useNodes()
+노드들의 정보를 가져올 때 사용
+
+### 사용법
+```tsx
+const ReactFlowHooks = () => {
+  ...
+  const nodesFromHook = useNodes();
+
+  return (
+          <Stack direction="column" spacing={2}>
+            <div>There are currently {nodesFromHook.length} nodes!</div>
+          </Stack>
+  );
+};
+```
+
+## useNodesData()
+특정 노드의 data 정보를 가져올 때 사용
+
+### 사용법
+```tsx
+const ReactFlowHooks = () => {
+  const nodeData = useNodesData('4');
+
+  return (
+          <Stack direction="column" spacing={2}>
+            <div>Type of node id 4 is {nodeData?.type}</div>
+          </Stack>
+  );
+};
+```
+
+## useNodesInitialized()
+flow의 모든 노드들이 랜더링(높이, 넓이 계산)된 상태 여부를 반환
+
+### 사용법
+```tsx
+  const nodesInitialized = useNodesInitialized();
+```
+
+## useOnSelectionChange()
+노드 또는 엣지에 변경 사항 발생을 listen함
+
+### 사용법
+```tsx
+useOnSelectionChange({
+  onChange: ({ nodes, edges }) => {
+    console.log(`nodes changed to ${nodes.length} nodes`);
+    console.log(`edges changed to ${edges.length} edges`);
+  }
+})
+```
+
+## useOnViewportChange()
+viewport의 변경 사항 발생을 listen함
+
+### 사용법
+```tsx
+useOnViewportChange({
+  onStart: (viewport: Viewport) => console.log('start', viewport),
+  onChange: (viewport: Viewport) => console.log('change', viewport),
+  onEnd: (viewport: Viewport) => console.log('end', viewport),
+});
+```
+
+##  useReactFlow()
+reactFlow의 인스턴스 정보를 가져옴
+
+### 사용법
+```tsx
+  const reactFlow = useReactFlow();
+```
+
+## useStore()
+내부 상태를 사용할 때 사용됨 (Zustand로부터 재추출된 hook)
+
+### 사용법
+```tsx
+  const nodes = useStore(state => state.nodes);
+```
+
+## useStoreApi()
+store object를 반환하고 store에 직접 접근해야 할 때 사용
+
+### 사용법
+```tsx
+const store = useStoreApi();
+...
+const { nodes } = store.getState();
+```
+
+## useUpdateNodeInternals()
+내부 상태 변화를 react flow에 알려줄 때 사용됨
+
+### 사용법
+```tsx
+const updateNodeInternals = useUpdateNodeInternals();
+updateNodeInternals('node id');
+```
+
+## useViewport()
+viewport 상태를 읽을 때 사용
+
+### 사용법
+```tsx
+const { x, y, zoom } = useViewport();
+```

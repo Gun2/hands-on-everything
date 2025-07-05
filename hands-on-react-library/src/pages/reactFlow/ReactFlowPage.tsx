@@ -15,6 +15,7 @@ import ReactFlowLayoutingWithD3Force from './layouting/d3-force/ReactFlowLayouti
 import ReactFlowSubFlow from './subFlows/ReactFlowSubFlow';
 import ReactFlowSlideshow from './tutorials/slideshow/ReactFlowSlideshow';
 import ReactFlowComponents from './ReactFlowComponents';
+import ReactFlowHooks from './ReactFlowHooks';
 
 const ReactFlowPage = () => {
   return (
@@ -33,6 +34,7 @@ const ReactFlowPage = () => {
       <SubFlowAccordion/>
       <SlideshowAccordion/>
       <ComponentsAccordion/>
+      <HooksAccordion/>
     </Stack>
   );
 };
@@ -132,6 +134,13 @@ const ComponentsAccordion = () => (
   <AccordionForm
     summary={"Components"}
     details={<ReactFlowComponents/>}
+  />
+)
+
+const HooksAccordion = () => (
+  <AccordionForm
+    summary={"Hooks"}
+    details={<ReactFlowHooks/>}
   />
 )
 
