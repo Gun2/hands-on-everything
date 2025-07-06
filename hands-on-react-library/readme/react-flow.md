@@ -723,3 +723,352 @@ viewport 상태를 읽을 때 사용
 ```tsx
 const { x, y, zoom } = useViewport();
 ```
+
+# Utils
+React Flow에서 제공하는 Util
+
+## addEdge()
+새로운 엣지를 연결하기 쉽게 도와주는 유틸
+
+### 사용법
+```tsx
+const ReactFlowUtils = () => {
+  const onConnect = useCallback(
+          (connection: Connection) => {
+            setEdges((oldEdges) => addEdge(connection, oldEdges));
+          },
+          [setEdges],
+  );
+  return (
+          <ReactFlow
+                  ...
+                  onConnect={onConnect}
+          />
+  );
+};
+```
+
+## applyEdgeChanges()
+react flow에서 발생하는 다양한 이벤트 중 edge 이벤트를 변경에 적용하는 util
+> 엣지 클릭, 삭제 등이 반영되고 `useEdgesState()`hook에 포함된 함수를 사용할 수도 있음
+> 
+
+### 사용법
+```tsx
+const ReactFlowUtils = () => {
+  ...
+  const onEdgesChange = useCallback(
+          (changes: EdgeChange[]) => {
+            setEdges((oldEdges) => applyEdgeChanges(changes, oldEdges));
+          },
+          [setEdges],
+  );
+  return (
+          <ReactFlow
+                  ...
+                  onEdgesChange={onEdgesChange}
+          />
+  );
+};
+```
+
+## applyNodeChanges()
+react flow에서 발생하는 다양한ㄴ 이벤트 중 node 이벤트를 변경에 적용하는 util
+> 노드 클릭, 삭제 등이 반영되고 `useNodesState()`hook에 포함된 함수를 사용할 수도 있음
+
+### 사용법
+```tsx
+const ReactFlowUtils = () => {
+  ...
+  const onNodesChange = useCallback(
+          (changes: NodeChange[]) => {
+            setNodes((oldNodes) => applyNodeChanges(changes, oldNodes));
+          },
+          [setNodes],
+  );
+  return (
+          ...
+          <ReactFlow
+                  nodes={nodes}
+                  edges={edges}
+                  onNodesChange={onNodesChange}
+                  onEdgesChange={onEdgesChange}
+                  nodeTypes={nodeTypes}
+                  onConnect={onConnect}
+          />
+  );
+};
+
+```
+
+## getBezierPath()
+두 노드 사이의 베지어 엣지 (곡선)을 그리기 위한 유틸
+
+### 사용법
+```tsx
+const CustomEdge = (
+        {
+          id,
+          sourceX,
+          sourceY,
+          targetX,
+          targetY
+        }: EdgeProps
+) => {
+  const [edgePath] = getBezierPath({
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+  });
+
+  return <BaseEdge
+          id={id}
+          path={edgePath}
+          style={{
+            stroke: "#f00"
+          }}
+  />;
+
+};
+```
+
+## getConnectedEdges()
+주어진 노드들과 연결이 유지되는 엣지들을 필터링
+
+### 사용법
+```tsx
+const connectedEdges = getConnectedEdges(nodes, edges);
+```
+
+## getIncomers()
+특정 노드를 연결한(시작점) 노드 정보 반환
+> A -> B -> C 에서 B 검색 시 A 반환
+```tsx
+const nodes = [];
+const edges = [];
+ 
+const incomers = getIncomers(
+  { id: '1', position: { x: 0, y: 0 }, data: { label: 'node' } },
+  nodes,
+  edges,
+);
+```
+
+## getNodesBounds()
+주어진 노드들을 바운딕하는 박스 정보 반환
+
+### 사용법
+```tsx
+const bounds = getNodesBounds(nodes);
+console.log(bounds)
+/*
+{
+"x": 139,
+"y": 90,
+"width": 182,
+"height": 93
+}
+ */
+```
+
+
+## getOutgoers()
+특정 노드에서 연결한(타켓) 노드 정보 반환
+> A -> B -> C 에서 B 검색 시 C 반환
+
+### 사용법
+```tsx
+const nodes = [];
+const edges = [];
+ 
+const outgoers = getOutgoers(
+  { id: '1', position: { x: 0, y: 0 }, data: { label: 'node' } },
+  nodes,
+  edges,
+);
+```
+
+## getSimpleBezierPath()
+두 노드 사이의 베지어 엣지 (곡선)을 그리기 위한 유틸
+> getBezierPath()와 다르게 curvature 파라미터가 없음
+
+### 사용법
+```tsx
+const CustomEdge = (
+        {
+          id,
+          sourceX,
+          sourceY,
+          targetX,
+          targetY
+        }: EdgeProps
+) => {
+  const [edgePath] = getSimpleBezierPath({
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+  });
+
+  return <BaseEdge
+          id={id}
+          path={edgePath}
+          style={{
+            stroke: "#f00"
+          }}
+  />;
+
+};
+```
+
+## getSmoothStepPath()
+두 노드 사이에 계단형 곡선을 그리기 위한 유틸
+
+![react-flow-smooth-step-path.png](images/react-flow-smooth-step-path.png)
+### 사용법
+```tsx
+const CustomEdge = (
+        {
+          id,
+          sourceX,
+          sourceY,
+          targetX,
+          targetY
+        }: EdgeProps
+) => {
+  const [edgePath] = getSmoothStepPath({
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+  });
+
+  return <BaseEdge
+          id={id}
+          path={edgePath}
+          style={{
+            stroke: "#f00"
+          }}
+  />;
+
+};
+```
+
+## getStraightPath()
+두 노드 사이에 직선을 그리기 위한 유틸
+![react-flow-node-straight-path.png](images/react-flow-node-straight-path.png)
+
+### 사용법
+```tsx
+const CustomEdge = (
+        {
+          id,
+          sourceX,
+          sourceY,
+          targetX,
+          targetY
+        }: EdgeProps
+) => {
+  const [edgePath] = getStraightPath({
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+  });
+
+  return <BaseEdge
+          id={id}
+          path={edgePath}
+          style={{
+            stroke: "#f00"
+          }}
+  />;
+
+};
+```
+
+## getViewportForBounds()
+특정 영역에 맞춰서 뷰포트를 계산
+
+### 사용법
+```tsx
+//계산
+const { x, y, zoom } = getViewportForBounds(
+  {
+    x: -100,
+    y: -100,
+    width: 100,
+    height: 100,
+  },
+  1200,
+  800,
+  0.5,
+  2,
+  2
+);
+//아래 처럼 활용 가능
+const reactFlow = useReactFlow();
+reactFlow.setViewport({
+  x: x,
+  y: y,
+  zoom: zoom
+})
+```
+
+## isEdge()
+object가 edge로서 사용 가능한지 확인하고 typescript에서 타입 가드로 활용 가능
+
+### 사용법
+```tsx
+const edge = {
+  id: 'edge-a',
+  source: 'a',
+  target: 'b',
+};
+ 
+if (isEdge(edge)) {
+  // ...
+}
+```
+
+## isNode()
+object가 node로서 사용 가능한지 확인하고 typescript에서 타입 가드로 활용 가능
+
+### 사용법
+```tsx
+const node = {
+  id: 'node-a',
+  data: {
+    label: 'node',
+  },
+  position: {
+    x: 0,
+    y: 0,
+  },
+};
+ 
+if (isNode(node)) {
+  // ..
+}
+```
+
+## reconnectEdge()
+이미 존재하는 엣지를 재 연결할 때 사용되는 유틸
+
+### 사용법
+```tsx
+const ReactFlowUtils = () => {
+  const onReconnect = useCallback(
+          (oldEdge: Edge, newConnection: Connection) => setEdges((els) => reconnectEdge(oldEdge, newConnection, els)),
+          []
+  );
+  return (
+          <ReactFlow
+                  ...
+                  onReconnect={onReconnect}
+          />
+  );
+};
+
+```

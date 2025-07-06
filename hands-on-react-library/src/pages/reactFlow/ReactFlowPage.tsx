@@ -17,6 +17,7 @@ import ReactFlowSlideshow from './tutorials/slideshow/ReactFlowSlideshow';
 import ReactFlowComponents from './ReactFlowComponents';
 import ReactFlowHooks from './ReactFlowHooks';
 import ReactFlowDragAndDrop from './dragAndDrop/ReactFlowDragAndDrop';
+import ReactFlowUtils from './ReactFlowUtils';
 
 const ReactFlowPage = () => {
   return (
@@ -36,6 +37,7 @@ const ReactFlowPage = () => {
       <SlideshowAccordion/>
       <ComponentsAccordion/>
       <HooksAccordion/>
+      <UtilsAccordion/>
       <DragAndDropAccordion/>
     </Stack>
   );
@@ -146,12 +148,18 @@ const HooksAccordion = () => (
   />
 )
 
+const UtilsAccordion = () => (
+  <AccordionForm
+    summary={"Utils"}
+    details={<ReactFlowUtils/>}
+  />
+)
+
 const DragAndDropAccordion = () => (
   <AccordionForm
     summary={"Drag & Drop"}
     details={<ReactFlowDragAndDrop/>}
   />
 )
-
 
 export default ReactFlowPage;
