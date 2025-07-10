@@ -126,10 +126,11 @@ kafka 구성을 위해 docker-compose를 사용하여 kafka를 실행하고 중�
 docker compose를 통해 kafka 실행
 ```shell
 docker-compose -f ./docker/docker-compose.yml up -d
-
+```
 
 ## Kafka 중지
 docker compose를 통해 kafka 중지
+
 ```shell
 docker-compose -f ./docker/docker-compose.yml down
 ```
