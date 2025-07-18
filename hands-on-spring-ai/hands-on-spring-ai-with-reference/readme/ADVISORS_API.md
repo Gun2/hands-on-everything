@@ -1,22 +1,22 @@
 # Advisors API
 Advisors API는 LLM 요청을 가로채서 인터셉트, 데이터 가공 등의 기능들을 제공하기 때문에 더 정교하고 재사용성과 유지보수성 높은 AI 컴포넌트 제작이 가능하도록 도와줌
-> https://docs.spring.io/spring-ai/reference/api/advisors.html
+> https://docs.spring.io/spring-ai/reference/1.1-SNAPSHOT/api/advisors.html
 
 # 핵심 컴포넌트
 ![advisors_core_component.png](images/advisors_core_component.png)
-## CallAroundAdvisor / CallAroundAdvisorChain
+## CallAdvisor / CallAdvisorChain
 비동기 아닌(non-streaming) 시나리오에서 사용됨.
 
-## StreamAroundAdvisor / StreamAroundAdvisorChain
+## StreamAdvisor / StreamAdvisorChain
 Streaming 시나리오에서 사용됨
 
-## AdvisedRequest / AdvisedResponse
-- AdvisedRequest: LLM 호출 전에 구성된 프롬프트 데이터를 나타냄.
-- AdvisedResponse: LLM 응답을 나타냄.
-> 이들은 advisor chain 내에서 상태를 공유하기 위해 advise-context 포함.
+## ChatClientRequest / ChatClientResponse
+- ChatClientRequest: LLM 호출 전에 구성된 프롬프트 데이터를 나타냄.
+- ChatClientResponse: LLM 응답을 나타냄.
+> 이들은 advisor chain 내에서 상태를 공유하기 위해 context 포함.
 
 ## 주요 메서드
-### nextAroundCall() / nextAroundStream()
+### nextCall() / nextStream()
 프롬프트 데이터를 검사하거나 커스터마이징하거나 수정한 뒤 다음 advisor 호출 또는 LLM 호출
 > 예외 발생 가능 (처리 실패 시)
 
@@ -34,13 +34,13 @@ Streaming 시나리오에서 사용됨
 
 ## Advisor chain -> Chat Model 흐름
 ![img.png](images/advisor_chain_to_chat_model_flow.png)
-1. Spring AI는 사용자의 Prompt를 기반으로 `AdvisedRequest`와 비어 있는 `AdvisorContext`를 생성함.
-2. Advisor 체인의 각 advisor는 AdvisedRequest를 처리하며, 필요 시 내용을 수정할 수 있음.
+1. Spring AI는 사용자의 Prompt를 기반으로 `ChatClientRequest`와 비어 있는 `context`를 생성함.
+2. Advisor 체인의 각 advisor는 request를 처리하며, 필요 시 내용을 수정할 수 있음.
    > advisor는 다음 advisor를 호출하지 않고 요청을 차단할 수도 있음. 이 경우 advisor가 응답을 직접 작성해야 함.
 3. 마지막 advisor(프레임워크가 제공)는 실제 Chat Model에 요청을 보냄.
-4. Chat Model의 응답은 AdvisedResponse로 변환되고, AdvisorContext와 함께 advisor 체인을 거슬러 올라가며 전달됨.
+4. Chat Model의 응답은 `ChatClientResponse`로 변환되고, `context`와 함께 advisor 체인을 거슬러 올라가며 전달됨.
 5. 각 advisor는 응답을 가공하거나 처리할 수 있음.
-6. 최종적으로 클라이언트는 AdvisedResponse에서 ChatCompletion을 추출해 받게 됨.
+6. 최종적으로 클라이언트는 `ChatClientResponse`에서 `ChatCompletion`을 추출해 받게 됨.
 
 ## Advisor 실행 순서
 getOrder() 메서드로 advisor 실행 순서를 결정함.
@@ -70,102 +70,105 @@ public interface Advisor extends Ordered {
 }
 ```
 
-## CallAroundAdvisor
+## CallAdvisor
 동기적인 Advisor
 ```java
-public interface CallAroundAdvisor extends Advisor {
+public interface CallAdvisor extends Advisor {
 
-	/**
-	 * Around advice that wraps the ChatModel#call(Prompt) method.
-	 * @param advisedRequest the advised request
-	 * @param chain the advisor chain
-	 * @return the response
-	 */
-	AdvisedResponse aroundCall(AdvisedRequest advisedRequest, CallAroundAdvisorChain chain);
+    ChatClientResponse adviseCall(
+            ChatClientRequest chatClientRequest, CallAdvisorChain callAdvisorChain);
 
 }
 ```
-## CallAroundAdvisorChain
+## CallAdvisorChain
 Advisor의 chain을 지속하기 위한 인터페이스
 ```java
-public interface CallAroundAdvisorChain {
+public interface CallAdvisorChain extends AdvisorChain {
 
-	AdvisedResponse nextAroundCall(AdvisedRequest advisedRequest);
+    /**
+     * Invokes the next {@link CallAdvisor} in the {@link CallAdvisorChain} with the given
+     * request.
+     */
+    ChatClientResponse nextCall(ChatClientRequest chatClientRequest);
+
+    /**
+     * Returns the list of all the {@link CallAdvisor} instances included in this chain at
+     * the time of its creation.
+     */
+    List<CallAdvisor> getCallAdvisors();
 
 }
 ```
 
-## StreamAroundAdvisor
+## StreamAdvisor
 Streaming advisor
 ```java
-public interface StreamAroundAdvisor extends Advisor {
+public interface StreamAdvisor extends Advisor {
 
-	/**
-	 * Around advice that wraps the invocation of the advised request.
-	 * @param advisedRequest the advised request
-	 * @param chain the chain of advisors to execute
-	 * @return the result of the advised request
-	 */
-	Flux<AdvisedResponse> aroundStream(AdvisedRequest advisedRequest, StreamAroundAdvisorChain chain);
+    Flux<ChatClientResponse> adviseStream(
+            ChatClientRequest chatClientRequest, StreamAdvisorChain streamAdvisorChain);
 
 }
 ```
-## StreamAroundAdvisorChain
+## StreamAdvisorChain
 Advisor의 chain을 지속하기 위한 인터페이스
 ```java
-public interface StreamAroundAdvisorChain {
+public interface StreamAdvisorChain extends AdvisorChain {
 
-	Flux<AdvisedResponse> nextAroundStream(AdvisedRequest advisedRequest);
+    /**
+     * Invokes the next {@link StreamAdvisor} in the {@link StreamAdvisorChain} with the
+     * given request.
+     */
+    Flux<ChatClientResponse> nextStream(ChatClientRequest chatClientRequest);
+
+    /**
+     * Returns the list of all the {@link StreamAdvisor} instances included in this chain
+     * at the time of its creation.
+     */
+    List<StreamAdvisor> getStreamAdvisors();
 
 }
 ```
 
 # Advisor 구현하기
-Advisor를 생성하기 위해서는 `CallAroundAdvisor`또는 `StreamAroundAdvisor`를 구현해야됨
-> 핵심 구현 메서드는 `nextAroundCall()`또는 `nextAroundStream()`
+Advisor를 생성하기 위해서는 `CallAdvisor`또는 `StreamAdvisor`를 구현해야됨
+> 핵심 구현 메서드는 `nextCall()`또는 `nextStream()`
 
 ## Logging Advisor (샘플)
-`advisedRequest` 전에 로그를 생성하고, 다음 advisor 호출 후 `advisedResponse` 로그를 생성하는 advisor 샘플
+`chatClientRequest` 전에 로그를 생성하고, 다음 advisor 호출 후 `chatClientResponse` 로그를 생성하는 advisor 샘플
 ```java
-public class SimpleLoggerAdvisor implements CallAroundAdvisor, StreamAroundAdvisor {
+public class SimpleLoggerAdvisor implements CallAdvisor, StreamAdvisor {
 
-	private static final Logger logger = LoggerFactory.getLogger(SimpleLoggerAdvisor.class);
+    private static final Logger logger = LoggerFactory.getLogger(SimpleLoggerAdvisor.class);
 
-	@Override
-	public String getName() { 
+    @Override
+    public String getName() {
         /** advisor의 고유 이름 정의 */
-		return this.getClass().getSimpleName();
-	}
+        return this.getClass().getSimpleName();
+    }
 
-	@Override
-	public int getOrder() { 
+    @Override
+    public int getOrder() {
         /** advisor 실행 순서 설정 */
-		return 0;
-	}
+        return 0;
+    }
 
-	@Override
-	public AdvisedResponse aroundCall(AdvisedRequest advisedRequest, CallAroundAdvisorChain chain) {
+    @Override
+    public ChatClientResponse adviseCall(ChatClientRequest chatClientRequest, CallAdvisorChain callAdvisorChain) {
+        logger.info("BEFORE: {}", chatClientRequest);
+        ChatClientResponse chatClientResponse = callAdvisorChain.nextCall(chatClientRequest);
+        logger.info("AFTER: {}", chatClientResponse);
+        return chatClientResponse;
+    }
 
-		logger.debug("BEFORE: {}", advisedRequest);
-
-		AdvisedResponse advisedResponse = chain.nextAroundCall(advisedRequest);
-
-		logger.debug("AFTER: {}", advisedResponse);
-
-		return advisedResponse;
-	}
-
-	@Override
-	public Flux<AdvisedResponse> aroundStream(AdvisedRequest advisedRequest, StreamAroundAdvisorChain chain) {
-
-		logger.debug("BEFORE: {}", advisedRequest);
-
-		Flux<AdvisedResponse> advisedResponses = chain.nextAroundStream(advisedRequest);
-
-        /** MessageAggregator는 Flux 응답을 하나의 AdvisedResponse로 모아주는 유틸리티 클래스. */
-        return new MessageAggregator().aggregateAdvisedResponse(advisedResponses,
-                    advisedResponse -> logger.debug("AFTER: {}", advisedResponse)); 
-	}
+    @Override
+    public Flux<ChatClientResponse> adviseStream(ChatClientRequest chatClientRequest, StreamAdvisorChain streamAdvisorChain) {
+        logger.info("BEFORE: {}", chatClientRequest);
+        Flux<ChatClientResponse> chatClientResponseFlux = streamAdvisorChain.nextStream(chatClientRequest);
+        /** ChatClientMessageAggregator Flux 응답을 하나의 AdvisedResponse로 모아주는 유틸리티 클래스. */
+        return new ChatClientMessageAggregator().aggregateChatClientResponse(chatClientResponseFlux,
+                advisedResponse -> logger.debug("AFTER: {}", advisedResponse));
+    }
 }
 ```
 
@@ -173,47 +176,53 @@ public class SimpleLoggerAdvisor implements CallAroundAdvisor, StreamAroundAdvis
 > Re-Reading : 동일한 질문을 한 번 더 프롬프트에 삽입함으로써 모델의 주의 집중과 문제 이해를 향상시키는 방식
 
 ```java
-public class ReReadingAdvisor implements CallAroundAdvisor, StreamAroundAdvisor {
+public class ReReadingAdvisor implements BaseAdvisor {
 
+    private static final String DEFAULT_RE2_ADVISE_TEMPLATE = """
+            {re2_input_query}
+            Read the question again: {re2_input_query}
+            """;
 
+    private final String re2AdviseTemplate;
+
+    private int order = 0;
+
+    public ReReadingAdvisor() {
+        this(DEFAULT_RE2_ADVISE_TEMPLATE);
+    }
+
+    public ReReadingAdvisor(String re2AdviseTemplate) {
+        this.re2AdviseTemplate = re2AdviseTemplate;
+    }
     /** 사용자의 input query에 Re2를 적용하는 메서드 */
-	private AdvisedRequest before(AdvisedRequest advisedRequest) {
-
-		Map<String, Object> advisedUserParams = new HashMap<>(advisedRequest.userParams());
-		advisedUserParams.put("re2_input_query", advisedRequest.userText());
-
-		return AdvisedRequest.from(advisedRequest)
-			.userText("""
-			    {re2_input_query}
-			    Read the question again: {re2_input_query}
-			    """)
-			.userParams(advisedUserParams)
-			.build();
-	}
-
-    /** non-streaming 에서 Re2 적용 */
-	@Override
-	public AdvisedResponse aroundCall(AdvisedRequest advisedRequest, CallAroundAdvisorChain chain) {
-		return chain.nextAroundCall(this.before(advisedRequest));
-	}
-    
-    /** streaming 에서 Re2 적용 */
-	@Override
-	public Flux<AdvisedResponse> aroundStream(AdvisedRequest advisedRequest, StreamAroundAdvisorChain chain) {
-		return chain.nextAroundStream(this.before(advisedRequest));
-	}
-
-    /** 순서 설정 */
-	@Override
-	public int getOrder() {
-		return 0;
-	}
-
-    /** 고유 이름 설정 */
     @Override
-    public String getName() {
-		return this.getClass().getSimpleName();
-	}
+    public ChatClientRequest before(ChatClientRequest chatClientRequest, AdvisorChain advisorChain) {
+        String augmentedUserText = PromptTemplate.builder()
+                .template(this.re2AdviseTemplate)
+                .variables(Map.of("re2_input_query", chatClientRequest.prompt().getUserMessage().getText()))
+                .build()
+                .render();
+
+        return chatClientRequest.mutate()
+                .prompt(chatClientRequest.prompt().augmentUserMessage(augmentedUserText))
+                .build();
+    }
+
+    @Override
+    public ChatClientResponse after(ChatClientResponse chatClientResponse, AdvisorChain advisorChain) {
+        return chatClientResponse;
+    }
+
+    @Override
+    public int getOrder() {
+        return this.order;
+    }
+
+    public ReReadingAdvisor withOrder(int order) {
+        this.order = order;
+        return this;
+    }
+
 }
 ```
 
@@ -238,6 +247,14 @@ Vector store의 메모리를 검색하여 system 메시지(system text)에 추�
 ### QuestionAnswerAdvisor
 RAG패턴을 구현하여, 벡터 스토어를 활용한 질의응답 기능을 제공
 
+### RetrievalAugmentationAdvisor
+org.springframework.ai.rag 패키지에 정의된 구성 요소(예: retriever, reranker, prompt builder 등)를 조합하여 모듈형(Modular) RAG 아키텍처에 따라 작동
+
+## Reasoning Advisor
+추론 관련 Advisor
+### ReReadingAdvisor
+Re-Reading을 구현하는 Advisor
+
 ## Content Safety Advisor
 ### SafeGuardAdvisor
 모델이 유해하거나 부적절한 응답 생성을 방지
@@ -249,15 +266,15 @@ RAG패턴을 구현하여, 벡터 스토어를 활용한 질의응답 기능을 
    > Reactive Programing 컨셉 사용
 ```java
 @Override
-public Flux<AdvisedResponse> aroundStream(AdvisedRequest advisedRequest, StreamAroundAdvisorChain chain) {
+public Flux<ChatClientResponse> adviseStream(ChatClientRequest chatClientRequest, StreamAdvisorChain chain) {
 
-    return  Mono.just(advisedRequest)
+    return  Mono.just(chatClientRequest)
             .publishOn(Schedulers.boundedElastic())
             .map(request -> {
                 // This can be executed by blocking and non-blocking Threads.
                 // Advisor before next section
             })
-            .flatMapMany(request -> chain.nextAroundStream(request))
+            .flatMapMany(request -> chain.nextStream(request))
             .map(response -> {
                 // Advisor after next section
             });
@@ -269,3 +286,14 @@ public Flux<AdvisedResponse> aroundStream(AdvisedRequest advisedRequest, StreamA
 - 상태 공유: 필요한 경우 `adviseContext`를 통해 advisor 간 정보를 공유.
 - 유연한 대응: 스트리밍과 일반 응답 방식 둘 다 구현하여 다양한 상황에 대응.
 - 순서 고려: advisor 실행 순서를 신중하게 설정하여 데이터 흐름이 자연스럽도록 하라.
+
+# Spring AI 1.0.0 변경 사항
+
+| **이전 이름**                  | **변경된 이름**           |
+|----------------------------|----------------------|
+| `CallAroundAdvisor`        | `CallAdvisor`        |
+| `StreamAroundAdvisor`      | `StreamAdvisor`      |
+| `CallAroundAdvisorChain`   | `CallAdvisorChain`   |
+| `StreamAroundAdvisorChain` | `StreamAdvisorChain` |
+| `AdvisedRequest`           | `ChatClientRequest`  |
+| `AdvisedResponse`          | `ChatClientResponse` |
