@@ -49,7 +49,7 @@ Spring Cloud 구성을 통해 MSA 구조 핸즈온 프로젝트
 
 ### [Payment Service](app/payment-service-app/README.md)
 
-### [Websocket Service](websocket-service-app/README.md)
+### [Websocket Service](app/websocket-service-app/README.md)
 
 # 인증 과정
 인증값은 크게 3가지를 사용함
