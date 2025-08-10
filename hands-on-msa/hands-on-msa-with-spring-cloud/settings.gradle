@@ -6,6 +6,7 @@ include(":app:order-service-app")
 include(":app:payment-service-app")
 include(":app:auth-app")
 include(":app:websocket-service-app")
+include(":app:product-service-app")
 
 
 include(":lib:security-filter")
