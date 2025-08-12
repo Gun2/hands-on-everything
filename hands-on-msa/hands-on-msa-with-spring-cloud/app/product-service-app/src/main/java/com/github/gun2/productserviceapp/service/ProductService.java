@@ -1,8 +1,7 @@
 package com.github.gun2.productserviceapp.service;
 
-import com.github.gun2.productserviceapp.dto.ProductDto;
+import com.github.gun2.productservice.dto.ProductDto;
 import com.github.gun2.productserviceapp.repository.ProductRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

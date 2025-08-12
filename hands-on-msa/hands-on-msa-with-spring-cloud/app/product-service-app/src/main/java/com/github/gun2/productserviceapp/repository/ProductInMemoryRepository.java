@@ -1,6 +1,6 @@
 package com.github.gun2.productserviceapp.repository;
 
-import com.github.gun2.productserviceapp.dto.ProductDto;
+import com.github.gun2.productservice.dto.ProductDto;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;

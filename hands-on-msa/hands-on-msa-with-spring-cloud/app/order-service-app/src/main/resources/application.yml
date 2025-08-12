@@ -20,3 +20,5 @@ app:
   services:
     payment:
       url: http://PAYMENT-SERVICE
+    product:
+      url: http://PRODUCT-SERVICE

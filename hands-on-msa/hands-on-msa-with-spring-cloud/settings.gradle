@@ -16,4 +16,5 @@ include(":lib:internal-service-client")
 include(":lib:rest-model")
 
 include(':data:auth-service-dto')
+include(':data:product-service-dto')
 

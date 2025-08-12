@@ -21,9 +21,9 @@ public class PaymentServiceAppApplication {
 
 
 
-    @PreAuthorize("hasRole('USER')")
     @GetMapping("/{orderId}")
-    public String processPayment(@PathVariable String orderId) {
+    public String processPayment(@PathVariable String orderId) throws InterruptedException {
+        Thread.sleep(1000);
         return "Payment processed for Order ID: " + orderId;
     }
 }
