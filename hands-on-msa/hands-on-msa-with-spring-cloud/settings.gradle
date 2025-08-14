@@ -8,13 +8,16 @@ include(":app:auth-app")
 include(":app:websocket-service-app")
 include(":app:product-service-app")
 
-
 include(":lib:security-filter")
 include(":lib:security-util")
 include(":lib:auth-service-client")
 include(":lib:internal-service-client")
 include(":lib:rest-model")
+include(":lib:external-event-router")
+include(":lib:external-event-adapter")
 
 include(':data:auth-service-dto')
+include(':data:order-service-dto')
 include(':data:product-service-dto')
+include(':data:event-model')
 

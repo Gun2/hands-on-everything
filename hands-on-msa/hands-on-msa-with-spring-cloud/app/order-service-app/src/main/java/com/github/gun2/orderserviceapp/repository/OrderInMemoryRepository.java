@@ -1,6 +1,6 @@
 package com.github.gun2.orderserviceapp.repository;
 
-import com.github.gun2.orderserviceapp.dto.OrderDto;
+import com.github.gun2.orderservice.dto.OrderDto;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;

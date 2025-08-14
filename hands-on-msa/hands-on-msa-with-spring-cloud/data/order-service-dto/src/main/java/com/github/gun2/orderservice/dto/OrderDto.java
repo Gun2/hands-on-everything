@@ -1,8 +1,10 @@
-package com.github.gun2.orderserviceapp.dto;
+package com.github.gun2.orderservice.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 

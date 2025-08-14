@@ -1,6 +1,6 @@
 package com.github.gun2.orderserviceapp.controller;
 
-import com.github.gun2.orderserviceapp.dto.OrderDto;
+import com.github.gun2.orderservice.dto.OrderDto;
 import com.github.gun2.orderserviceapp.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
