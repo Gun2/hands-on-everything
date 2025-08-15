@@ -66,6 +66,39 @@ Spring Cloud 구성을 통해 MSA 구조 핸즈온 프로젝트
 Gateway는 사용자의 session을 받아 인증 서비스로부터 Passport를 생성하고, Passport를 통해 서비스간 인증을 수행
 ![img.png](readme/backend-authentication-flow.png)
 
+# 이벤트 구조
+공통 이벤트를 처리하는 구조
+
+## 이벤트 처리 구조
+이벤트는 내부 이벤트와 외부 이벤트로 나뉘며, event-router와 event-adaptor를 통해 내부 이벤트를 서로 다른 서비스들이 공유할 수 있는 구조를 가짐
+![img.png](readme/event-flow.png)
+### 이벤트 발행 과정
+1. EventRouter에 발생시킬 이벤트를 전달
+2. EventRouter는 전달받은 이벤트를 내부 이벤트로 발행
+3. 이후 이벤트를 JSON으로 직렬화 한 뒤 ExternalEvent로 랩핑
+4. 랩핑된 ExternalEvent를 Kafka에 `전역 이벤트 토픽`으로 발행
+
+### 이벤트 구독 과정
+1. EventAdaptor는 Kafka로부터 `전역 이벤트 토픽`을 구독
+2. `전역 이벤트 토픽`으로부터 ExternalEvent 이벤트를 가져옴
+3. ExternalEvent 이벤트 내부에 있는 payload를 역직렬화
+4. 역직렬화된 이벤트 정보룰 내부 이벤트로 발행
+
+## 외부 이벤트 데이터 구조
+![img.png](readme/event-data-structure.png)
+- eventId: 이벤트의 고유한 ID
+- occurredAt : 발생 시점
+- topic : 발행할 토픽
+- sourceService : 발행한 서비스 (해당 서비스가 구독하여 중복 전파하는 것을 방지)
+- payload : 직렬화된 내부 이벤트 정보
+- eventType : 직렬화 전 클래스 타입 정보 (원래의 클래스로 역직렬화 하기위해 사용)
+
+## 이벤트 처리를 위한 요
+![img_1.png](readme/event-components.png)
+ - event-model : 공통 이벤트 정의
+ - event-router : 이벤트 발행 공통 컴포넌트
+ - event-adaptor : 이벤트 구독 공통 컴포넌트
+
 # 테스트
 ## 로그인
 계정에 로그인하여 session을 cookie에 받아옴
