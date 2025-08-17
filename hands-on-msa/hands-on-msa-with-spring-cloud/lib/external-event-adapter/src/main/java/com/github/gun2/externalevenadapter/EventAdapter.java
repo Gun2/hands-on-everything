@@ -8,6 +8,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.retry.annotation.Backoff;
 
 @Slf4j
 public class EventAdapter {
@@ -23,6 +25,10 @@ public class EventAdapter {
         this.serviceName = serviceName;
     }
 
+    @RetryableTopic(
+            backoff = @Backoff(value = 1000L),
+            attempts = "5",
+            autoCreateTopics = "true")
     @KafkaListener(topics = Topics.GLOBAL, groupId = "${spring.application.name}")
     public void listen(ExternalEvent externalEvent) {
         if (!properties.isEnabled()){
