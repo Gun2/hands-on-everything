@@ -15,9 +15,15 @@ ext {
 dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
     implementation project(':lib:security-filter')
     implementation project(':lib:internal-service-client')
+    implementation project(':lib:external-event-router')
+    implementation project(':lib:external-event-adapter')
+
     implementation project(':data:product-service-dto')
+    implementation project(':data:order-service-dto')
+
     implementation 'org.springframework:spring-tx'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

@@ -3,10 +3,11 @@ import { Product } from '@/lib/api/product/product.types';
 import { Order } from '@/lib/api/order/order.types';
 import { orderService } from '@/lib/api/order/orderService';
 import OrderBoard from '@/app/(auth)/product/[id]/OrderBoard';
+import { useProductOrderSubscription } from '@/lib/subscriptions/useChangeOrderProductSubscription';
 
 type OrderBoardWrapProp = {
   //조회할 주문의 상품 id
-  productId?: Product["id"]
+  productId: Product["id"]
 }
 const OrderBoardWrap = (
   {
@@ -21,6 +22,12 @@ const OrderBoardWrap = (
       setOrderList(data.data)
     })
   }, [productId]);
+  useProductOrderSubscription({
+    productId: productId,
+    subscribe: () => {
+      reflash();
+    }
+  });
   useEffect(() => {
     reflash();
   }, [])

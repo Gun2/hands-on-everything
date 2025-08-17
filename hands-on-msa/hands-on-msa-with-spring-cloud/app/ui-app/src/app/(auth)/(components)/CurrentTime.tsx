@@ -1,23 +1,21 @@
-'use client'
+'use client';
 import React, { useState } from 'react';
-import { StompSessionProvider, useSubscription } from 'react-stomp-hooks';
+import { useCurrentTimeSubscription } from '@/lib/subscriptions/useCurrentTimeSubscription';
 
 const CurrentTime = () => {
 
   return (
-    <StompSessionProvider
-      url={"/service/ws"}
-      //All options supported by @stomp/stompjs can be used here
-    >
-      <SubscribingComponent/>
-    </StompSessionProvider>
+    <SubscribingComponent/>
   );
 };
 
 const SubscribingComponent = () => {
   const [time, setTime] = useState<string>();
-  useSubscription("/topic/time", (message) => setTime(message.body));
-
+  useCurrentTimeSubscription({
+    subscribe: time => {
+      setTime(time)
+    }
+  })
   return (
     <div>{time}</div>
   )

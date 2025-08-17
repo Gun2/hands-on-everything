@@ -8,6 +8,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation project(':lib:security-filter')
+    implementation project(':lib:external-event-adapter')
+
+    implementation project(':data:order-service-dto')
+    implementation project(':data:product-service-dto')
 
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'

@@ -1,6 +1,7 @@
 package com.github.gun2.orderserviceapp.service;
 
-import com.github.gun2.event.internal.SucceedOrderEvent;
+import com.github.gun2.event.internal.EventType;
+import com.github.gun2.event.internal.OrderResourceDataEvent;
 import com.github.gun2.externaleventrouter.EventRouter;
 import com.github.gun2.orderservice.dto.OrderDto;
 import com.github.gun2.orderserviceapp.client.PaymentRestClient;
@@ -23,6 +24,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRestClient productRestClient;
     private final PaymentRestClient paymentRestClient;
+    private final EventRouter eventRouter;
 
     public OrderDto order(OrderDto.CreateRequest createRequest) {
         return order(createRequest, null);
@@ -46,15 +48,22 @@ public class OrderService {
         OrderDto order = order(createRequest);
         ResponseEntity<String> payResult = paymentRestClient.pay(order.getId());
         log.trace(payResult.getBody());
-        return orderRepository.save(order);
+        OrderDto save = orderRepository.save(order);
+        eventRouter.publish(new OrderResourceDataEvent(save, EventType.CREATED));
+        return save;
     }
 
     public OrderDto update(OrderDto.UpdateRequest updateRequest, Long id) {
-        return orderRepository.save(order(updateRequest, id));
+        OrderDto save = orderRepository.save(order(updateRequest, id));
+        eventRouter.publish(new OrderResourceDataEvent(save, EventType.UPDATED));
+
+        return save;
     }
 
     public void delete(Long id) {
-        orderRepository.delete(id);
+        OrderDto orderDto = this.findById(id);
+        orderRepository.delete(orderDto.getId());
+        eventRouter.publish(new OrderResourceDataEvent(orderDto, EventType.DELETED));
     }
 
     public List<OrderDto> findAll(Long productId) {
