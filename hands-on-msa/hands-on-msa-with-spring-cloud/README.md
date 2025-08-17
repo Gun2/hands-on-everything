@@ -4,16 +4,44 @@ Spring Cloud 구성을 통해 MSA 구조 핸즈온 프로젝트
 # 프로젝트 구조
 ```shell
 .
-├── ...
-├── api-gateway-app # API Gateway
-├── auth-service-app # Service (인증)
-├── eureka-server-app # Discovery
-├── order-service-app # Service (주문)
-├── payment-service-app # Service (결제)
-├── settings.gradle
+├── app
+    ├── api-gateway-app # API Gateway
+    ├── auth-service-app # Service (인증)
+    ├── eureka-server-app # Discovery
+    ├── order-service-app # Service (주문)
+    ├── payment-service-app # Service (결제)
+    ├── settings.gradle
 └── src
     ├── main
     └── test
+.
+└── hands-on-msa-with-spring-cloud
+    ├── README.md
+    ├── app # 애플리케이션
+    │   ├── api-gateway-app # API Gateway
+    │   ├── auth-app  # Service (인증)
+    │   ├── eureka-server-app # Discovery
+    │   ├── order-service-app # Service (주문)
+    │   ├── payment-service-app # Service (결제)
+    │   ├── product-service-app # Service (상품)
+    │   ├── ui-app # UI
+    │   └── websocket-service-app # Service (웹소켓)
+    ├── data # 데이터
+    │   ├── auth-service-dto # 데이터 (인증)
+    │   ├── event-model # 이벤트
+    │   ├── order-service-dto # 데이터 (주문)
+    │   └── product-service-dto # 데이터 (상품)
+    ├── lib # 라이브러리 
+    │   ├── auth-service-client # 인증 API 클라이언트
+    │   ├── external-event-adapter # 공통 외부 이벤트 리스너
+    │   ├── external-event-router # 공통 외부 이벤트 퍼블리셔
+    │   ├── internal-service-client # 내부 API Rest client
+    │   ├── rest-model # 내부 Rest 데이터 및 예외 처리
+    │   ├── security-filter # 인증 공통 필터
+    │   ├── security-util # 인증 공통 유틸 
+    ├── readme # README 작성용
+    │   ├── ...
+
 ```
 
 # 아키텍처
@@ -27,6 +55,7 @@ Spring Cloud 구성을 통해 MSA 구조 핸즈온 프로젝트
 | **Order Service** (`order-service`)          | 8081 | 주문 관련 서비스     |
 | **Payment Service** (`payment-service`)      | 8082 | 결제 관련 서비스     |
 | **Websocket Service** (`webesocket-service`) | 8083 | 웹소켓 관련 서비스    |
+| **Product Service** (`products-service`)     | 8084 | 상품 관련 서비스     |
 
 ## 흐름
 1. 모든 마이크로서비스는 Eureka에 등록
@@ -50,6 +79,8 @@ Spring Cloud 구성을 통해 MSA 구조 핸즈온 프로젝트
 ### [Payment Service](app/payment-service-app/README.md)
 
 ### [Websocket Service](app/websocket-service-app/README.md)
+
+### [Product Service](app/product-service-app/README.md)
 
 # 인증 과정
 인증값은 크게 3가지를 사용함
@@ -93,11 +124,55 @@ Gateway는 사용자의 session을 받아 인증 서비스로부터 Passport를 
 - payload : 직렬화된 내부 이벤트 정보
 - eventType : 직렬화 전 클래스 타입 정보 (원래의 클래스로 역직렬화 하기위해 사용)
 
-## 이벤트 처리를 위한 요
+## 이벤트 처리를 위한 요소
 ![img_1.png](readme/event-components.png)
  - event-model : 공통 이벤트 정의
  - event-router : 이벤트 발행 공통 컴포넌트
  - event-adaptor : 이벤트 구독 공통 컴포넌트
+
+## 활용 예시
+공통 이벤트 처리 구조를 활용하여 주문 목록을 실시간으로 갱신하는 예시
+![img.png](readme/order-streaming-change-sample.png)
+1. 사용자는 상품 페이지에서 상품을 `주문`
+2. 주문 서비스는 주문 요청을 받고 `주문을 생성`
+3. 주문 생성 후 주문 생성 `이벤트 발행`
+4. 웹소켓 서비스는 주문 생성 `이벤트를 구독`
+5. 주문 생성 이벤트가 발생하면 주문 변경 내용을 사용자 `브라우저에 전파` (ws이용)
+6. 사용자 브러우저에서 `주문 목록을 갱신`하여 최신 데이터 유지
+### 주문 생성 관련 이벤트
+![order-event.png](readme/order-event.png)
+```java
+//외부 이벤트에서 내부 이벤트를ㄹ 랩핑할 때 활용함
+@Getter
+@NoArgsConstructor
+public class DomainEvent {
+}
+
+//정보 변경 시 발행되는 이벤트
+@Getter
+@NoArgsConstructor
+public class ResourceDataEvent<T> extends DomainEvent{
+    private T data;
+    private EventType eventType;
+
+    public ResourceDataEvent(T data, EventType eventType) {
+        this.data = data;
+        this.eventType = eventType;
+    }
+}
+
+//주문 정보 변경 시 발행되는 이벤트
+@Getter
+@NoArgsConstructor
+public class OrderResourceDataEvent extends ResourceDataEvent<OrderDto> {
+
+    public OrderResourceDataEvent(OrderDto data, EventType eventType) {
+        super(data, eventType);
+    }
+}
+
+```
+
 
 # 테스트
 ## 로그인
@@ -108,6 +183,19 @@ curl -c cookies.txt -X POST http://localhost:8080/auth/login   -d "username=user
 
 ## API 호출
 ```shell
-curl -b cookies.txt http://localhost:8080/orders/123
-# >> "Order ID: 123, Payment: Payment processed for Order ID: 123"
+curl --location --request POST 'http://localhost:8081/orders' \
+--header 'X-Passport-Token: ...' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "productId": 1,
+    "amount": 1
+}'
+# >> {
+# >>    "id": 1,
+# >>    "productId": 1,
+# >>    "amount": 1,
+# >>    "totalPrice": 1000,
+# >>    "createdAt": "2025-08-18T00:02:35.853616",
+# >>    "updatedAt": "2025-08-18T00:02:35.853655"
+# >>}
 ```
