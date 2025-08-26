@@ -43,6 +43,7 @@ ChatMemoryRepository repository = new InMemoryChatMemoryRepository();
 ```
 
 ## JdbcChatMemoryRepository
+> [jdbc chat memory 샘플](./CHAT_MEMORY_JDBC.md)
 `JdbcChatMemoryRepository` JDBC를 사용하여 다양한 DB에 Chat Message를 영속화할 수 있다.
 ```groovy
 //의존성
