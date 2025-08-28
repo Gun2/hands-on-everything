@@ -271,3 +271,164 @@ ChatModel chatModel = OllamaChatModel.builder()
 - Functional types (e.g. Function, Supplier, Consumer).
 
 
+# Functions as tools
+Function object(Function, Supplier, Consumer, BiFunction)를 활용한 Tool 선언 방법
+```java
+public class WeatherService implements Function<WeatherRequest, WeatherResponse> {
+    public WeatherResponse apply(WeatherRequest request) {
+        return new WeatherResponse(30.0, Unit.C);
+    }
+}
+
+public enum Unit { C, F }
+public record WeatherRequest(String location, Unit unit) {}
+public record WeatherResponse(double temp, Unit unit) {}
+```
+## Programmatic 명시 (FunctionToolCallback)
+FunctionToolCallback.Builder은 `FunctionToolCallback`인스턴스를 생성하며 아래 주요 정보들을 설정할 수 있다.
+
+- name : Tool 이름 (고유해야함)
+- toolFunction: tool method를 나타낼 function object(Function, Supplier, Consumer, BiFunction)
+- description : Tool 설명
+- inputType: function input type
+- inputSchema : Tool 입력 파라미터의 JSON Schema (제공하지 않으면 자동 생성)
+- toolDefinition : 도구 이름, 설명, 입력 스키마 정의
+- toolMetadata : 결과 반환 방식 설정 (ToolMetadata.Builder 활용 가능)
+- toolCallResultConverter : 호출 결과를 모델에 전달할 문자열로 변환 (기본적으로 `DefaultToolCallResultConverter` 사용)
+- returnDirect : 툴 호출 시 반환 방식 (true => 그대로 전달, false => 문맥에 맞춰 모델이 가공 후 전달)
+```java
+ToolCallback toolCallback = FunctionToolCallback
+.builder("currentWeather", new WeatherService())
+.description("Get the weather in location")
+.inputType(WeatherRequest.class)
+.build();
+```
+
+### ChatClient에 Tool 추가
+```java
+ToolCallback toolCallback = ...
+ChatClient.create(chatModel)
+    .prompt("What's the weather like in Copenhagen?")
+    .toolCallbacks(toolCallback)
+    .call()
+    .content();
+```
+
+### ChatClient에 Default Tool 추가
+```java
+ChatModel chatModel = ...
+ToolCallback toolCallback = ...
+ChatClient chatClient = ChatClient.builder(chatModel)
+    .defaultToolCallbacks(toolCallback)
+    .build();
+```
+
+### ChatModel에 tool 추가
+```java
+ChatModel chatModel = ...
+ToolCallback toolCallback = ...
+ChatOptions chatOptions = ToolCallingChatOptions.builder()
+    .toolCallbacks(toolCallback)
+    .build():
+Prompt prompt = new Prompt("What's the weather like in Copenhagen?", chatOptions);
+chatModel.call(prompt);
+```
+
+### ChatModel에 default tool 추가
+```java
+ToolCallback toolCallback = ...
+ChatModel chatModel = OllamaChatModel.builder()
+        .ollamaApi(OllamaApi.builder().build())
+        .defaultOptions(ToolCallingChatOptions.builder()
+                .toolCallbacks(toolCallback)
+                .build())
+        .build();
+```
+
+## 동적 명시 (@Bean)
+Spring bean으로 정의한 뒤 `ToolCallbackResolver`를 통해서 Tool을 정의할 수 있다.
+```java
+@Configuration(proxyBeanMethods = false)
+class WeatherTools {
+
+    WeatherService weatherService = new WeatherService();
+
+	@Bean
+	@Description("Get the weather in location")
+	Function<WeatherRequest, WeatherResponse> currentWeather() {
+		return weatherService;
+	}
+
+}
+```
+### @ToolParam
+Function 인자값에 @ToolParam를 선언할 수 있음
+```java
+record WeatherRequest(@ToolParam(description = "The name of a city or a country") String location, Unit unit) {}
+```
+
+### Bean 이름 명시
+tool로 선언된 bean의 이름이 tool의 이름이 되기 때문에 명확히 하지 않으면 런타임 에러가 발생할 수 있음
+> Bean의 이름을 상수로 사용하여 단점을 완화할 수 있음
+```java
+@Configuration(proxyBeanMethods = false)
+class WeatherTools {
+
+    public static final String CURRENT_WEATHER_TOOL = "currentWeather";
+
+	@Bean(CURRENT_WEATHER_TOOL)
+	@Description("Get the weather in location")
+	Function<WeatherRequest, WeatherResponse> currentWeather() {
+		...
+	}
+
+}
+```
+
+### ChatClient에 tool 추가
+```java
+ChatClient.create(chatModel)
+    .prompt("What's the weather like in Copenhagen?")
+    //런타임 에러를 완화하기 위해서는 tool name을 상수로 선언
+    .toolNames(WeatherTools.CURRENT_WEATHER_TOOL)
+    //.toolNames("currentWeather")
+    .call()
+    .content();
+```
+
+### ChatClient에 default tool 추가
+```java
+ChatModel chatModel = ...
+ChatClient chatClient = ChatClient.builder(chatModel)
+    .defaultToolNames("currentWeather")
+    .build();
+```
+
+### ChatModel에 tool 추가
+```java
+ChatModel chatModel = ...
+ChatOptions chatOptions = ToolCallingChatOptions.builder()
+    .toolNames("currentWeather")
+    .build();
+Prompt prompt = new Prompt("What's the weather like in Copenhagen?", chatOptions);
+chatModel.call(prompt);
+```
+
+### ChatModel에 default tool 추가
+```java
+ChatModel chatModel = OllamaChatModel.builder()
+    .ollamaApi(OllamaApi.builder().build())
+    .defaultOptions(ToolCallingChatOptions.builder()
+            .toolNames("currentWeather")
+            .build())
+    .build();
+```
+
+## Function Tool 제약사항
+아래는 현재 지원되지 않는 function type이다.
+- Primitive types
+- Optional
+- Collection types (e.g. List, Map, Array, Set)
+- Asynchronous types (e.g. CompletableFuture, Future)
+- Reactive types (e.g. Flow, Mono, Flux).
+
