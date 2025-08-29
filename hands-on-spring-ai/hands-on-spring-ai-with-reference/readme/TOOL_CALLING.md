@@ -432,3 +432,236 @@ ChatModel chatModel = OllamaChatModel.builder()
 - Asynchronous types (e.g. CompletableFuture, Future)
 - Reactive types (e.g. Flow, Mono, Flux).
 
+# Tool 스펙
+## Tool Callback
+`ToolCallback`은 AI가 호출할 수 있는 Tool을 정의하기 위한 인터페이스이다.
+```java
+public interface ToolCallback {
+
+	/**
+	 * AI 모델이 툴을 언제, 어떻게 호출할지를 결정하기 위해 사용하는 정의.
+	 */
+	ToolDefinition getToolDefinition();
+
+	/**
+	 * 툴을 처리하는 방법에 대한 추가 정보를 제공하는 메타데이터.
+	 */
+	ToolMetadata getToolMetadata();
+    /**
+	 * 주어진 입력값으로 툴을 실행하고, 그 결과를 AI 모델에 반환.
+	 */
+	String call(String toolInput);
+
+    /**
+	 * 주어진 입력값과 컨텍스트를 기반으로 툴을 실행하고,
+	 * 그 결과를 AI 모델에 반환.
+	 */
+	String call(String toolInput, ToolContext tooContext);
+
+}
+```
+
+## Tool Definition
+`ToolDefinition`인터페이스는 AI에게 tool의 가용성을 알 수 있게 하기 위해 필요 정보를 제공한다.
+> name, description, input schema의 정보가 있으며 `ToolCallback`인터페이스는 tool을 정의하기 위해 `ToolDefinition`를 제공해야 한다.
+```java
+public interface ToolDefinition {
+
+	/**
+	 * 툴 이름. 모델에 제공되는 툴 집합 내에서 고유해야 함.
+	 */
+	String name();
+
+	/**
+	 * 툴 설명. AI 모델이 해당 툴의 기능을 이해하는 데 사용됨.
+	 */
+	String description();
+
+	/**
+	 * 툴을 호출할 때 사용하는 파라미터의 스키마.
+	 */
+	String inputSchema();
+
+}
+
+```
+## ToolDefinition.Builder
+ToolDefinition.Builder로 ToolDefinition인스턴스를 생성할 수 있다.
+```java
+ToolDefinition toolDefinition = ToolDefinition.builder()
+    .name("currentWeather")
+    .description("Get the weather in location")
+    .inputSchema("""
+        {
+            "type": "object",
+            "properties": {
+                "location": {
+                    "type": "string"
+                },
+                "unit": {
+                    "type": "string",
+                    "enum": ["C", "F"]
+                }
+            },
+            "required": ["location", "unit"]
+        }
+    """)
+    .build();
+```
+
+## Method Tool Definition
+Method의 Tool Definition은 자동 생성되지만 아래처럼 수동으로 생성할 수 있다.
+```java
+Method method = ReflectionUtils.findMethod(DateTimeTools.class, "getCurrentDateTime");
+ToolDefinition toolDefinition = ToolDefinitions.from(method);
+
+//or
+
+Method method = ReflectionUtils.findMethod(DateTimeTools.class, "getCurrentDateTime");
+ToolDefinition toolDefinition = ToolDefinitions.builder(method)
+        .name("currentDateTime")
+        .description("Get the current date and time in the user's timezone")
+        .inputSchema(JsonSchemaGenerator.generateForMethodInput(method))
+        .build();
+```
+
+## JSON Schema
+Tool을 AI에게 제공할 때 AI가 툴에 대한 정보, 호출 방법 등을 알 수 있도록 스키마를 제공해야한다.
+Spring AI는 내장된 `JsonSchemaGenerator`를 통해 JSON 스키마를 생성한다.
+
+### Description
+파라미터가 어떤 형식이어야 하는지, 허용되는 값은 무엇인지 등의 정보를 제공
+- @ToolParam(description = "...") (Spring AI)
+- @JsonClassDescription(description = "...") (Jackson)
+- @JsonPropertyDescription(description = "...") (Jackson)
+- @Schema(description = "...") (Swagger)
+```java
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.ai.tool.annotation.ToolParam;
+import org.springframework.context.i18n.LocaleContextHolder;
+
+class DateTimeTools {
+
+    @Tool(description = "Set a user alarm for the given time")
+    void setAlarm(@ToolParam(description = "Time in ISO-8601 format") String time) {
+        LocalDateTime alarmTime = LocalDateTime.parse(time, DateTimeFormatter.ISO_DATE_TIME);
+        System.out.println("Alarm set for " + alarmTime);
+    }
+
+}
+```
+
+### 필수/선택
+AI가 tool을 호출하기 위해서 모든 파라미터는 필수이지만 선택적으로 만들 수 있다.
+- @ToolParam(required = false) (Spring AI)
+- @JsonProperty(required = false) (Jackson)
+- @Schema(required = false) (Swagger)
+- @Nullable (Spring Framework)
+
+```java
+class CustomerTools {
+
+    @Tool(description = "Update customer information")
+    void updateCustomerInfo(Long id, String name, @ToolParam(required = false) String email) {
+        System.out.println("Updated info for customer with id: " + id);
+    }
+
+}
+```
+
+## Result Conversion
+Tool 호출 결과는 `ToolCallResultConverter`에 의해 직렬화 되고 AI에 다시 돌려보낸다.
+`ToolCallResultConverter`는 Tool 결과의 convert를 지원하는 interface이다.
+```java
+@FunctionalInterface
+public interface ToolCallResultConverter {
+
+    /**
+     * 도구가 반환한 Object를 받아, 지정된 클래스 타입과 호환되는 String으로 변환한다.
+     */
+    String convert(@Nullable Object result, @Nullable Type returnType);
+
+}
+
+```
+
+## Tool Context
+ToolContext API를 통해 추가적인 사용자 정의 컨텍스트 정보를 도구 실행 시 함께 전달할 수 있다.
+> 이 데이터는 AI 모델에는 전달되지 않고, 도구 내부 로직에서만 활용된다.
+![img.png](images/tool_context.png)
+
+```java
+class CustomerTools {
+
+    @Tool(description = "Retrieve customer information")
+    Customer getCustomerInfo(Long id, ToolContext toolContext) {
+        return customerRepository.findById(id, toolContext.getContext().get("tenantId"));
+    }
+
+}
+```
+
+### ChatClient에서
+```java
+ChatModel chatModel = ...
+
+String response = ChatClient.create(chatModel)
+        .prompt("Tell me more about the customer with ID 42")
+        .tools(new CustomerTools())
+        .toolContext(Map.of("tenantId", "acme"))
+        .call()
+        .content();
+
+System.out.println(response);
+```
+
+### ChatModel에서
+```java
+ChatModel chatModel = ...
+ToolCallback[] customerTools = ToolCallbacks.from(new CustomerTools());
+ChatOptions chatOptions = ToolCallingChatOptions.builder()
+        .toolCallbacks(customerTools)
+        .toolContext(Map.of("tenantId", "acme"))
+        .build();
+Prompt prompt = new Prompt("Tell me more about the customer with ID 42", chatOptions);
+chatModel.call(prompt);
+```
+
+## Return Direct
+도구 실행 결과를 모델로 보내지 않고, 호출자(caller)에게 직접 반환할 수 있음
+> 일반적으로 도구 실행 결과는 모델에 다시 전달되어, 모델이 이를 활용해 대화를 이어감
+
+![img.png](images/return_direct.png)
+1. 결과를 직접 반환하기 위해 `returnDirect=true` 설정
+2. 스키마 정의 이후 ai가 tool 호출 시 이름과 파라미터를 전달
+3. tool 이름으로 tool을 식별한 뒤 파라미터를 전달하여 실행
+4. tool 결과값을 애플리케이션이 처리
+5. 호출자에게 직접 결과값 전달
+
+### 메서드 방식
+```java
+class CustomerTools {
+
+    @Tool(description = "Retrieve customer information", returnDirect = true)
+    Customer getCustomerInfo(Long id) {
+        return customerRepository.findById(id);
+    }
+
+}
+```
+
+### programmatic 방식
+```java
+ToolMetadata toolMetadata = ToolMetadata.builder()
+        .returnDirect(true)
+        .build();
+```
+
+### Function 방식
+```java
+ToolMetadata toolMetadata = ToolMetadata.builder()
+        .returnDirect(true)
+        .build();
+```
