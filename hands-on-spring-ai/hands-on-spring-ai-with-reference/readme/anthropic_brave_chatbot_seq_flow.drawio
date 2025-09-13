@@ -1,0 +1,92 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.2 Chrome/128.0.6613.186 Electron/32.2.5 Safari/537.36" version="25.0.2">
+  <diagram name="flow" id="5MNWaUaR1kC4x35tP4k0">
+    <mxGraphModel dx="1103" dy="790" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="m1Wg_M187q1ku27Fz6g--13" value="1. 사용자 요청" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="m1Wg_M187q1ku27Fz6g--4" target="m1Wg_M187q1ku27Fz6g--5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--4" value="User" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="10" y="277" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--18" value="3. tool 호출 요청" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="m1Wg_M187q1ku27Fz6g--6" target="m1Wg_M187q1ku27Fz6g--5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--26" value="11. 최종 응답" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="m1Wg_M187q1ku27Fz6g--6" target="m1Wg_M187q1ku27Fz6g--5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="530" y="230" />
+              <mxPoint x="273" y="230" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--20" value="5. 요청 전송" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="m1Wg_M187q1ku27Fz6g--7" target="m1Wg_M187q1ku27Fz6g--8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--24" value="9. tool 결과 전달" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="m1Wg_M187q1ku27Fz6g--7" target="m1Wg_M187q1ku27Fz6g--5">
+          <mxGeometry x="-0.5699" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--7" value="MCP Client" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="243" y="430" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--21" value="6. API 호출" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="m1Wg_M187q1ku27Fz6g--8" target="m1Wg_M187q1ku27Fz6g--10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--23" value="8. 결과 전달" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="m1Wg_M187q1ku27Fz6g--8" target="m1Wg_M187q1ku27Fz6g--7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--8" value="MCP Server" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="243" y="570" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--14" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="243" y="260" width="120" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--5" value="Spring AI" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="m1Wg_M187q1ku27Fz6g--14">
+          <mxGeometry y="17" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--9" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://docs.spring.io/spring-ai/reference/_/img/spring-logo.svg;" vertex="1" parent="m1Wg_M187q1ku27Fz6g--14">
+          <mxGeometry x="7" y="20" width="77.92" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--15" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="470" y="554" width="120" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--10" value="Brave Search API" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="m1Wg_M187q1ku27Fz6g--15">
+          <mxGeometry y="16" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--12" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Brave_Logo_%282024%29.svg/1200px-Brave_Logo_%282024%29.svg.png;" vertex="1" parent="m1Wg_M187q1ku27Fz6g--15">
+          <mxGeometry x="11.74" y="16" width="64.34" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--17" value="2. prompt 전송" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="m1Wg_M187q1ku27Fz6g--5" target="m1Wg_M187q1ku27Fz6g--6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--19" value="4. tool 호출 위임" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="m1Wg_M187q1ku27Fz6g--5" target="m1Wg_M187q1ku27Fz6g--7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--22" value="7. 결과 반환" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="m1Wg_M187q1ku27Fz6g--10" target="m1Wg_M187q1ku27Fz6g--8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--25" value="10. tool 결과 포함 prompt 전송" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="m1Wg_M187q1ku27Fz6g--5" target="m1Wg_M187q1ku27Fz6g--6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--28" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="470" y="277" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--6" value="Anthropic API" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="m1Wg_M187q1ku27Fz6g--28">
+          <mxGeometry width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--27" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://img.icons8.com/fluent/512/claude.png;" vertex="1" parent="m1Wg_M187q1ku27Fz6g--28">
+          <mxGeometry width="29" height="29" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--29" value="12. 최종 응답" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="m1Wg_M187q1ku27Fz6g--5" target="m1Wg_M187q1ku27Fz6g--4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m1Wg_M187q1ku27Fz6g--30" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;MCP웹 검색 Chat bot 동작&lt;/h1&gt;&lt;p&gt;MCP를 통해 웹 검색 후 사용자 요청에 응답하는 과정&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="310" height="120" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
