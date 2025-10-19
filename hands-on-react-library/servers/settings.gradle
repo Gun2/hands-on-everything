@@ -1,0 +1,3 @@
+rootProject.name = 'hands-on-react-library-servers'
+
+include(":ai-chat-server")
