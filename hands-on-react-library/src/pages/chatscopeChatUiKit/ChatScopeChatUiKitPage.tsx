@@ -4,6 +4,7 @@ import AccordionForm from '../../components/AccordionForm/AccordionForm';
 import ChatScopeChatUiKitStandardSample from './ChatScopeChatUiKitStandardSample';
 import ChatScopeChatUiKitCommunication from './ChatScopeChatUiKitCommunication';
 import ChatScopeChatUiKitWithAi from './ChatScopeChatUiKitWithAi';
+import ChatScopeChatUiKitWithStreamAi from './ChatScopeChatUiKitWithStreamAi';
 
 const ChatScopeChatUiKitPage = () => {
   return (
@@ -11,6 +12,7 @@ const ChatScopeChatUiKitPage = () => {
       <SampleAccordion/>
       <CommunicationAccordion/>
       <AiAccordion/>
+      <StreamAiAccordion/>
     </Stack>
   );
 };
@@ -38,6 +40,18 @@ const AiAccordion = () => (
       </div>
     )}
     details={<ChatScopeChatUiKitWithAi/>}
+  />
+)
+
+const StreamAiAccordion = () => (
+  <AccordionForm
+    summary={(
+      <div>
+        <h1>stream ai</h1>
+        <div>(ai-chat-stream-server 구동이 필요한 샘플입니다.)</div>
+      </div>
+    )}
+    details={<ChatScopeChatUiKitWithStreamAi/>}
   />
 )
 
