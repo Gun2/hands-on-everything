@@ -6,4 +6,6 @@ export const PATHS = {
     BOARD_REGISTRY: () => "/board/registry",
     BOARD_DETAIL: (id: number) => `/board/${id}`,
     BOARD_EDIT: (id:number) => `/board/edit/${id}`,
+
+    CHAT: () => "/chat",
 }
