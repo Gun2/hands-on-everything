@@ -2,23 +2,23 @@ import React from 'react';
 import { Stack } from '@mui/material';
 
 export interface LayoutProps{
-    //문구 영역
-    contextArea: React.ReactNode;
-    //버튼 영역
-    buttonsArea: React.ReactNode;
+    //내용 영역
+    contentArea: React.ReactNode;
+    //헤더 영역
+    headerArea: React.ReactNode;
 }
 export default function Layout(
     {
-        buttonsArea,
-        contextArea
+        headerArea,
+        contentArea
     }: LayoutProps
 ){
     return (
-        <Stack>
-            {contextArea}
-            <Stack direction="row">
-                {buttonsArea}
-            </Stack>
+        <Stack style={{width: '100%'}}>
+              {headerArea}
+            <div style={{width: '100%'}}>
+              {contentArea}
+            </div>
         </Stack>
     )
 };
